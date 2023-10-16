@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/KBAckend.iml" filepath="$PROJECT_DIR$/.idea/KBAckend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vokabeltrainer/vokabeltrainer.iml" filepath="$PROJECT_DIR$/vokabeltrainer/vokabeltrainer.iml" />
     </modules>
   </component>
 </project>
