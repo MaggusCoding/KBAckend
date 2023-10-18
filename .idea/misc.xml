@@ -6,6 +6,8 @@
       <list>
         <option value="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/pom.xml" />
         <option value="$PROJECT_DIR$/vokabeltrainer/pom.xml" />
+        <option value="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Duel/pom.xml" />
+        <option value="$PROJECT_DIR$/vokabeltrainer/User_Management/pom.xml" />
       </list>
     </option>
   </component>
