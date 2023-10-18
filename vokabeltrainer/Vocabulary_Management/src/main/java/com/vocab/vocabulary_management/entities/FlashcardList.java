@@ -1,4 +1,4 @@
-package com.example.vocabulary_management.entities;
+package com.vocab.vocabulary_management.entities;
 
 public class Category {
     private int categoryId;
