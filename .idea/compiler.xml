@@ -13,6 +13,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Vocabulary_Management" options="-parameters" />
+      <module name="vokabeltrainer" options="" />
     </option>
   </component>
 </project>

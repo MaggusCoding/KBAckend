@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ba30bded-72fd-42fd-a2e8-cb53255cf2ed" name="Changes" comment="set up project structure">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vokabeltrainer/src/main/java/com/vocab/vokabeltrainer/VokabeltrainerApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vokabeltrainer/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vokabeltrainer/src/test/java/com/vocab/vokabeltrainer/VokabeltrainerApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/KBAckend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/main/java/com/example/vocabulary_management/VocabularyManagementApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/main/java/com/vocab/vocabulary_management/VocabularyManagementApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/main/java/com/example/vocabulary_management/entities/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/entities/Category.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/main/java/com/example/vocabulary_management/entities/Flashcard.java" beforeDir="false" afterPath="$PROJECT_DIR$/entities/Flashcard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/main/java/com/example/vocabulary_management/service/VocabularyManagementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/VocabularyManagementService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/test/java/com/example/vocabulary_management/VocabularyManagementApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/vokabeltrainer/Vocabulary_Management/src/test/java/com/vocab/vocabulary_management/VocabularyManagementApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vokabeltrainer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vokabeltrainer/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2Wqfpf7uynFATow2SAofZShNdAe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "/home/murks1/KBAckend/vokabeltrainer/vokabeltrainer.iml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="VocabularyManagementApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Vocabulary_Management" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.vocab.vocabulary_management.VocabularyManagementApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="VocabularyManagementApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Vocabulary_Management" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.vocabulary_management.VocabularyManagementApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="VokabeltrainerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="vokabeltrainer" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.vocab.vokabeltrainer.VokabeltrainerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ba30bded-72fd-42fd-a2e8-cb53255cf2ed" name="Changes" comment="" />
+      <created>1697465217545</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1697465217545</updated>
+      <workItem from="1697465224592" duration="1614000" />
+      <workItem from="1697624541947" duration="4149000" />
+    </task>
+    <task id="LOCAL-00001" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1697465797098</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1697465797098</updated>
+    </task>
+    <task id="LOCAL-00002" summary="set up project structure">
+      <option name="closed" value="true" />
+      <created>1697467380697</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1697467380697</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial commit" />
+    <MESSAGE value="set up project structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="set up project structure" />
+  </component>
+</project>

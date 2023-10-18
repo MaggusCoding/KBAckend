@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.example</groupId>
+        <groupId>com.vocab</groupId>
         <artifactId>vokabeltrainer</artifactId>
-        <version>3.1.4</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.0</version>
+        <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>Vocabulary_Management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -16,12 +16,15 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-        <!-- Define your specific sub-module dependencies here -->
-        <!-- You can also inherit dependencies from the parent POM -->
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
 </project>
