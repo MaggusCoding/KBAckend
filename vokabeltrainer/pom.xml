@@ -4,8 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>Vocabulary_Duel</module>
-        <module>User_Management</module>
+        <module>Vocabulary_Duel_Export</module>
+        <module>User_Management_Export</module>
+        <module>Vocabulary_Management_Export</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
