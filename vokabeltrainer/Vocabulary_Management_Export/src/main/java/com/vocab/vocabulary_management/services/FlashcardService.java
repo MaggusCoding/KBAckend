@@ -12,6 +12,4 @@ public interface FlashcardService {
 
     List<Flashcard> getAll();
 
-    List<Synonym> getSynonymesByFlashcardId(Long id);
-
 }
