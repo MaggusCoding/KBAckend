@@ -17,6 +17,12 @@
             <artifactId>User_Management</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.vocab</groupId>
+            <artifactId>Vocabulary_Management</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>Vocabulary_Duel</finalName>
