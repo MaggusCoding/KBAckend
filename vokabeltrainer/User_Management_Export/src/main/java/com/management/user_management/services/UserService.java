@@ -1,5 +1,6 @@
 package com.management.user_management.services;
 
+import com.management.user_management.UserAlreadyExistsException;
 import com.management.user_management.entities.User;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface UserService {
      * @param user The User which is to be created
      * @return The created user
      */
-    User createUser(User user);
+    User createUser(User user) throws UserAlreadyExistsException;
 
     /**
      * Gets a user from the database by id
