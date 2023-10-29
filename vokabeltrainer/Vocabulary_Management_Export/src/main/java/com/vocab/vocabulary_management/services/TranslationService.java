@@ -19,9 +19,10 @@ public interface TranslationService {
     Translation getById(Long id);
 
     /**
-     * Gets all translations
-     * @return A list of all translations
+     * Gets all translations of a flashcard
+     * @param flashcardId The id of the flashcard which the translations belongs to
+     * @return A list of all translations for the given flashcardId
      */
-    List<Translation> getAll();
+    List<Translation> getAllTranslationByFlashcard(Long flashcardId);
 
 }
