@@ -1,7 +1,7 @@
-package com.vocab.vocabulary_management.services;
+package com.vocab.vocabulary_duel.services;
 
 import com.vocab.vocabulary_management.entities.Flashcard;
-import com.vocab.vocabulary_management.entities.Round;
+import com.vocab.vocabulary_duel.entities.Round;
 
 import java.util.List;
 
@@ -35,9 +35,10 @@ public interface RoundService {
     Round getById(Long id);
 
     /**
-     * Gets all rounds in the database
+     * Gets all rounds of a duel
+     * @param duelId Id of the duel which the rounds belong to
      * @return List of all rounds
      */
-    List<Round> getAll();
+    List<Round> getAllRoundsByDuel(Long duelId);
 
 }

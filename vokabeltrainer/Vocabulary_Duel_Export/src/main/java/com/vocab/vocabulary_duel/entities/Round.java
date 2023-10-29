@@ -1,4 +1,6 @@
-package com.vocab.vocabulary_management.entities;
+package com.vocab.vocabulary_duel.entities;
+
+import com.vocab.vocabulary_management.entities.Flashcard;
 
 import java.util.List;
 
@@ -7,14 +9,14 @@ public class Round {
     private long roundId;
     private Duel duel;
     private Flashcard questionedFlashcard;
-    private List<Answer> answers;
+    private List<Answer> selectedAnswers;
     private List<String> wrongAnswers;
 
-    public Round(long roundId, Duel duel, Flashcard questionedFlashcard, List<Answer> answers, List<String> wrongAnswers) {
+    public Round(long roundId, Duel duel, Flashcard questionedFlashcard, List<Answer> selectedAnswers, List<String> wrongAnswers) {
         this.roundId = roundId;
         this.duel = duel;
         this.questionedFlashcard = questionedFlashcard;
-        this.answers = answers;
+        this.selectedAnswers = selectedAnswers;
         this.wrongAnswers = wrongAnswers;
     }
 
@@ -42,12 +44,12 @@ public class Round {
         this.questionedFlashcard = questionedFlashcard;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
+    public List<Answer> getSelectedAnswers() {
+        return selectedAnswers;
     }
 
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    public void setSelectedAnswers(List<Answer> selectedAnswers) {
+        this.selectedAnswers = selectedAnswers;
     }
 
     public List<String> getWrongAnswers() {

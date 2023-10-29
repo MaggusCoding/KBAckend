@@ -1,6 +1,7 @@
-package com.vocab.vocabulary_management.entities;
+package com.vocab.vocabulary_duel.entities;
 
 import com.management.user_management.entities.User;
+import com.vocab.vocabulary_management.entities.FlashcardList;
 
 import java.util.List;
 
@@ -51,4 +52,5 @@ public class Duel {
     public void setFlashcardList(FlashcardList flashcardList) {
         this.flashcardList = flashcardList;
     }
+
 }

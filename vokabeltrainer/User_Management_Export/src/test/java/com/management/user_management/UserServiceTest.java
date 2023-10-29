@@ -4,13 +4,12 @@ import com.management.user_management.entities.User;
 import com.management.user_management.services.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.testng.annotations.Ignore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+
 @SpringBootTest
-@Ignore("Service noch nicht implementiert")
 class UserServiceTest {
 
     UserServiceImpl service = new UserServiceImpl();

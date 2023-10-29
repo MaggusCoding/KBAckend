@@ -1,6 +1,6 @@
-package com.vocab.vocabulary_management.services;
+package com.vocab.vocabulary_duel.services;
 
-import com.vocab.vocabulary_management.entities.Answer;
+import com.vocab.vocabulary_duel.entities.Answer;
 import java.util.List;
 
 public interface AnswerService {
@@ -19,9 +19,10 @@ public interface AnswerService {
     Answer getById(Long id);
 
     /**
-     * Gets all the answers in the database
+     * Gets all selected answers of a round
+     * @param roundId Id of the round which the answers belong to
      * @return List of all the answers
      */
-    List<Answer> getAll();
+    List<Answer> getAllAnswersByRound(Long roundId);
 
 }

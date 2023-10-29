@@ -1,6 +1,7 @@
-package com.vocab.vocabulary_management.entities;
+package com.vocab.vocabulary_duel.entities;
 
 import com.management.user_management.entities.User;
+import com.vocab.vocabulary_management.entities.Flashcard;
 
 public class Answer {
 
