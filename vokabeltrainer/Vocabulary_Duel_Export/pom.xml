@@ -8,13 +8,13 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vocabDuel</groupId>
-    <artifactId>Vocabulary_Duel</artifactId>
+    <artifactId>Vocabulary_Duel_Export</artifactId>
     <name>Vocabulary_Duel Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>com.management</groupId>
-            <artifactId>User_Management</artifactId>
+            <artifactId>User_Management_Export</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
