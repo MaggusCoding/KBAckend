@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface AnswerService {
     /**
-     * Create a new answer and save it in the database
+     * Create a new answer, adds it to the selectedAnswers and save it in the database.
      * @param answer Answer to be created
      * @return Answer created
      */

@@ -4,6 +4,7 @@ import com.management.user_management.entities.User;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
+import com.vocab.vocabulary_management.entities.FlashcardList;
 
 import java.util.List;
 
@@ -52,7 +53,8 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
-    public List<Flashcard> generateFlashcardList() {
+    public List<Flashcard> generateFlashcardList(FlashcardList flashcardList, Duel duel) {
         return null;
     }
+
 }

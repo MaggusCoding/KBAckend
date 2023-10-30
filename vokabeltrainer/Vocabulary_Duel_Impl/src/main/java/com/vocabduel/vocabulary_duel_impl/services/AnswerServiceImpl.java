@@ -5,7 +5,7 @@ import com.vocab.vocabulary_duel.services.AnswerService;
 
 import java.util.List;
 
-public class AnwerServiceImpl implements AnswerService {
+public class AnswerServiceImpl implements AnswerService {
     /**
      * {@inheritDoc}
      */

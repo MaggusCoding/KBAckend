@@ -7,6 +7,7 @@ import com.vocab.vocabulary_management.services.FlashcardListService;
 import java.util.List;
 
 public class FlashcardListServiceImpl implements FlashcardListService {
+    private String default_path = "/vocabFiles/";
     /**
      * {@inheritDoc}
      */

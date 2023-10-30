@@ -3,6 +3,7 @@ package com.vocab.vocabulary_duel.services;
 import com.management.user_management.entities.User;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_management.entities.Flashcard;
+import com.vocab.vocabulary_management.entities.FlashcardList;
 
 import java.util.List;
 
@@ -36,16 +37,18 @@ public interface DuelService {
     List<Duel> getAll();
 
     /**
-     * Calculates a winner for a duel by comparing the scores of all the users
+     * Calculates the winners for a duel by comparing the scores of all the users
      * @param duel Duel to calculate the winner for
      * @return List of Users that won the duel
      */
     List<User> calculateWinner(Duel duel);
 
     /**
-     * Generate a Lsit of 10 Flashcards for duel
+     * Generate a list of 10 Flashcards for a duel
+     * @param flashcardList flashcardList the user chose to play
+     * @param duel current duel
      * @return List of flashcard to be played
      */
-    List<Flashcard> generateFlashcardList();
+    List<Flashcard> generateFlashcardList(FlashcardList flashcardList, Duel duel);
 
 }

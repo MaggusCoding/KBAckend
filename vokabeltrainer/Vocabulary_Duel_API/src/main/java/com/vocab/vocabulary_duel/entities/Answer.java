@@ -9,14 +9,13 @@ public class Answer {
     private User player;
     private Flashcard flashcard;
     private Round round;
-    private Boolean correctAnswer;
+    private Boolean correct;
 
-    public Answer(long answerId, User player, Flashcard flashcard, Round round, Boolean correctAnswer) {
+    public Answer(long answerId, User player, Flashcard flashcard, Round round, String selectedAnswer) {
         this.answerId = answerId;
         this.player = player;
         this.flashcard = flashcard;
         this.round = round;
-        this.correctAnswer = correctAnswer;
     }
 
     public long getAnswerId() {
@@ -51,11 +50,11 @@ public class Answer {
         this.round = round;
     }
 
-    public Boolean getCorrectAnswer() {
-        return correctAnswer;
+    public Boolean isCorrect() {
+        return correct;
     }
 
-    public void setCorrectAnswer(Boolean correctAnswer) {
-        this.correctAnswer = correctAnswer;
+    public void setCorrect(Boolean correct) {
+        this.correct = correct;
     }
 }
