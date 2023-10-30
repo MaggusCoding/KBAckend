@@ -2,41 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
-    <modules>
-        <module>Vocabulary_Duel_API</module>
-        <module>User_Management_API</module>
-        <module>Vocabulary_Management_API</module>
-        <module>Vocabulary_Duel_Impl</module>
-        <module>Vocabulary_Management_Impl</module>
-        <module>User_Management_Impl</module>
-    </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.4</version>
+        <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.vocab</groupId>
-    <artifactId>vokabeltrainer</artifactId>
-    <version>1.0</version>
-    <name>vokabeltrainer</name>
-    <description>vokabeltrainer</description>
+    <groupId>com.vocabDuel</groupId>
+    <artifactId>Vocabulary_Duel_Impl</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Vocabulary_Duel_Impl</name>
+    <description>Vocabulary_Duel_Impl</description>
     <properties>
         <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.1.4</version>
         </dependency>
 
         <dependency>
@@ -45,9 +28,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>RELEASE</version>
+            <groupId>com.vocabDuel</groupId>
+            <artifactId>Vocabulary_Duel_API</artifactId>
+            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
