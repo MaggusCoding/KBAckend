@@ -27,7 +27,7 @@ public class TranslationServiceImpl implements TranslationService {
      * {@inheritDoc}
      */
     @Override
-    public List<Translation> getAllTranslationByFlashcard(Long flashcardId) {
+    public List<Translation> getAllTranslationsByFlashcard(Long flashcardId) {
         return null;
     }
 

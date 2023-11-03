@@ -34,11 +34,22 @@ class TranslationServiceImplTest {
         service.createTranslation(translation);
         service.createTranslation(translation2);
 
-        List<Translation> translations = service.getAllTranslationByFlashcard(1L);
+        List<Translation> translations = service.getAllTranslationsByFlashcard(1L);
 
         assertThat(translations).isNotEmpty().hasSize(2);
-        assertThat(translations.get(0).getTranslationText()).isEqualTo("sink");
-        assertThat(translations.get(1).getTranslationText()).isEqualTo("tink");
+        assertThat(translations).extracting("translationText").contains("sink", "tink");
+    }
+
+    @Test
+    void testGetTranslationsFromNonExistingFlashcardExpectEmptyResult(){
+        Translation translation = new Translation(1L, new Flashcard(1L,"think", null, null), "sink");
+        Translation translation2 = new Translation(2L, new Flashcard(1L,"think", null, null), "tink");
+        service.createTranslation(translation);
+        service.createTranslation(translation2);
+
+        List<Translation> translations = service.getAllTranslationsByFlashcard(2L);
+
+        assertThat(translations).isNotNull().isEmpty();
     }
 
 }

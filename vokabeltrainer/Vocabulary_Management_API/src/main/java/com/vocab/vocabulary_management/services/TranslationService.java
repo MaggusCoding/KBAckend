@@ -23,6 +23,6 @@ public interface TranslationService {
      * @param flashcardId The id of the flashcard which the translations belongs to
      * @return A list of all translations for the given flashcardId
      */
-    List<Translation> getAllTranslationByFlashcard(Long flashcardId);
+    List<Translation> getAllTranslationsByFlashcard(Long flashcardId);
 
 }

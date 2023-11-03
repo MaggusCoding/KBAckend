@@ -68,6 +68,7 @@ public class FlashcardListServiceImplTest {
         List<FlashcardList> flashcardLists = service.getAll();
 
         assertThat(flashcardLists).isNotNull().hasSize(2);
+        assertThat(flashcardLists).extracting("category").contains("Unit 4 My trip to Ireland - Part A.txt","Unit 1 Block A.txt");
 
     }
 

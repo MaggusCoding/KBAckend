@@ -47,6 +47,22 @@ public class DuelServiceImplTest {
     }
 
     @Test
+    void testGenerateFlashcardFromNonExistingListExpectEmptyResult(){
+        User user = new User(1L, "user1");
+        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
+        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
+        flashcard.setTranslations(List.of(translation));
+        FlashcardList flashcardList = new FlashcardList(1L, "This is london", "english", "deutsch", List.of(flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard));
+        Duel duel = new Duel(1L, List.of(user), List.of(flashcard));
+
+        FlashcardList flashcardList2 = new FlashcardList(2L, "This is latin america", "english", "deutsch", List.of(flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard));
+
+        List<Flashcard> flashcardsForDuel = service.generateFlashcardList(flashcardList2, duel);
+
+        assertThat(flashcardsForDuel).isNotNull().isEmpty();
+    }
+
+    @Test
     void testCalculateWinnerExpect1Winner(){
         User user = new User(1L, "user1");
         User user2 = new User(2L, "user2");
@@ -73,7 +89,7 @@ public class DuelServiceImplTest {
         List<User> winner = service.calculateWinner(duel);
 
         assertThat(winner).isNotNull().hasSize(1);
-        assertThat(winner.get(0)).usingRecursiveComparison().isEqualTo(user);
+        assertThat(winner).extracting("username").contains("user1");
 
     }
 
@@ -104,6 +120,50 @@ public class DuelServiceImplTest {
         List<User> winner = service.calculateWinner(duel);
 
         assertThat(winner).isNotNull().hasSize(2);
-        assertThat(winner).containsExactlyInAnyOrderElementsOf(List.of(user, user2));
+        assertThat(winner).extracting("username").contains("user1", "user2");
+    }
+
+    @Test
+    void testJoinDuelExpectOk(){
+        User user = new User(1L, "user1");
+        User user2 = new User(2L, "user2");
+        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
+        Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
+        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
+        Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
+        flashcard.setTranslations(List.of(translation));
+        flashcard2.setTranslations(List.of(translation2));
+        Duel duel = new Duel(1L, List.of(user), List.of(flashcard,flashcard2));
+
+        assertThat(duel.getPlayers()).hasSize(1).extracting("username").contains("user1");
+
+        service.joinDuel(duel.getDuelId(), user2.getUserId());
+
+        Duel currentDuel = service.getById(duel.getDuelId());
+        assertThat(currentDuel).isNotNull();
+        assertThat(currentDuel.getPlayers()).hasSize(2).extracting("username").contains("user1", "user2");
+
+    }
+
+    @Test
+    void testJoinDuelWhenAlreadyIn(){
+        User user = new User(1L, "user1");
+        User user2 = new User(2L, "user2");
+        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
+        Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
+        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
+        Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
+        flashcard.setTranslations(List.of(translation));
+        flashcard2.setTranslations(List.of(translation2));
+        Duel duel = new Duel(1L, List.of(user,user2), List.of(flashcard,flashcard2));
+
+        assertThat(duel.getPlayers()).hasSize(2).extracting("username").contains("user1","user2");
+
+        assertThat(service.joinDuel(duel.getDuelId(), user2.getUserId())).isFalse();
+
+        Duel currentDuel = service.getById(duel.getDuelId());
+        assertThat(currentDuel).isNotNull();
+        assertThat(currentDuel.getPlayers()).hasSize(2).extracting("username").contains("user1", "user2");
+
     }
 }
