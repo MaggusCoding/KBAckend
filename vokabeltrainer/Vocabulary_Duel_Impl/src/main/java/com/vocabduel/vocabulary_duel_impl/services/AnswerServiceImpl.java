@@ -2,9 +2,10 @@ package com.vocabduel.vocabulary_duel_impl.services;
 
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.services.AnswerService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class AnswerServiceImpl implements AnswerService {
     /**
      * {@inheritDoc}

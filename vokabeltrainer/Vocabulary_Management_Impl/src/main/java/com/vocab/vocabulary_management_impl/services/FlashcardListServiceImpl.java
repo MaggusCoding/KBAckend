@@ -3,9 +3,10 @@ package com.vocab.vocabulary_management_impl.services;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.services.FlashcardListService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class FlashcardListServiceImpl implements FlashcardListService {
     private String default_path = "/vocabFiles/";
     /**

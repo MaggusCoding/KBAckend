@@ -5,9 +5,10 @@ import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class DuelServiceImpl implements DuelService {
     /**
      * {@inheritDoc}

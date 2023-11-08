@@ -3,9 +3,10 @@ package com.vocab.user_management_impl.services;
 import com.management.user_management.UserAlreadyExistsException;
 import com.management.user_management.entities.User;
 import com.management.user_management.services.UserService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class UserServiceImpl implements UserService {
 
     /**

@@ -2,9 +2,10 @@ package com.vocabduel.vocabulary_duel_impl.services;
 
 import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_duel.services.RoundService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class RoundServiceImpl implements RoundService {
     /**
      * {@inheritDoc}
