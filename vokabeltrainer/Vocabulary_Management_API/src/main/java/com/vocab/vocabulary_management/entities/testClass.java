@@ -49,5 +49,3 @@ import java.util.regex.Pattern;
             return arrays;
         }
     }
-
-}

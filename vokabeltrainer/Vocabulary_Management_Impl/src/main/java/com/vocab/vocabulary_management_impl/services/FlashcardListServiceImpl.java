@@ -9,6 +9,7 @@ import com.vocab.vocabulary_management.repos.FlashcardRepo;
 
 import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management.services.FlashcardListService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     public Boolean createFlashcardList(String filename) {
         return null;
     }
-
+    @PostConstruct
     public void readAndSaveFlashcardListFromTxtFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\mseet\\IdeaProjects\\KBAckend\\vokabeltrainer\\Vocabulary_Management_API\\src\\main\\java\\com\\vocab\\vocabulary_management\\entities\\vocab.txt"))) {
             String line;
