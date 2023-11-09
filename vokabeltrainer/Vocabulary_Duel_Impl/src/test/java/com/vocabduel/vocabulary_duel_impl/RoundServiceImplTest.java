@@ -1,6 +1,6 @@
 package com.vocabduel.vocabulary_duel_impl;
 
-import com.management.user_management.entities.User;
+import com.management.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_management.entities.Flashcard;
@@ -18,11 +18,11 @@ public class RoundServiceImplTest {
 
     @Test
     void testCreateRoundExpectOk(){
-        User user = new User(1L, "user1");
+        UserEntity userEntity = new UserEntity(1L, "user1");
         Flashcard flashcard = new Flashcard(1L, "english word", null, null);
         Translation translation = new Translation(1L,flashcard,"deutsches Wort");
         flashcard.setTranslations(List.of(translation));
-        Duel duel = new Duel(1L, List.of(user), List.of(flashcard));
+        Duel duel = new Duel(1L, List.of(userEntity), List.of(flashcard));
         Round round = new Round(1L, duel, flashcard, null, List.of("parola italiana", "mot français", "palavra portuguesa"));
 
         service.createRound(round);
@@ -37,11 +37,11 @@ public class RoundServiceImplTest {
 
     @Test
     void testGenerateWrongAnswersExpectOk(){
-        User user = new User(1L, "user1");
+        UserEntity userEntity = new UserEntity(1L, "user1");
         Flashcard flashcard = new Flashcard(1L, "english word", null, null);
         Translation translation = new Translation(1L,flashcard,"deutsches Wort");
         flashcard.setTranslations(List.of(translation));
-        Duel duel = new Duel(1L, List.of(user), List.of(flashcard));
+        Duel duel = new Duel(1L, List.of(userEntity), List.of(flashcard));
         Round round = new Round(1L, duel, flashcard, null, null);
 
         List<String> wrongAnswers = service.generateWrongAnswers(round);
@@ -51,15 +51,15 @@ public class RoundServiceImplTest {
 
     @Test
     void testGetAllRoundsByDuelExpectOk(){
-        User user = new User(1L, "user1");
-        User user2 = new User(2L, "user2");
+        UserEntity userEntity = new UserEntity(1L, "user1");
+        UserEntity userEntity2 = new UserEntity(2L, "user2");
         Flashcard flashcard = new Flashcard(1L, "english word", null, null);
         Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
         Translation translation = new Translation(1L,flashcard,"deutsches Wort");
         Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
         flashcard.setTranslations(List.of(translation));
         flashcard2.setTranslations(List.of(translation2));
-        Duel duel = new Duel(1L, List.of(user,user2), List.of(flashcard,flashcard2));
+        Duel duel = new Duel(1L, List.of(userEntity, userEntity2), List.of(flashcard,flashcard2));
         Round round = new Round(1L, duel, flashcard, null, List.of("parola italiana", "mot français", "palavra portuguesa"));
         Round round2 = new Round(2L, duel, flashcard, null, List.of("mies", "wasser", "amazon"));
         service.createRound(round);

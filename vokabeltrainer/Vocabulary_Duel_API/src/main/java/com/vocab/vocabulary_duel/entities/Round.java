@@ -1,6 +1,5 @@
 package com.vocab.vocabulary_duel.entities;
 
-import com.management.user_management.entities.User;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +15,7 @@ import java.util.List;
 
 public class Round {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long roundId;
     @ManyToOne
     @JoinColumn(name="duelId", nullable=false)
