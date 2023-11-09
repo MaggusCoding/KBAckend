@@ -50,12 +50,6 @@
             <version>7.7.0</version>
             <scope>compile</scope>
         </dependency>
-        <!-- Hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.6.15.Final</version>
-        </dependency>
         <!-- JPA -->
         <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
         <dependency>

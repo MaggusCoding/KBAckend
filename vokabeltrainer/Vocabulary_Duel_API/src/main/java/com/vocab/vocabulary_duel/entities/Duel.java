@@ -1,36 +1,34 @@
 package com.vocab.vocabulary_duel.entities;
 
 import com.management.user_management.entities.User;
-import com.vocab.vocabulary_management.entities.Flashcard;
+import com.vocab.vocabulary_management.entities.FlashcardList;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 @Entity
 @Table(name = "duel")
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class Duel {
 
     @Id
     private Long duelId;
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany
     private List<User> winner;
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany
     private List<User> players;
 
-    @OneToMany(mappedBy = "flashcard")
-    private List<Flashcard> flashcardsForDuel;
+    @ManyToOne
+    @JoinColumn(name="flashcardListId", nullable=false)
+    private FlashcardList flashcardsForDuel;
 
-    public Duel(Long duelId, List<User> players, List<Flashcard> flashcardsForDuel) {
-        this.duelId = duelId;
-        this.players = players;
-        this.flashcardsForDuel = flashcardsForDuel;
-    }
+
 
 
 }

@@ -6,24 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "answer")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Answer {
     @Id
     private long answerId;
+    @ManyToOne
+    @JoinColumn(name="playerId", nullable=false)
     private User player;
-    private Flashcard flashcard;
+    @ManyToOne
+    @JoinColumn(name="roundId", nullable=false)
     private Round round;
     private Boolean correct;
 
-    public Answer(long answerId, User player, Flashcard flashcard, Round round, String selectedAnswer) {
-        this.answerId = answerId;
-        this.player = player;
-        this.flashcard = flashcard;
-        this.round = round;
-    }
+
 }

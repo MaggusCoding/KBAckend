@@ -1,12 +1,12 @@
 package com.vocab.vocabulary_management.entities;
 
+import com.vocab.vocabulary_management.entities.Flashcard;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
 import java.util.List;
 
 @Entity
@@ -17,13 +17,16 @@ import java.util.List;
 
 public class FlashcardList {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flashcardListId;
+
     private String category;
 
     private String originalLanguage;
 
     private String translationLanguage;
 
+    @OneToMany(mappedBy = "flashcardList")
     private List<Flashcard> flashcards;
 
 }

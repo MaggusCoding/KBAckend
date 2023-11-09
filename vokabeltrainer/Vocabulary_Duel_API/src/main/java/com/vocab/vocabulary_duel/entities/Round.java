@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
@@ -20,8 +17,13 @@ import java.util.List;
 public class Round {
     @Id
     private long roundId;
+    @ManyToOne
+    @JoinColumn(name="duelId", nullable=false)
     private Duel duel;
+    @ManyToOne
+    @JoinColumn(name="flashCardId", nullable=false)
     private Flashcard questionedFlashcard;
+    @OneToMany(mappedBy = "round")
     private List<Answer> selectedAnswers;
-    private List<String> wrongAnswers;
+
 }

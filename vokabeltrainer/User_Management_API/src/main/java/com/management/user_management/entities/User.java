@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
@@ -19,4 +19,8 @@ public class User {
     @Id
     private Long userId;
     private String username;
+    @ManyToMany(mappedBy = "winner")
+    private List<Duel> duelsWon;
+    @ManyToMany(mappedBy = "players")
+    private List<Duel> duelsPlayed;
 }

@@ -1,6 +1,7 @@
 package com.vocab.vocabulary_management.services;
 
 import com.vocab.vocabulary_management.entities.Translation;
+
 import java.util.List;
 
 public interface TranslationService {

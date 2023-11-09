@@ -1,24 +1,22 @@
 package com.vocab.vocabulary_management.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.List;
 @Entity
-@Table(name = "flashcard")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 public class Flashcard {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flashCardId;
     private String originalText;
+    @ManyToOne
+    @JoinColumn(name="flashcardListId", nullable=false)
     private FlashcardList flashcardList;
+    @OneToMany(mappedBy = "flashcard")
     private List<Translation> translations;
-
 }
