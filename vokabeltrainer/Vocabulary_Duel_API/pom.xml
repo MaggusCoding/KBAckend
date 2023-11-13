@@ -9,7 +9,8 @@
     </parent>
     <groupId>com.vocabDuel</groupId>
     <artifactId>Vocabulary_Duel_API</artifactId>
-    <name>Vocabulary_Duel Maven Webapp</name>
+    <name>Vocabulary_Duel_API</name>
+    <version>1.0</version>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>

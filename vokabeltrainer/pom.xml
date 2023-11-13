@@ -5,11 +5,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>Vocabulary_Duel_API</module>
-        <module>User_Management_API</module>
-        <module>Vocabulary_Management_API</module>
         <module>Vocabulary_Duel_Impl</module>
-        <module>Vocabulary_Management_Impl</module>
+        <module>User_Management_API</module>
         <module>User_Management_Impl</module>
+        <module>Vocabulary_Management_API</module>
+        <module>Vocabulary_Management_Impl</module>
+        <module>Application</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -47,10 +48,39 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>RELEASE</version>
+            <version>7.7.0</version>
             <scope>compile</scope>
         </dependency>
+        <!-- JPA -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- H2 Database -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

@@ -1,10 +1,10 @@
-package com.vocab.vokabeltrainer;
+package com.vocab.application;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class VokabeltrainerApplicationTests {
+class ApplicationTests {
 
     @Test
     void contextLoads() {

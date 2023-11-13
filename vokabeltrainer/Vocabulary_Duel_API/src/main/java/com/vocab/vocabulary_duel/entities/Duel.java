@@ -1,56 +1,33 @@
 package com.vocab.vocabulary_duel.entities;
 
-import com.management.user_management.entities.User;
-import com.vocab.vocabulary_management.entities.Flashcard;
+import com.management.user_management.entities.UserEntity;
+import com.vocab.vocabulary_management.entities.FlashcardList;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.util.List;
-
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Duel {
 
+    @Id
     private Long duelId;
 
-    private List<User> winner;
+    @ManyToMany
+    private List<UserEntity> winner;
 
-    private List<User> players;
+    @ManyToMany
+    private List<UserEntity> players;
 
-    private List<Flashcard> flashcardsForDuel;
+    @ManyToOne
+    @JoinColumn(name="flashcardListId", nullable=false)
+    private FlashcardList flashcardsForDuel;
 
-    public Duel(Long duelId, List<User> players, List<Flashcard> flashcardsForDuel) {
-        this.duelId = duelId;
-        this.players = players;
-        this.flashcardsForDuel = flashcardsForDuel;
-    }
 
-    public Long getDuelId() {
-        return duelId;
-    }
 
-    public void setDuelId(Long duelId) {
-        this.duelId = duelId;
-    }
-
-    public List<User> getWinner() {
-        return winner;
-    }
-
-    public void setWinner(List<User> winner) {
-        this.winner = winner;
-    }
-
-    public List<User> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(List<User> players) {
-        this.players = players;
-    }
-
-    public List<Flashcard> getFlashcardsForDuel() {
-        return flashcardsForDuel;
-    }
-
-    public void setFlashcardsForDuel(List<Flashcard> flashcardsForDuel) {
-        this.flashcardsForDuel = flashcardsForDuel;
-    }
 
 }

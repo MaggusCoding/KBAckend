@@ -1,40 +1,28 @@
 package com.vocab.vocabulary_management.entities;
 
+import com.vocab.vocabulary_management.entities.Flashcard;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "translation")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class Translation {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long translationId;
 
+    @ManyToOne
+    @JoinColumn(name="flashCardId", nullable=false)
     private Flashcard flashcard;
 
     private String translationText;
 
-    public Translation(Long translationId, Flashcard flashcard, String translationText) {
-        this.translationId = translationId;
-        this.flashcard = flashcard;
-        this.translationText = translationText;
-    }
-
-    public Long getTranslationId() {
-        return translationId;
-    }
-
-    public void setTranslationId(Long translationId) {
-        this.translationId = translationId;
-    }
-
-    public Flashcard getFlashcard() {
-        return flashcard;
-    }
-
-    public void setFlashcard(Flashcard flashcard) {
-        this.flashcard = flashcard;
-    }
-
-    public String getTranslationText() {
-        return translationText;
-    }
-
-    public void setTranslationText(String translationText) {
-        this.translationText = translationText;
-    }
 }

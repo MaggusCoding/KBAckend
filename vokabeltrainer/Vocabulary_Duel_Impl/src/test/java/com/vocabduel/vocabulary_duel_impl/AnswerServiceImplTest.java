@@ -1,6 +1,6 @@
 package com.vocabduel.vocabulary_duel_impl;
 
-import com.management.user_management.entities.User;
+import com.management.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_management.entities.Flashcard;
@@ -18,12 +18,12 @@ class AnswerServiceImplTest {
     AnswerServiceImpl service = new AnswerServiceImpl();
     @Test
     void testCreateAnswerExpectOk() {
-        User user = new User(1L, "user1");
+        UserEntity userEntity = new UserEntity(1L, "user1");
         Flashcard flashcard = new Flashcard(1L, "english word", null, null);
         Translation translation = new Translation(1L,flashcard,"deutsches Wort");
         flashcard.setTranslations(List.of(translation));
         Round round = new Round(1L, null, flashcard, null, null);
-        Answer answer = new Answer(1L, user, flashcard, round, "deutsches Wort");
+        Answer answer = new Answer(1L, userEntity, flashcard, round, "deutsches Wort");
 
         service.createAnswer(answer);
 
@@ -37,12 +37,12 @@ class AnswerServiceImplTest {
 
     @Test
     void testGetAllAnswersForPlayedRoundExpectOk(){
-        User user = new User(1L, "user1");
+        UserEntity userEntity = new UserEntity(1L, "user1");
         Flashcard flashcard = new Flashcard(1L, "english word", null, null);
         Translation translation = new Translation(1L,flashcard,"deutsches Wort");
         flashcard.setTranslations(List.of(translation));
         Round round = new Round(1L, null, flashcard, null, null);
-        Answer answer = new Answer(1L, user, flashcard, round, "deutsches Wort");
+        Answer answer = new Answer(1L, userEntity, flashcard, round, "deutsches Wort");
         service.createAnswer(answer);
 
         List<Answer> allAnswers = service.getAllAnswersByRound(1L);
@@ -53,7 +53,7 @@ class AnswerServiceImplTest {
     }
     @Test
     void testGetAllAnswersForNotPlayedRoundExpectEmptyResult(){
-        User user = new User(1L, "user1");
+        UserEntity userEntity = new UserEntity(1L, "user1");
         Flashcard flashcard = new Flashcard(1L, "english word", null, null);
         Translation translation = new Translation(1L,flashcard,"deutsches Wort");
         flashcard.setTranslations(List.of(translation));

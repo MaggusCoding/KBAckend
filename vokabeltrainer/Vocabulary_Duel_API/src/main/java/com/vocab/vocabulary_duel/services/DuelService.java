@@ -1,6 +1,6 @@
 package com.vocab.vocabulary_duel.services;
 
-import com.management.user_management.entities.User;
+import com.management.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
@@ -41,7 +41,7 @@ public interface DuelService {
      * @param duel Duel to calculate the winner for
      * @return List of Users that won the duel
      */
-    List<User> calculateWinner(Duel duel);
+    List<UserEntity> calculateWinner(Duel duel);
 
     /**
      * Generate a list of 10 Flashcards for a duel

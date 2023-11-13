@@ -1,62 +1,29 @@
 package com.vocab.vocabulary_duel.entities;
 
 import com.vocab.vocabulary_management.entities.Flashcard;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.util.List;
 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class Round {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long roundId;
+    @ManyToOne
+    @JoinColumn(name="duelId", nullable=false)
     private Duel duel;
+    @ManyToOne
+    @JoinColumn(name="flashCardId", nullable=false)
     private Flashcard questionedFlashcard;
+    @OneToMany(mappedBy = "round")
     private List<Answer> selectedAnswers;
-    private List<String> wrongAnswers;
 
-    public Round(long roundId, Duel duel, Flashcard questionedFlashcard, List<Answer> selectedAnswers, List<String> wrongAnswers) {
-        this.roundId = roundId;
-        this.duel = duel;
-        this.questionedFlashcard = questionedFlashcard;
-        this.selectedAnswers = selectedAnswers;
-        this.wrongAnswers = wrongAnswers;
-    }
-
-    public long getRoundId() {
-        return roundId;
-    }
-
-    public void setRoundId(long roundId) {
-        this.roundId = roundId;
-    }
-
-    public Duel getDuel() {
-        return duel;
-    }
-
-    public void setDuel(Duel duel) {
-        this.duel = duel;
-    }
-
-    public Flashcard getQuestionedFlashcard() {
-        return questionedFlashcard;
-    }
-
-    public void setQuestionedFlashcard(Flashcard questionedFlashcard) {
-        this.questionedFlashcard = questionedFlashcard;
-    }
-
-    public List<Answer> getSelectedAnswers() {
-        return selectedAnswers;
-    }
-
-    public void setSelectedAnswers(List<Answer> selectedAnswers) {
-        this.selectedAnswers = selectedAnswers;
-    }
-
-    public List<String> getWrongAnswers() {
-        return wrongAnswers;
-    }
-
-    public void setWrongAnswers(List<String> wrongAnswers) {
-        this.wrongAnswers = wrongAnswers;
-    }
 }

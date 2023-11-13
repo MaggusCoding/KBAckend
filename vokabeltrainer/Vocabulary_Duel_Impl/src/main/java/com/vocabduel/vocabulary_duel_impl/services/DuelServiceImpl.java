@@ -1,13 +1,14 @@
 package com.vocabduel.vocabulary_duel_impl.services;
 
-import com.management.user_management.entities.User;
+import com.management.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class DuelServiceImpl implements DuelService {
     /**
      * {@inheritDoc}
@@ -45,7 +46,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
-    public List<User> calculateWinner(Duel duel) {
+    public List<UserEntity> calculateWinner(Duel duel) {
         return null;
     }
 
