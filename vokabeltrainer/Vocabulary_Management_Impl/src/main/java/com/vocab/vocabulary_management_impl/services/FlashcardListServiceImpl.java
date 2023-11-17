@@ -49,7 +49,6 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     public void readAndSaveInitialFlashcardLists() throws IOException {
         Set<String> files = retrieveFilenamesFromFolder();
         for (String filename : files) {
-            // TODO: A check is needed for already imported files! In that case we add the new vocabs to the persisted flashcardlist.
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 String line;
                 FlashcardList flashcardList = new FlashcardList();
@@ -57,32 +56,46 @@ public class FlashcardListServiceImpl implements FlashcardListService {
                 Pattern metadataPattern = Pattern.compile("\\{\\{\\{(.*?)\\}\\}\\}");
                 Matcher metadataMatcher = metadataPattern.matcher(line);
                 if (metadataMatcher.find()) {
-                    flashcardList.setCategory(metadataMatcher.group().replace("{", "").replace("}", ""));
-                }
-                if (metadataMatcher.find()) {
-                    flashcardList.setOriginalLanguage(metadataMatcher.group().replace("{", "").replace("}", ""));
-                }
-                if (metadataMatcher.find()) {
-                    flashcardList.setTranslationLanguage(metadataMatcher.group().replace("{", "").replace("}", ""));
-                }
-                flashcardListRepo.save(flashcardList);
-                while ((line = reader.readLine()) != null) {
-                    var list = separateString(line);
-                    Flashcard flashcard = new Flashcard();
-                    flashcard.setOriginalText(list.get(0));
-                    flashcard.setFlashcardList(flashcardList);
-                    flashcardRepo.save(flashcard);
-                    for (int i = 1; i < list.size(); i++) {
-                        Translation translation = new Translation();
-                        translation.setTranslationText(list.get(i));
-                        translation.setFlashcard(flashcard);
-                        translationRepo.save(translation);
+                    String category = metadataMatcher.group().replace("{", "").replace("}", "");
+                    FlashcardList existingFlashcardlist = flashcardListRepo.findByCategory(category);
+                    if (existingFlashcardlist == null) {
+                        flashcardList.setCategory(category);
+                        if (metadataMatcher.find()) {
+                            flashcardList.setOriginalLanguage(metadataMatcher.group().replace("{", "").replace("}", ""));
+                        }
+                        if (metadataMatcher.find()) {
+                            flashcardList.setTranslationLanguage(metadataMatcher.group().replace("{", "").replace("}", ""));
+                        }
+                        flashcardListRepo.save(flashcardList);
+                        addFlashcardsToFlashcardlist(flashcardList, reader);
+                    } else {
+                        addFlashcardsToFlashcardlist(existingFlashcardlist, reader);
                     }
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
+        }
+    }
+
+    private void addFlashcardsToFlashcardlist(FlashcardList flashcardList, BufferedReader reader) throws IOException {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            var list = separateString(line);
+            Flashcard flashcard = new Flashcard();
+            flashcard.setFlashcardList(flashcardList);
+            // Does the flashcard already exists
+            if (flashcardRepo.findByOriginalText(list.get(0)) == null) {
+                flashcard.setOriginalText(list.get(0));
+                flashcardRepo.save(flashcard);
+                for (int i = 1; i < list.size(); i++) {
+                    Translation translation = new Translation();
+                    translation.setTranslationText(list.get(i));
+                    translation.setFlashcard(flashcard);
+                    translationRepo.save(translation);
+                }
+            }
         }
     }
 
@@ -201,5 +214,13 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     @Override
     public List<Flashcard> getFlashcardsByFlashcardListId(Long id) {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteFlashcardList(String category) {
+
     }
 }
