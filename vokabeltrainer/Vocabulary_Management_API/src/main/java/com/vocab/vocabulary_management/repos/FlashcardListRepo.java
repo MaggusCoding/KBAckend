@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FlashcardListRepo extends JpaRepository<FlashcardList, Long> {
+    FlashcardList findByCategory(String category);
+
 }
