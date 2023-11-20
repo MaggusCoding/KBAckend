@@ -216,11 +216,4 @@ public class FlashcardListServiceImpl implements FlashcardListService {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deleteFlashcardList(String category) {
-
-    }
 }

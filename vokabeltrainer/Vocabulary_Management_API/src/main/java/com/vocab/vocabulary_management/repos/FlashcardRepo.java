@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FlashcardRepo extends JpaRepository<Flashcard, Long> {
+    Flashcard findByOriginalText(String s);
 }
