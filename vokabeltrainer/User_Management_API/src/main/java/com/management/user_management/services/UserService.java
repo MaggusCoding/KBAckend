@@ -1,6 +1,5 @@
 package com.management.user_management.services;
 
-import com.management.user_management.UserAlreadyExistsException;
 import com.management.user_management.entities.UserEntity;
 
 import java.util.List;
@@ -8,10 +7,17 @@ import java.util.List;
 public interface UserService {
     /**
      * Creates a User for playing the vocab game and saves it in the database
-     * @param userEntity The User which is to be created
+     * @param userName The User which is to be created
      * @return The created user
      */
-    UserEntity createUser(UserEntity userEntity) throws UserAlreadyExistsException;
+
+    UserEntity createUser(String userName);
+
+    /**
+     * Deletes a user from the database
+     * @param id Id of the user in question
+     */
+    void deleteUser(Long id) ;
 
     /**
      * Gets a user from the database by id
