@@ -1,6 +1,6 @@
-package com.management.user_management.repos;
+package com.vocab.user_management.repos;
 
-import com.management.user_management.entities.UserEntity;
+import com.vocab.user_management.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

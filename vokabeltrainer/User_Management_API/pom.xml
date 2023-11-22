@@ -8,7 +8,6 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.management</groupId>
     <artifactId>User_Management_API</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>User_Management_API</name>

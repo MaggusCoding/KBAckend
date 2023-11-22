@@ -8,7 +8,6 @@
         <version>1.0</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.vocab</groupId>
     <artifactId>User_Management_Impl</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>User_Management_Impl</name>
@@ -18,7 +17,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.management</groupId>
+            <groupId>com.vocab</groupId>
             <artifactId>User_Management_API</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>

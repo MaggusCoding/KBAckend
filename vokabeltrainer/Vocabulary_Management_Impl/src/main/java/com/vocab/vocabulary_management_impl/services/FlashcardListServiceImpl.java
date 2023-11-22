@@ -9,6 +9,7 @@ import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -27,6 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Service
+@ComponentScan(basePackages = {"com.vocab"})
 public class FlashcardListServiceImpl implements FlashcardListService {
     @Autowired
     private FlashcardRepo flashcardRepo;

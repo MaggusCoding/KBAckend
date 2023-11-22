@@ -1,6 +1,6 @@
-package com.vocabduel.vocabulary_duel_impl.services;
+package com.vocab.vocabulary_duel_impl.services;
 
-import com.management.user_management.entities.UserEntity;
+import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;

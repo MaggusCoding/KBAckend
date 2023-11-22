@@ -1,8 +1,8 @@
 package com.vocab.user_management_impl.services;
 
-import com.management.user_management.entities.UserEntity;
-import com.management.user_management.repos.UserRepo;
-import com.management.user_management.services.UserService;
+import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.repos.UserRepo;
+import com.vocab.user_management.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@ComponentScan(basePackages = {"com.management"})
+@ComponentScan(basePackages = {"com.vocab"})
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepository;

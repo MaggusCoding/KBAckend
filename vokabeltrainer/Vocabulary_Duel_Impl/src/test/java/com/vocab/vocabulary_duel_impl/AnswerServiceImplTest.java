@@ -1,11 +1,11 @@
-package com.vocabduel.vocabulary_duel_impl;
+package com.vocab.vocabulary_duel_impl;
 
-import com.management.user_management.entities.UserEntity;
+import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.Translation;
-import com.vocabduel.vocabulary_duel_impl.services.AnswerServiceImpl;
+import com.vocab.vocabulary_duel_impl.services.AnswerServiceImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

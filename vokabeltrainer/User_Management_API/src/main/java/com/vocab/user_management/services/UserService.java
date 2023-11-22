@@ -1,6 +1,6 @@
-package com.management.user_management.services;
+package com.vocab.user_management.services;
 
-import com.management.user_management.entities.UserEntity;
+import com.vocab.user_management.entities.UserEntity;
 
 import java.util.List;
 

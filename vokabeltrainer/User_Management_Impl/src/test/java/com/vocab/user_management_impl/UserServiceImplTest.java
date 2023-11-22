@@ -1,7 +1,7 @@
 package com.vocab.user_management_impl;
 
-import com.management.user_management.entities.UserEntity;
-import com.management.user_management.repos.UserRepo;
+import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

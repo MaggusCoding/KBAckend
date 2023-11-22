@@ -41,7 +41,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.management</groupId>
+            <groupId>com.vocab</groupId>
             <artifactId>User_Management_API</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>

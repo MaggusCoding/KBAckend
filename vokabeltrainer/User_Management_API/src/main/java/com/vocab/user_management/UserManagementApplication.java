@@ -1,4 +1,4 @@
-package com.management.user_management;
+package com.vocab.user_management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

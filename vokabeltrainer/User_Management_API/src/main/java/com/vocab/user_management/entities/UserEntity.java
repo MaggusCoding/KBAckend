@@ -1,4 +1,4 @@
-package com.management.user_management.entities;
+package com.vocab.user_management.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

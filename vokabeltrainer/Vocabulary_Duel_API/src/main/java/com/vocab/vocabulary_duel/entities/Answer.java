@@ -1,6 +1,7 @@
 package com.vocab.vocabulary_duel.entities;
 
-import com.management.user_management.entities.UserEntity;
+
+import com.vocab.user_management.entities.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

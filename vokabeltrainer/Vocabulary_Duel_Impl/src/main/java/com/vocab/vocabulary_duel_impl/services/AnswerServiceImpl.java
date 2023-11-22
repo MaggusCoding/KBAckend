@@ -1,4 +1,4 @@
-package com.vocabduel.vocabulary_duel_impl.services;
+package com.vocab.vocabulary_duel_impl.services;
 
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.services.AnswerService;
