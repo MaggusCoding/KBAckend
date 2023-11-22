@@ -8,7 +8,6 @@
         <version>1.0</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.vocab</groupId>
     <artifactId>Vocabulary_Management_Impl</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Vocabulary_Management_Impl</name>
