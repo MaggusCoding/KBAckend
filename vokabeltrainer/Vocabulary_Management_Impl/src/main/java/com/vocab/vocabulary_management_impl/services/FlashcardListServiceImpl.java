@@ -179,7 +179,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
         return destFile;
     }
 
-    public static List<String> separateString(String input) {
+    private static List<String> separateString(String input) {
         List<String> arrays = new ArrayList<>();
 
         // Define the regular expression pattern to match words inside curly braces

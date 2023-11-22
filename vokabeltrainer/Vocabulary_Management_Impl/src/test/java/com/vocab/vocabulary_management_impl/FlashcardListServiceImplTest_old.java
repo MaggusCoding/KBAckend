@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class FlashcardListServiceImplTest {
+public class FlashcardListServiceImplTest_old {
 
     FlashcardListServiceImpl service = new FlashcardListServiceImpl();
     @Test

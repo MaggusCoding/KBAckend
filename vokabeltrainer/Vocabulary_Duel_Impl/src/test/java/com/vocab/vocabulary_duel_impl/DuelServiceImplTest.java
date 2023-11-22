@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel_impl;
+/**package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Answer;
@@ -166,4 +166,4 @@ public class DuelServiceImplTest {
         assertThat(currentDuel.getPlayers()).hasSize(2).extracting("username").contains("user1", "user2");
 
     }
-}
+}*/

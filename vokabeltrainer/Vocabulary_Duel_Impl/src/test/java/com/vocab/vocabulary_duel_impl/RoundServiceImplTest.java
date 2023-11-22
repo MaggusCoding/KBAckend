@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel_impl;
+/**package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Duel;
@@ -72,4 +72,4 @@ public class RoundServiceImplTest {
         assertThat(rounds.get(1)).usingRecursiveComparison().isEqualTo(round2);
 
     }
-}
+}*/

@@ -15,6 +15,7 @@ import java.util.List;
 public class Duel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long duelId;
 
     @ManyToMany
@@ -27,7 +28,10 @@ public class Duel {
     @JoinColumn(name="flashcardListId", nullable=false)
     private FlashcardList flashcardsForDuel;
 
+    private boolean isStarted;
 
-
+    public void setPlayer(UserEntity player){
+        this.players.add(player);
+    }
 
 }

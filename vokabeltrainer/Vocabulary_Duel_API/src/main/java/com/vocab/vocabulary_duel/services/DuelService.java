@@ -9,11 +9,12 @@ import java.util.List;
 
 public interface DuelService {
     /**
-     * Creates a new duel
-     * @param duel Duel to be created
-     * @return Duel created
+     *
+     * @param user
+     * @param flashcardList
+     * @return
      */
-    Duel createDuel(Duel duel);
+    Duel createDuel(UserEntity user, FlashcardList flashcardList);
 
     /**
      * Lets the user join a duel

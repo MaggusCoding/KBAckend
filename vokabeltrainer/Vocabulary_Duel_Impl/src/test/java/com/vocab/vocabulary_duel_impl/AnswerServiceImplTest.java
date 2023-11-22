@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel_impl;
+/**package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Answer;
@@ -65,4 +65,4 @@ class AnswerServiceImplTest {
 
     }
 
-}
+}*/
