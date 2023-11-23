@@ -7,14 +7,14 @@ import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
-import com.vocab.vocabulary_management.services.FlashcardListService;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
 public class DuelServiceImpl implements DuelService {
@@ -57,8 +57,8 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
-    public Duel getById(long id) {
-        return null;
+    public Optional<Duel> getById(Long id) {
+        return duelRepo.findById(id);
     }
 
     /**
@@ -66,7 +66,7 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     public List<Duel> getAll() {
-        return null;
+        return duelRepo.findAll();
     }
 
     /**
@@ -85,4 +85,13 @@ public class DuelServiceImpl implements DuelService {
         return null;
     }
 
+    public boolean startDuel(Long duelId){
+        Duel duel = null;
+       if(duelRepo.findById(duelId).isPresent()) {
+         duel = duelRepo.findById(duelId).get();
+       }else return false;
+       duel.setStarted(true);
+
+       return true;
+    }
 }

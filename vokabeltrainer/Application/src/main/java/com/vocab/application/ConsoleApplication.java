@@ -43,7 +43,7 @@ public class ConsoleApplication implements CommandLineRunner {
         System.out.println("Available Flashcard Lists:");
         // Assume getFlashcardLists() is a method in FlashcardListServiceImpl that retrieves all lists
         flashcardListService.getAll().forEach(flashcardList ->
-                System.out.println(flashcardList.getFlashcardListId()+" . "+flashcardList.getCategory() + ". " + flashcardList.getOriginalLanguage() + " . "+flashcardList.getTranslationLanguage()));
+                System.out.println(flashcardList.getFlashcardListId()+" - "+flashcardList.getCategory() + " -- " + flashcardList.getOriginalLanguage() + " - "+flashcardList.getTranslationLanguage()));
 
         // Step 4: Ask the user to select a Flashcard List
         System.out.println("Enter the ID of the Flashcard List for the duel:");

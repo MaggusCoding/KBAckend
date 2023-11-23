@@ -6,6 +6,7 @@ import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DuelService {
     /**
@@ -26,10 +27,11 @@ public interface DuelService {
 
     /**
      * Gets a duel by its id
+     *
      * @param id Id of the duel to retrieve
      * @return Duel retrieved
      */
-    Duel getById(long id);
+    Optional<Duel> getById(Long id);
 
     /**
      * Gets all duels in the database
@@ -52,4 +54,5 @@ public interface DuelService {
      */
     List<Flashcard> generateFlashcardList(FlashcardList flashcardList, Duel duel);
 
+    boolean startDuel(Long duelId);
 }
