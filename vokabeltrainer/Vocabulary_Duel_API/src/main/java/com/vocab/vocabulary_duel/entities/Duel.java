@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Data
@@ -19,10 +21,10 @@ public class Duel {
     private Long duelId;
 
     @ManyToMany
-    private List<UserEntity> winner;
+    private List<UserEntity> winner= new ArrayList<>();
 
     @ManyToMany
-    private List<UserEntity> players;
+    private List<UserEntity> players = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="flashcardListId", nullable=false)

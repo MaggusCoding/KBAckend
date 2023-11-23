@@ -199,7 +199,8 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      */
     @Override
     public FlashcardList getById(Long id) {
-        return null;
+      return  flashcardListRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("FlashcardList not found with id: " + id));
     }
 
     /**
@@ -207,7 +208,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      */
     @Override
     public List<FlashcardList> getAll() {
-        return null;
+        return flashcardListRepo.findAll();
     }
 
     /**

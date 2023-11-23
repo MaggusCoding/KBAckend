@@ -29,10 +29,11 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
-    public Duel createDuel(long userId, long flashcardListId) {
+    public Duel createDuel(Long userId, Long flashcardListId) {
         Duel duel = new Duel();
         duel.setFlashcardsForDuel(flashcardListService.getById(flashcardListId));
         duel.setPlayer(userService.getById(userId));
+        duel.setStarted(false);
         duelRepo.save(duel);
         return duel;
     }
@@ -41,15 +42,22 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
-    public Boolean joinDuel(Long duelId, Long userId) {
-        return null;
+    public Boolean joinDuel(long duelId, long userId) {
+        Duel duel = duelRepo.findById(duelId).orElseThrow();
+        if(!duel.isStarted()) {
+            duel.setPlayer(userService.getById(userId));
+            duelRepo.save(duel);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Duel getById(Long id) {
+    public Duel getById(long id) {
         return null;
     }
 

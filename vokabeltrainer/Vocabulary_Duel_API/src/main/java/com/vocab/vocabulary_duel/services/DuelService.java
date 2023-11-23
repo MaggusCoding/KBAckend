@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface DuelService {
     /**
-     *
-     * @param user
-     * @param flashcardList
-     * @return
+     * Creates a new duel
+     * @param userId User id of the user creating the duel
+     * @param flashcardListId   Id of the flashcard list to use for the duel
+     * @return Duel created
      */
-    Duel createDuel(UserEntity user, FlashcardList flashcardList);
+    Duel createDuel(Long userId, Long flashcardListId);
 
     /**
      * Lets the user join a duel
@@ -22,14 +22,14 @@ public interface DuelService {
      * @param userId User id of the user joining the duel
      * @return True if the user joined the duel, false otherwise
      */
-    Boolean joinDuel(Long duelId, Long userId);
+    Boolean joinDuel(long duelId, long userId);
 
     /**
      * Gets a duel by its id
      * @param id Id of the duel to retrieve
      * @return Duel retrieved
      */
-    Duel getById(Long id);
+    Duel getById(long id);
 
     /**
      * Gets all duels in the database
