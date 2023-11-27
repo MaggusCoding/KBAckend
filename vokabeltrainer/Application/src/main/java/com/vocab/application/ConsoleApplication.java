@@ -29,6 +29,7 @@ public class ConsoleApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
+        Long loggendInUser= 1L;
         while (!exit) {
             System.out.println("\nMain Menu:");
             System.out.println("1. Create/Retrieve Another Player");
@@ -48,6 +49,7 @@ public class ConsoleApplication implements CommandLineRunner {
                     // Step 2: Create or retrieve the user from the database
                     Long userId = userService.createUser(username).getUserId();
                     System.out.println("User created/retrieved with ID: " + userId);
+                    loggendInUser=userId;
                     break;
                 case 2:
                     System.out.println("Select User:");
@@ -71,7 +73,17 @@ public class ConsoleApplication implements CommandLineRunner {
                     System.out.println("Duel created with ID: " + duel.getDuelId());
                     break;
                 case 3:
-                    System.out.println("Join Duel:");
+                    System.out.println("Select Duel to Join:");
+                    duelService.getAll().forEach(duel1 ->
+                            System.out.println(duel1.getDuelId()+" - "+duel1.getFlashcardsForDuel().getCategory()));
+                    System.out.println("Enter the ID of the Duel to Join:");
+                    Long duelJoin = scanner.nextLong();
+                    boolean success= duelService.joinDuel(duelJoin,loggendInUser);
+                    if(success){
+                        System.out.println("Successfully joined Duel");
+                    }else {
+                        System.out.println("Logged in User already Joined Duel");
+                    }
                     break;
                 case 4:
                     System.out.println("Start Duel:");

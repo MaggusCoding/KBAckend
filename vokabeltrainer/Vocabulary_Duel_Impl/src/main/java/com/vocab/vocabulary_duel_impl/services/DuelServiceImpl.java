@@ -44,7 +44,9 @@ public class DuelServiceImpl implements DuelService {
     @Override
     public Boolean joinDuel(long duelId, long userId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow();
-        if(!duel.isStarted()) {
+        UserEntity user = userService.getById(userId);
+        boolean isAlreadyJoined = duelRepo.findById(duelId).get().getPlayers().contains(user);
+        if(!duel.isStarted()&&!isAlreadyJoined) {
             duel.setPlayer(userService.getById(userId));
             duelRepo.save(duel);
             return true;

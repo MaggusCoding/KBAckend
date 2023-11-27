@@ -23,7 +23,7 @@ public class Duel {
     @ManyToMany
     private List<UserEntity> winner= new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.EAGER)
     private List<UserEntity> players = new ArrayList<>();
 
     @ManyToOne
