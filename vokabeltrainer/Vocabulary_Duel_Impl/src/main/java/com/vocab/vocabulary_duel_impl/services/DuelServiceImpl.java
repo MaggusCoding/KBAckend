@@ -5,15 +5,18 @@ import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_duel.repositories.RoundRepo;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.entities.Translation;
+import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
-
+import org.apache.commons.text.similarity.LevenshteinDistance;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -28,6 +31,10 @@ public class DuelServiceImpl implements DuelService {
     private UserServiceImpl userService;
     @Autowired
     private DuelRepo duelRepo;
+    @Autowired
+    private TranslationRepo translationRepo;
+    @Autowired
+    private RoundRepo roundRepo;
     /**
      * {@inheritDoc}
      */
@@ -87,18 +94,57 @@ public class DuelServiceImpl implements DuelService {
         Random rand = new Random();
         Duel duel = duelRepo.findById(duelId).get();
         List<Flashcard> flashcards = duel.getFlashcardsForDuel().getFlashcards();
+        List<Translation> allTranslations = translationRepo.findAll();
+        List<String> allTranslationStrings = new ArrayList<>();
+        allTranslations.forEach(translation ->
+                allTranslationStrings.add(translation.getTranslationText()));
         for(int i=0; i<10;i++){
-            int randomInt = rand.nextInt(flashcards.size());
             Round round = new Round();
+
+            int randomInt = rand.nextInt(flashcards.size());
             Flashcard flashcard = flashcards.get(randomInt);
             List<Translation> translations = flashcard.getTranslations();
+
+            int randomIntTrans = rand.nextInt(translations.size());
+            Translation translation = translations.get(randomIntTrans);
+            String correctAnswer = translation.getTranslationText();
+
+            List<String> wrongAnswers = generateWrongAnswers(correctAnswer, allTranslationStrings);
+            String wrongAnswersString = String.join("/",wrongAnswers);
+            // Use correctAnswer and wrongAnswers as needed
+
             round.setDuel(duel);
             round.setQuestionedFlashcard(flashcard);
+            round.setWrongAnswers(wrongAnswersString);
+            roundRepo.save(round);
             flashcards.remove(randomInt);
         }
 
     }
+    private List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings) {
+        List<String> wrongAnswers = new ArrayList<>();
 
+        // You can use LevenshteinDistance to find the closest string
+        LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
+        int minDistance = Integer.MAX_VALUE;
+        String closestString = "";
+
+        for (String translationString : allTranslationStrings) {
+            int distance = levenshteinDistance.apply(correctAnswer, translationString);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestString = translationString;
+            }
+        }
+
+        // Add the closest string as a wrong answer
+        wrongAnswers.add(closestString);
+
+        // Add other wrong answers (you may want to add logic to ensure they are distinct)
+
+        return wrongAnswers;
+    }
     public boolean startDuel(Long duelId){
         Duel duel = null;
        if(duelRepo.findById(duelId).isPresent()) {
