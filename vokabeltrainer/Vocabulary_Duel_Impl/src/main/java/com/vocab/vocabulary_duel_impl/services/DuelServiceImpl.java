@@ -3,10 +3,12 @@ package com.vocab.vocabulary_duel_impl.services;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.vocabulary_management.entities.Translation;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
@@ -79,12 +82,21 @@ public class DuelServiceImpl implements DuelService {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Flashcard> generateFlashcardList(FlashcardList flashcardList, Duel duel) {
-        return null;
+
+    public void generateRounds(Long duelId) {
+        Random rand = new Random();
+        Duel duel = duelRepo.findById(duelId).get();
+        List<Flashcard> flashcards = duel.getFlashcardsForDuel().getFlashcards();
+        for(int i=0; i<10;i++){
+            int randomInt = rand.nextInt(flashcards.size());
+            Round round = new Round();
+            Flashcard flashcard = flashcards.get(randomInt);
+            List<Translation> translations = flashcard.getTranslations();
+            round.setDuel(duel);
+            round.setQuestionedFlashcard(flashcard);
+            flashcards.remove(randomInt);
+        }
+
     }
 
     public boolean startDuel(Long duelId){

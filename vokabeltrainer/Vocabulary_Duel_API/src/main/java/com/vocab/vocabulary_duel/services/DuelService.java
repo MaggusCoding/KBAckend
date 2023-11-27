@@ -46,13 +46,7 @@ public interface DuelService {
      */
     List<UserEntity> calculateWinner(Duel duel);
 
-    /**
-     * Generate a list of 10 Flashcards for a duel
-     * @param flashcardList flashcardList the user chose to play
-     * @param duel current duel
-     * @return List of flashcard to be played
-     */
-    List<Flashcard> generateFlashcardList(FlashcardList flashcardList, Duel duel);
+
 
     boolean startDuel(Long duelId);
 }

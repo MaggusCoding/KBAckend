@@ -17,13 +17,13 @@ public class Round {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long roundId;
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name="duelId", nullable=false)
     private Duel duel;
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name="flashCardId", nullable=false)
     private Flashcard questionedFlashcard;
-    @OneToMany(mappedBy = "round")
+    @OneToMany(mappedBy = "round", fetch = FetchType.EAGER)
     private List<Answer> selectedAnswers;
-
+    private String wrongAnswers;
 }
