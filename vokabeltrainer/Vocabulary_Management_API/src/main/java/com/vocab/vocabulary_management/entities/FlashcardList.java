@@ -26,7 +26,7 @@ public class FlashcardList {
 
     private String translationLanguage;
 
-    @OneToMany(mappedBy = "flashcardList")
+    @OneToMany(mappedBy = "flashcardList", fetch = FetchType.EAGER)
     private List<Flashcard> flashcards;
 
 }

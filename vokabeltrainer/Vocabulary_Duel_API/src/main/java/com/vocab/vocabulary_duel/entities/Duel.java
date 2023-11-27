@@ -26,7 +26,7 @@ public class Duel {
     @ManyToMany (fetch = FetchType.EAGER)
     private List<UserEntity> players = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name="flashcardListId", nullable=false)
     private FlashcardList flashcardsForDuel;
 

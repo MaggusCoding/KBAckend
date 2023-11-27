@@ -45,6 +45,7 @@ public class DuelServiceImpl implements DuelService {
         duel.setPlayer(userService.getById(userId));
         duel.setStarted(false);
         duelRepo.save(duel);
+        duelRepo.flush();
         return duel;
     }
 
@@ -94,11 +95,12 @@ public class DuelServiceImpl implements DuelService {
         Random rand = new Random();
         Duel duel = duelRepo.findById(duelId).get();
         List<Flashcard> flashcards = duel.getFlashcardsForDuel().getFlashcards();
+        System.out.println(flashcards.size());
         List<Translation> allTranslations = translationRepo.findAll();
         List<String> allTranslationStrings = new ArrayList<>();
         allTranslations.forEach(translation ->
                 allTranslationStrings.add(translation.getTranslationText()));
-        for(int i=0; i<10;i++){
+        for(int i=0; i<3;i++){
             Round round = new Round();
 
             int randomInt = rand.nextInt(flashcards.size());
@@ -126,22 +128,31 @@ public class DuelServiceImpl implements DuelService {
 
         // You can use LevenshteinDistance to find the closest string
         LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
+
+        // Find the closest string (excluding the correct answer)
         int minDistance = Integer.MAX_VALUE;
         String closestString = "";
-
         for (String translationString : allTranslationStrings) {
-            int distance = levenshteinDistance.apply(correctAnswer, translationString);
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestString = translationString;
+            if (!translationString.equals(correctAnswer)) {
+                int distance = levenshteinDistance.apply(correctAnswer, translationString);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestString = translationString;
+                }
             }
         }
 
         // Add the closest string as a wrong answer
         wrongAnswers.add(closestString);
 
-        // Add other wrong answers (you may want to add logic to ensure they are distinct)
+        // Add two more distinct wrong answers (excluding the correct answer and the closest string)
+        for (int i = 0; i < 2; i++) {
+            String randomWrongAnswer;
+            do {
+                randomWrongAnswer = allTranslationStrings.get(new Random().nextInt(allTranslationStrings.size()));
+            } while (randomWrongAnswer.equals(correctAnswer) || randomWrongAnswer.equals(closestString) || wrongAnswers.contains(randomWrongAnswer));
+            wrongAnswers.add(randomWrongAnswer);
+        }
 
         return wrongAnswers;
     }
