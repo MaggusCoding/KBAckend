@@ -37,7 +37,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     @Autowired
     private FlashcardListRepo flashcardListRepo;
 
-    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + "//vocabFiles//";
+    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + "\\vocabFiles\\";
 
     /**
      * {@inheritDoc}
