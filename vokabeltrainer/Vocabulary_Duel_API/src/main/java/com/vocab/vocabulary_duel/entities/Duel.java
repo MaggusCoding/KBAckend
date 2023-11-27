@@ -20,7 +20,7 @@ public class Duel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long duelId;
 
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.EAGER)
     private List<UserEntity> winner= new ArrayList<>();
 
     @ManyToMany (fetch = FetchType.EAGER)
