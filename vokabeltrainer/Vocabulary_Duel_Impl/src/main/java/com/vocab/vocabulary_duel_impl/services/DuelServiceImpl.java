@@ -88,6 +88,7 @@ public class DuelServiceImpl implements DuelService {
     @Override
     public List<UserEntity> calculateWinner(Duel duel) {
         return null;
+        //gt
     }
 
 
