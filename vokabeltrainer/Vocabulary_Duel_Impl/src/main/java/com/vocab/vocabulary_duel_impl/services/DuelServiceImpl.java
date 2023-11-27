@@ -3,6 +3,7 @@ package com.vocab.vocabulary_duel_impl.services;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
@@ -79,12 +80,14 @@ public class DuelServiceImpl implements DuelService {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Flashcard> generateFlashcardList(FlashcardList flashcardList, Duel duel) {
-        return null;
+
+    public void generateRounds(Long duelId) {
+        Duel duel = duelRepo.findById(duelId).get();
+        List<Flashcard> flashcards = duel.getFlashcardsForDuel().getFlashcards();
+        for(int i=0; i<10;i++){
+            Round round =
+        }
+
     }
 
     public boolean startDuel(Long duelId){

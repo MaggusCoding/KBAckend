@@ -37,15 +37,8 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     @Autowired
     private FlashcardListRepo flashcardListRepo;
 
-    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + "\\vocabFiles\\";
+    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + "//vocabFiles//";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Boolean createFlashcardList(String filename) {
-        return null;
-    }
 
     @PostConstruct
     public void readAndSaveInitialFlashcardLists() throws IOException {
@@ -211,12 +204,5 @@ public class FlashcardListServiceImpl implements FlashcardListService {
         return flashcardListRepo.findAll();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Flashcard> getFlashcardsByFlashcardListId(Long id) {
-        return null;
-    }
 
 }
