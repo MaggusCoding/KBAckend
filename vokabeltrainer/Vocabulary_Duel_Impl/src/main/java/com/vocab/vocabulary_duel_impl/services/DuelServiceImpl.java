@@ -95,7 +95,6 @@ public class DuelServiceImpl implements DuelService {
         Random rand = new Random();
         Duel duel = duelRepo.findById(duelId).get();
         List<Flashcard> flashcards = duel.getFlashcardsForDuel().getFlashcards();
-        System.out.println(flashcards.size());
         List<Translation> allTranslations = translationRepo.findAll();
         List<String> allTranslationStrings = new ArrayList<>();
         allTranslations.forEach(translation ->
