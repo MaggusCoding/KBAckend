@@ -86,7 +86,7 @@ public class ConsoleApplication implements CommandLineRunner {
                     }
                     break;
                 case 4:
-                    System.out.println("Start Duel:");
+                    duelService.generateRounds(3L);
                     break;
                 case 5:
                     exit = true;
