@@ -43,7 +43,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      * {@inheritDoc}
      */
     @Override
-    public Boolean createFlashcardList(String filename) {
+    public Boolean createFlashcardList(String content) {
         return null;
     }
 
@@ -217,6 +217,18 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     @Override
     public List<Flashcard> getFlashcardsByFlashcardListId(Long id) {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean deleteFlashcardList(Long id) {
+        if(flashcardListRepo.countDuelByFlashcardList(id) == 0){
+            flashcardListRepo.delete(flashcardListRepo.getById(id));
+            return true;
+        }
+        return false;
     }
 
 }

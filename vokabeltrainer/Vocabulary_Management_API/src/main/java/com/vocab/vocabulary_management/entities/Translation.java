@@ -1,18 +1,17 @@
 package com.vocab.vocabulary_management.entities;
 
-import com.vocab.vocabulary_management.entities.Flashcard;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "translation")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class Translation {
 
     @Id

@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class Flashcard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

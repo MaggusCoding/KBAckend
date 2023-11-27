@@ -1,11 +1,10 @@
 package com.vocab.vocabulary_management.entities;
 
-import com.vocab.vocabulary_management.entities.Flashcard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class FlashcardList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
