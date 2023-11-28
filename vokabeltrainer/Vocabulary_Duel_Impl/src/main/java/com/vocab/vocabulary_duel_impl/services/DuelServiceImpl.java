@@ -16,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+
+import java.util.*;
 
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
@@ -100,7 +98,7 @@ public class DuelServiceImpl implements DuelService {
         List<String> allTranslationStrings = new ArrayList<>();
         allTranslations.forEach(translation ->
                 allTranslationStrings.add(translation.getTranslationText()));
-        for(int i=0; i<3;i++){
+        for(int i=0; i<10;i++){
             Round round = new Round();
 
             int randomInt = rand.nextInt(flashcards.size());
@@ -112,8 +110,8 @@ public class DuelServiceImpl implements DuelService {
             String correctAnswer = translation.getTranslationText();
 
             List<String> wrongAnswers = generateWrongAnswers(correctAnswer, allTranslationStrings);
-            String wrongAnswersString = String.join("/",wrongAnswers);
-            // Use correctAnswer and wrongAnswers as needed
+            String wrongAnswersString = String.join(";",wrongAnswers);
+
 
             round.setDuel(duel);
             round.setQuestionedFlashcard(flashcard);
@@ -125,33 +123,36 @@ public class DuelServiceImpl implements DuelService {
     }
     private List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings) {
         List<String> wrongAnswers = new ArrayList<>();
-
-        // You can use LevenshteinDistance to find the closest string
         LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
 
-        // Find the closest string (excluding the correct answer)
-        int minDistance = Integer.MAX_VALUE;
-        String closestString = "";
+        // A map to store strings and their distances
+        TreeMap<Integer, List<String>> distanceMap = new TreeMap<>();
+
+        // Calculate distances and store in the map
         for (String translationString : allTranslationStrings) {
             if (!translationString.equals(correctAnswer)) {
                 int distance = levenshteinDistance.apply(correctAnswer, translationString);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestString = translationString;
-                }
+                distanceMap.computeIfAbsent(distance, k -> new ArrayList<>()).add(translationString);
             }
         }
 
-        // Add the closest string as a wrong answer
-        wrongAnswers.add(closestString);
+        // Remove the closest string from the map and add to wrong answers
+        Map.Entry<Integer, List<String>> firstEntry = distanceMap.pollFirstEntry();
+        if (firstEntry != null && !firstEntry.getValue().isEmpty()) {
+            wrongAnswers.add(firstEntry.getValue().get(0)); // Assuming non-empty list for the smallest distance
+        }
 
-        // Add two more distinct wrong answers (excluding the correct answer and the closest string)
-        for (int i = 0; i < 2; i++) {
-            String randomWrongAnswer;
-            do {
-                randomWrongAnswer = allTranslationStrings.get(new Random().nextInt(allTranslationStrings.size()));
-            } while (randomWrongAnswer.equals(correctAnswer) || randomWrongAnswer.equals(closestString) || wrongAnswers.contains(randomWrongAnswer));
-            wrongAnswers.add(randomWrongAnswer);
+        // Add next two closest strings
+        for (int i = 0; i < 2 && !distanceMap.isEmpty(); ) {
+            Map.Entry<Integer, List<String>> entry = distanceMap.pollFirstEntry();
+            if (entry != null) {
+                for (String str : entry.getValue()) {
+                    if (!wrongAnswers.contains(str)) {
+                        wrongAnswers.add(str);
+                        if (++i == 2) break; // Break when two strings have been added
+                    }
+                }
+            }
         }
 
         return wrongAnswers;
