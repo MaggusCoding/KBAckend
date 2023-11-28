@@ -43,7 +43,6 @@ public class DuelServiceImpl implements DuelService {
         duel.setPlayer(userService.getById(userId));
         duel.setStarted(false);
         duelRepo.save(duel);
-        duelRepo.flush();
         return duel;
     }
 
@@ -166,4 +165,5 @@ public class DuelServiceImpl implements DuelService {
 
        return true;
     }
+
 }
