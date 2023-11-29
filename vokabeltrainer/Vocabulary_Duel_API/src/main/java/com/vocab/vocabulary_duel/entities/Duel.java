@@ -32,6 +32,9 @@ public class Duel {
     @JoinColumn(name="flashcardListId", nullable=false)
     private FlashcardList flashcardsForDuel;
 
+    @OneToMany (mappedBy = "duel", fetch = FetchType.EAGER)
+    private List<Round> rounds;
+
     private boolean isStarted;
 
     public void setPlayer(UserEntity player){

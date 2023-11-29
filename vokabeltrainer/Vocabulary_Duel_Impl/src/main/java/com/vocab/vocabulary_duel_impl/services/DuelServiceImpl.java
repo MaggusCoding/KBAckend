@@ -4,12 +4,14 @@ import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
+import com.vocab.vocabulary_duel.repositories.AnswerRepo;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_duel.repositories.RoundRepo;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.entities.Translation;
+import com.vocab.vocabulary_management.repos.FlashcardRepo;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,10 @@ public class DuelServiceImpl implements DuelService {
     private TranslationRepo translationRepo;
     @Autowired
     private RoundRepo roundRepo;
+    @Autowired
+    private AnswerRepo answerRepo;
+    @Autowired
+    private FlashcardRepo flashcardRepo;
     /**
      * {@inheritDoc}
      */
@@ -162,8 +168,39 @@ public class DuelServiceImpl implements DuelService {
          duel = duelRepo.findById(duelId).get();
        }else return false;
        duel.setStarted(true);
-
+       List<Round> rounds = duel.getRounds();
+       Round round = rounds.get(0);
+       round.setActiveRound(true);
+       roundRepo.save(round);
        return true;
     }
 
+    public List<String> playRound(Long duelId){
+        Random rand = new Random();
+        List<String> roundStrings = new ArrayList<>();
+        Duel duel = duelRepo.findById(duelId).get();
+        List<Round> rounds = duel.getRounds();
+        Round activeRound = new Round();
+        for (Round round : rounds) {
+            if (round.isActiveRound()) {
+                activeRound = round;
+            }
+        }
+
+
+        Flashcard flashcard = flashcardRepo.findById(activeRound.getQuestionedFlashcard().getFlashCardId()).get();
+        String question= flashcard.getOriginalText();
+
+        List<Translation> translations = flashcard.getTranslations();
+        int randomIntTrans = rand.nextInt(translations.size());
+        Translation translation = translations.get(randomIntTrans);
+        String correctAnswer = translation.getTranslationText();
+
+        String wrongAnswers = activeRound.getWrongAnswers();
+
+        roundStrings.add(question);
+        roundStrings.addAll(Arrays.stream(wrongAnswers.split(";")).toList());
+        roundStrings.add(correctAnswer);
+        return roundStrings;
+    }
 }

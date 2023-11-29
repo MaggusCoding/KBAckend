@@ -26,4 +26,5 @@ public class Round {
     @OneToMany(mappedBy = "round", fetch = FetchType.EAGER)
     private List<Answer> selectedAnswers;
     private String wrongAnswers;
+    private boolean activeRound = false;
 }

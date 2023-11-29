@@ -70,6 +70,7 @@ public class ConsoleApplication implements CommandLineRunner {
 
                     // Step 5: Create the duel and save it in the database
                     Duel duel = duelService.createDuel(userIdDuel, flashcardListId);
+                    duelService.generateRounds(duel.getDuelId());
                     System.out.println("Duel created with ID: " + duel.getDuelId());
                     break;
                 case 3:
@@ -86,7 +87,16 @@ public class ConsoleApplication implements CommandLineRunner {
                     }
                     break;
                 case 4:
-                    duelService.generateRounds(3L);
+                    System.out.println("Select Duel to Start:");
+                    duelService.getAll().forEach(duel1 ->
+                            System.out.println(duel1.getDuelId()+" - "+duel1.getFlashcardsForDuel().getCategory()));
+                    System.out.println("Enter the ID of the Duel to start:");
+                    Long duelStart = scanner.nextLong();
+                    duelService.startDuel(duelStart);
+                    System.out.println("What is the translation for: "+duelService.playRound(duelStart).get(0)+"?") ;
+                    for(int i=1;i<5;i++){
+                        System.out.println(i+"."+duelService.playRound(duelStart).get(i));
+                    }
                     break;
                 case 5:
                     exit = true;
