@@ -11,6 +11,6 @@ import java.util.List;
 public class FlashcardListFactory {
 
     public FlashcardList createFlashcardListDefault(){
-        return FlashcardList.builder().flashcards(List.of(Flashcard.builder().translations(List.of(Translation.builder().translationText("translationText").build())).originalText("originalText").build())).build();
+        return FlashcardList.builder().category("english lesson one").flashcards(List.of(Flashcard.builder().translations(List.of(Translation.builder().translationText("translationText").build())).originalText("originalText").build())).build();
     }
 }

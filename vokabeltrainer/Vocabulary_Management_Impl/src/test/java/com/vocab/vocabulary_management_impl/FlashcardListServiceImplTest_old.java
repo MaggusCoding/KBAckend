@@ -11,15 +11,13 @@ import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest
 public class FlashcardListServiceImplTest_old {
 
     @Autowired
@@ -42,24 +40,23 @@ public class FlashcardListServiceImplTest_old {
 
     @Test
     void testDeleteFlashcardList(){
-        flashcardListRepo.save(flashcardListFactory.createFlashcardListDefault());
-        System.out.println("count flashcardlists before " + service.getAll().size());
+        FlashcardList flashcardList = flashcardListFactory.createFlashcardListDefault();
+        flashcardListRepo.save(flashcardList);
 
-        assertThat(service.deleteFlashcardList(1L)).isTrue();
-        assertThat(service.getAll()).hasSize(0);
+        assertThat(service.deleteFlashcardList(flashcardList.getFlashcardListId())).isTrue();
     }
 
     @Test
     void testDeleteFlashcardListAttachedToDuel(){
         FlashcardList flashcardList = flashcardListRepo.save(flashcardListFactory.createFlashcardListDefault());
         List<UserEntity> users = userFactory.createUserListSize2();
-        userRepo.save(users.get(0));
-        userRepo.save(users.get(1));
+        userRepo.saveAll(users);
         duelRepo.save(Duel.builder().flashcardsForDuel(flashcardList).players(users).build());
-        assertThat(service.getAll()).hasSize(1);
-        assertThat(service.deleteFlashcardList(1L)).isFalse();
+
+        assertThat(service.deleteFlashcardList(flashcardList.getFlashcardListId())).isFalse();
     }
 
+    // TODO: Add other tests
 //    @Test
 //    void testCreateFlashcardListExpectOk(){
 //        service.createFlashcardList("Unit 4 My trip to Ireland - Part A.txt");

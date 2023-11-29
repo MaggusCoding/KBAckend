@@ -14,9 +14,9 @@ public class Flashcard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flashCardId;
     private String originalText;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @JoinColumn(name="flashcardListId", nullable=false)
     private FlashcardList flashcardList;
-    @OneToMany(mappedBy = "flashcard", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "flashcard", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Translation> translations;
 }

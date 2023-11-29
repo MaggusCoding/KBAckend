@@ -18,7 +18,7 @@ public class Translation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long translationId;
 
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     @JoinColumn(name="flashCardId", nullable=false)
     private Flashcard flashcard;
 
