@@ -2,6 +2,7 @@ package com.vocab.vocabulary_management.services;
 
 import com.vocab.vocabulary_management.entities.Flashcard;
 
+// TODO: Überprüfen, ob noch gebraucht
 public interface FlashcardService {
     /**
      * Create a new flashcard

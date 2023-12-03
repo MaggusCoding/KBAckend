@@ -28,4 +28,13 @@ public class FlashcardList {
     @OneToMany(mappedBy = "flashcardList", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Flashcard> flashcards;
 
+    @Override
+    public String toString() {
+        return "FlashcardList{" +
+                "flashcardListId=" + flashcardListId +
+                ", category='" + category + '\'' +
+                ", originalLanguage='" + originalLanguage + '\'' +
+                ", translationLanguage='" + translationLanguage + '\'' +
+                '}';
+    }
 }

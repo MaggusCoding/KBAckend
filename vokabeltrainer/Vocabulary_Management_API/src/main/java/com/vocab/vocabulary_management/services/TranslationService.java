@@ -4,6 +4,7 @@ import com.vocab.vocabulary_management.entities.Translation;
 
 import java.util.List;
 
+// TODO: Überprüfen, ob noch gebraucht
 public interface TranslationService {
     /**
      * Create a new translation

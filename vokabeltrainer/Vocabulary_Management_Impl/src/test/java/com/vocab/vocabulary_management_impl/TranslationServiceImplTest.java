@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO: Überprüfen, ob noch gebraucht
 @SpringBootTest
 class TranslationServiceImplTest {
 

@@ -11,6 +11,8 @@ import java.util.List;
 public interface FlashcardRepo extends JpaRepository<Flashcard, Long> {
     Flashcard findByOriginalText(String s);
 
+    boolean existsByOriginalText(String text);
+
     @Query("select f from Flashcard f where f.flashcardList.flashcardListId = :id")
     List<Flashcard> findByFlashcardListId(Long id);
 }

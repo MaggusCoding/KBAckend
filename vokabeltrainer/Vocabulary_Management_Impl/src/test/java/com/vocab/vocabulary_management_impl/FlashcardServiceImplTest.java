@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO: Überprüfen, ob noch gebraucht
 public class FlashcardServiceImplTest {
 
     FlashcardServiceImpl service = new FlashcardServiceImpl();

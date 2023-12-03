@@ -24,4 +24,13 @@ public class Translation {
 
     private String translationText;
 
+    @Override
+    public String toString() {
+        return "Translation{" +
+                "translationId=" + translationId +
+                ", flashcardId=" + flashcard.getFlashCardId() +
+                ", translationText='" + translationText + '\'' +
+                '}';
+    }
+
 }

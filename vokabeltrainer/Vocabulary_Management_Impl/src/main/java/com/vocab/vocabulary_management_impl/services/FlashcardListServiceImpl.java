@@ -59,6 +59,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
                 addFlashcardsToFlashcardlist(existingFlashcardlist, line);
             }
         }
+        flashcardListRepo.flush();
         return true;
     }
 
@@ -68,12 +69,12 @@ public class FlashcardListServiceImpl implements FlashcardListService {
         Flashcard flashcard = new Flashcard();
         flashcard.setFlashcardList(flashcardList);
         // Does the flashcard already exists
-        if (flashcardRepo.findByOriginalText(list.get(0)) == null) {
-            flashcard.setOriginalText(list.get(0));
+        if (!flashcardRepo.existsByOriginalText(list.get(0).toString())) {
+            flashcard.setOriginalText(list.get(0).toString());
             flashcardRepo.save(flashcard);
             for (int i = 1; i < list.size(); i++) {
                 Translation translation = new Translation();
-                translation.setTranslationText(list.get(i));
+                translation.setTranslationText(list.get(i).toString());
                 translation.setFlashcard(flashcard);
                 translationRepo.save(translation);
             }
