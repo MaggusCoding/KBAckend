@@ -101,7 +101,6 @@ public class FlashcardListServiceImplTest {
         assertThat(service.deleteFlashcardList(flashcardList.getFlashcardListId())).isFalse();
     }
 
-    // TODO: Add other tests
     @Test
     void testCreateFlashcardListExpectOk(){
         service.createFlashcardList(testContent);
