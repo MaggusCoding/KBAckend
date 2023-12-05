@@ -2,8 +2,6 @@ package com.vocab.vocabulary_duel.services;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.entities.Duel;
-import com.vocab.vocabulary_management.entities.Flashcard;
-import com.vocab.vocabulary_management.entities.FlashcardList;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,13 +38,25 @@ public interface DuelService {
     List<Duel> getAll();
 
     /**
-     * Calculates the winners for a duel by comparing the scores of all the users
-     * @param duel Duel to calculate the winner for
+     * Calculates the winners for a duel by comparing the amount of correct answers of all the users
+     * @param duelId DuelId to calculate the winner for
      * @return List of Users that won the duel
      */
-    List<UserEntity> calculateWinner(Duel duel);
-
-
+    List<UserEntity> calculateWinner(Long duelId);
 
     boolean startDuel(Long duelId);
+
+    /**
+     * Saves the selected Answer and determines if it is correct.
+     * @param selectedAnswer selected Answer
+     * @param duelId current duel
+     * @param playerId current player
+     */
+    void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId);
+
+    /**
+     * deactivates current round and activates the next round.
+     * @param duelId of current duel
+     */
+    void activateNextRound(Long duelId);
 }

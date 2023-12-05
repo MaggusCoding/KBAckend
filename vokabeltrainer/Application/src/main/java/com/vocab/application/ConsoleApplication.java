@@ -1,8 +1,11 @@
 package com.vocab.application;
 
 import com.vocab.application.serviceImpl.ImportServiceImpl;
+import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
+import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Component
 public class ConsoleApplication implements CommandLineRunner {
@@ -24,6 +29,8 @@ public class ConsoleApplication implements CommandLineRunner {
     @Autowired
     private final ImportServiceImpl importService;
 
+    private Long loggendInUser = 0L;
+
     public ConsoleApplication(UserServiceImpl userService, DuelServiceImpl duelService, FlashcardListServiceImpl flashcardListService, ImportServiceImpl importService) {
         this.userService = userService;
         this.duelService = duelService;
@@ -35,7 +42,6 @@ public class ConsoleApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
-        Long loggendInUser = 1L;
         while (!exit) {
             print("\nMain Menu:");
             print("1. Create/Retrieve Another Player");
@@ -44,7 +50,7 @@ public class ConsoleApplication implements CommandLineRunner {
             print("4. Start Duel");
             print("5. Import/Delete FlashcardList");
             print("6. Exit");
-            System.out.print("Enter your choice: ");
+            print("Enter your choice: ");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
@@ -94,15 +100,28 @@ public class ConsoleApplication implements CommandLineRunner {
                     }
                     break;
                 case 4:
-                    System.out.println("Select Duel to Start:");
+                    print("Select Duel to Start:");
                     duelService.getAll().forEach(duel1 ->
-                            System.out.println(duel1.getDuelId()+" - "+duel1.getFlashcardsForDuel().getCategory()));
-                    System.out.println("Enter the ID of the Duel to start:");
+                            print(duel1.getDuelId() + " - " + duel1.getFlashcardsForDuel().getCategory()));
+                    print("Enter the ID of the Duel to start:");
                     Long duelStart = scanner.nextLong();
                     duelService.startDuel(duelStart);
-                    System.out.println("What is the translation for: "+duelService.playRound(duelStart).get(0)+"?") ;
-                    for(int i=1;i<5;i++){
-                        System.out.println(i+"."+duelService.playRound(duelStart).get(i));
+                    List<String> flashcardString = duelService.playRound(duelStart);
+                    boolean duelFinished = false;
+                    for (int x = 1; x <= 10; x++) {
+                        // Player abort the round
+                        if(!playOneRound(flashcardString, scanner, duelStart)){
+                            break;
+                        }
+                        flashcardString = duelService.playRound(duelStart);
+                        print("Let´s begin the next round!");
+                        if(x == 10){
+                            duelFinished = true;
+                        }
+                    }
+                    if(duelFinished){
+                        print("All rounds were played. Let´s see who wins! ");
+                        print("The winner is/are " + duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(",")));
                     }
                     break;
                 case 5:
@@ -146,9 +165,9 @@ public class ConsoleApplication implements CommandLineRunner {
                             print("Enter the id of the FlashcardList to delete: ");
                             Long id = scanner.nextLong();
                             boolean successDelete = flashcardListService.deleteFlashcardList(id);
-                            if(successDelete){
+                            if (successDelete) {
                                 print("FlashcardList konnte gelöscht werden.");
-                            }else{
+                            } else {
                                 print("FlashcardList konnte nicht gelöscht werden. Evtl. existiert noch ein Duell, die die FlashcardList nutzt.");
                             }
                             break;
@@ -164,6 +183,69 @@ public class ConsoleApplication implements CommandLineRunner {
             }
         }
         System.exit(0);
+    }
+
+    private boolean playOneRound(List<String> flashcardString, Scanner scanner, Long duelStart) {
+        boolean allUsersPlayed = false;
+        while (!allUsersPlayed) {
+            print("##############You are now " + userService.getById(loggendInUser).getUsername() + "#######################");
+            print("What is the translation for: " + flashcardString.get(0) + "? (Enter the id of the answer.)");
+
+            for (int i = 1; i < 5; i++) {
+                print(i + "." + flashcardString.get(i));
+            }
+            int selectedAnswer = scanner.nextInt();
+            print("Your answer: " + flashcardString.get(selectedAnswer));
+            duelService.saveSelectedAnswer(flashcardString.get(selectedAnswer), duelStart, loggendInUser);
+
+            Long nextUser = printChooseNextPlayer(duelStart, scanner);
+            switch (nextUser.intValue()) {
+                case -1:
+                    print("All players played this round.");
+                    allUsersPlayed = true;
+                    break;
+                case -2:
+                    print("Typed username is incorrect: " + nextUser + ". Play this flashcard again!");
+                    break;
+                case -3:
+                    // Typed exit
+                    return false;
+                default:
+                    loggendInUser = nextUser;
+
+            }
+        }
+        duelService.activateNextRound(duelStart);
+        return true;
+    }
+
+    private Long printChooseNextPlayer(Long duelStart, Scanner scanner) {
+        List<String> usernames = getUsersWhoNotPlayed(duelStart);
+        if (usernames.isEmpty()) {
+            return -1L;
+        } else {
+            print("Which user should answer next? (Enter username or type exit to leave)");
+            print(usernames.stream().collect(Collectors.joining(System.lineSeparator())));
+            String nextUser = scanner.next();
+            UserEntity user = userService.findByUsername(nextUser).orElse(null);
+            if (user == null) {
+                return -2L;
+            } else if (nextUser.equalsIgnoreCase("exit")) {
+                return -3L;
+            }
+            return user.getUserId();
+        }
+    }
+
+    private List<String> getUsersWhoNotPlayed(Long duelStart) {
+        List<UserEntity> usersAlreadyPlayed = duelService.getById(duelStart).get()
+                .getRounds().stream().filter(Round::isActiveRound).findFirst().get()
+                .getSelectedAnswers().stream().map(Answer::getPlayer).toList();
+        List<UserEntity> players = duelService.getById(duelStart).get().getPlayers();
+        if (usersAlreadyPlayed.size() == players.size()) {
+            return List.of();
+        }
+        return players.stream().filter(player -> !usersAlreadyPlayed.contains(player)).map(UserEntity::getUsername).collect(Collectors.toList());
     }
 
     void print(String text) {
