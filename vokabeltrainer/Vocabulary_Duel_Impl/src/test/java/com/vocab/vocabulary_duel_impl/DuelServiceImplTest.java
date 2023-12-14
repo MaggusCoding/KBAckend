@@ -1,6 +1,7 @@
 /**package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
@@ -9,6 +10,9 @@ import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.entities.Translation;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -16,20 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DuelServiceImplTest {
 
-    DuelServiceImpl service = new DuelServiceImpl();
+    @Mock
+    UserServiceImpl service;
+
 
     @Test
     void testCreateDuelExpectOk(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        flashcard.setTranslations(List.of(translation));
-        Duel duel = new Duel(1L, List.of(userEntity), List.of(flashcard));
-
-        service.createDuel(duel);
-
-        Duel duel1 = service.getById(1L);
-        assertThat(duel1).isNotNull().usingRecursiveComparison().isEqualTo(duel);
+        Mockito.when(service.findByUsername("Maggus")).thenReturn(new UserEntity(""))
     }
 
     @Test
@@ -166,4 +163,5 @@ public class DuelServiceImplTest {
         assertThat(currentDuel.getPlayers()).hasSize(2).extracting("username").contains("user1", "user2");
 
     }
-}*/
+}
+*/

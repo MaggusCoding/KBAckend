@@ -18,6 +18,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+/**
+ * @todo
+ * 1. Try Catch Blöcke für alle Auswahlmöglichkeiten zwecks Exception Handling oder if Blöcke
+ * 2. Javadoc überprüfen / Aufräumen Sachen die wir nicht brauchen
+ * 3. Testfälle für alle Service Klassen neu machen mit Mockito siehe: https://github.com/MaggusCoding/webtechKassensystemBackend
+ * (4.) Evtl. Model View Controller für Frontend evtl.
+ */
 @Component
 public class ConsoleApplication implements CommandLineRunner {
     @Autowired
