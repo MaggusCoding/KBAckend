@@ -21,9 +21,14 @@ import java.util.stream.Collectors;
 /**
  * @todo
  * 1. Try Catch Blöcke für alle Auswahlmöglichkeiten zwecks Exception Handling oder if Blöcke
+ *  -> Bei Mehrspieler Duell Auswahl von Spielern implementieren und abfangen wenn Spieler selection outta bounds
+ *  -> Standard User muss in der Datenbank vorhanden sein oder abfangen
  * 2. Javadoc überprüfen / Aufräumen Sachen die wir nicht brauchen
  * 3. Testfälle für alle Service Klassen neu machen mit Mockito siehe: https://github.com/MaggusCoding/webtechKassensystemBackend
  * (4.) Evtl. Model View Controller für Frontend evtl.
+ * 5. Fertiggespielte Duels nicht mehr anzeigen bei Join und Start Duel wegen Exception und so auch gucken
+ * 6. Duel Lösch Funktionalität
+ * 7. Einfach mal weng rumzocken in der Anwendung
  */
 @Component
 public class ConsoleApplication implements CommandLineRunner {
@@ -36,7 +41,7 @@ public class ConsoleApplication implements CommandLineRunner {
     @Autowired
     private final ImportServiceImpl importService;
 
-    private Long loggendInUser = 0L;
+    private Long loggendInUser = 1L;
 
     public ConsoleApplication(UserServiceImpl userService, DuelServiceImpl duelService, FlashcardListServiceImpl flashcardListService, ImportServiceImpl importService) {
         this.userService = userService;
