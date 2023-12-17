@@ -50,6 +50,7 @@ public class DuelServiceImpl implements DuelService {
         duel.setFlashcardsForDuel(flashcardListService.getById(flashcardListId));
         duel.setPlayer(userService.getById(userId));
         duel.setStarted(false);
+        duel.setFinished(false);
         duelRepo.save(duel);
         return duel;
     }
@@ -188,6 +189,7 @@ public class DuelServiceImpl implements DuelService {
         Round round = rounds.get(0);
         round.setActiveRound(true);
         roundRepo.save(round);
+        duelRepo.save(duel);
         return true;
     }
 
@@ -244,12 +246,34 @@ public class DuelServiceImpl implements DuelService {
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
         currentRound.setActiveRound(false);
         Round nextRound = roundRepo.findFirstByDuelAndSelectedAnswersEmpty(duel);
-        // all rounds played
+        // all rounds played?
         if (nextRound != null) {
             nextRound.setActiveRound(true);
             roundRepo.save(currentRound);
             roundRepo.save(nextRound);
+        }else{
+            duel.setFinished(true);
+            duelRepo.save(duel);
         }
 
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Duel> duelsToJoin() {
+        return duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Duel> duelsToStart(Long userId){
+        UserEntity user = userService.getById(userId);
+        List<Duel> possibleDuels = duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse();
+        return possibleDuels.stream().filter(duel -> duel.getPlayers().contains(user)).collect(Collectors.toList());
+    }
+
 }

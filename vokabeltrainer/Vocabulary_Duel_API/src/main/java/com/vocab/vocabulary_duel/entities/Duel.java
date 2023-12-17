@@ -35,8 +35,10 @@ public class Duel {
     @OneToMany (mappedBy = "duel", fetch = FetchType.EAGER)
     private List<Round> rounds;
 
-    private boolean isStarted;
 
+    private boolean started;
+
+    private boolean finished;
     public void setPlayer(UserEntity player){
         this.players.add(player);
     }

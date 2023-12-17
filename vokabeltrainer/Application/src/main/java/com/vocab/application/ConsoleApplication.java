@@ -19,13 +19,11 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
- * @todo 1. Try Catch Blöcke für alle Auswahlmöglichkeiten zwecks Exception Handling oder if Blöcke
+ * TODO: 1. Try Catch Blöcke für alle Auswahlmöglichkeiten zwecks Exception Handling oder if Blöcke
  * -> Bei Mehrspieler Duell Auswahl von Spielern implementieren und abfangen wenn Spieler selection outta bounds
- * -> Standard User muss in der Datenbank vorhanden sein oder abfangen
  * 2. Javadoc überprüfen / Aufräumen Sachen die wir nicht brauchen
  * 3. Testfälle für alle Service Klassen neu machen mit Mockito siehe: https://github.com/MaggusCoding/webtechKassensystemBackend
  * (4.) Evtl. Model View Controller für Frontend evtl.
- * 5. Fertiggespielte Duels nicht mehr anzeigen bei Join und Start Duel wegen Exception und so auch gucken
  * 6. Duel Lösch Funktionalität
  * 7. Einfach mal weng rumzocken in der Anwendung
  */
@@ -50,7 +48,7 @@ public class ConsoleApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Scanner scanner = new Scanner(System.in);
         // default user
         loggendInUser = userService.createUser("god").getUserId();
@@ -109,7 +107,7 @@ public class ConsoleApplication implements CommandLineRunner {
                     break;
                 case 3:
                     print("Select Duel to Join:");
-                    duelService.getAll().forEach(duel1 ->
+                    duelService.duelsToJoin().forEach(duel1 ->
                             print(duel1.getDuelId() + " - " + duel1.getFlashcardsForDuel().getCategory()));
                     print("Enter the ID of the Duel to Join:");
                     Long duelJoin = scanner.nextLong();
@@ -121,30 +119,35 @@ public class ConsoleApplication implements CommandLineRunner {
                     }
                     break;
                 case 4:
-                    print("Select Duel to Start:");
-                    duelService.getAll().forEach(duel1 ->
-                            print(duel1.getDuelId() + " - " + duel1.getFlashcardsForDuel().getCategory()));
-                    print("Enter the ID of the Duel to start:");
-                    Long duelStart = scanner.nextLong();
-                    duelService.startDuel(duelStart);
-                    List<String> flashcardString = duelService.playRound(duelStart);
-                    boolean duelFinished = false;
-                    for (int x = 1; x <= 10; x++) {
-                        print("#################### round " + x + "/10 ####################");
-                        // Player abort the round
-                        if (!playOneRound(flashcardString, scanner, duelStart)) {
-                            break;
+                    List<Duel> duelsToStart = duelService.duelsToStart(loggendInUser);
+                    if (!duelsToStart.isEmpty()) {
+                        print("Select Duel to Start:");
+                        duelsToStart.forEach(duel1 ->
+                                print(duel1.getDuelId() + " - " + duel1.getFlashcardsForDuel().getCategory()));
+                        print("Enter the ID of the Duel to start:");
+                        Long duelStart = scanner.nextLong();
+                        duelService.startDuel(duelStart);
+                        List<String> flashcardString = duelService.playRound(duelStart);
+                        boolean duelFinished = false;
+                        for (int x = 1; x <= 10; x++) {
+                            print("#################### round " + x + "/10 ####################");
+                            // Player abort the round
+                            if (!playOneRound(flashcardString, scanner, duelStart)) {
+                                break;
+                            }
+                            flashcardString = duelService.playRound(duelStart);
+                            if (x == 10) {
+                                duelFinished = true;
+                            } else {
+                                print("Let´s begin the next round!");
+                            }
                         }
-                        flashcardString = duelService.playRound(duelStart);
-                        if (x == 10) {
-                            duelFinished = true;
-                        }else{
-                            print("Let´s begin the next round!");
+                        if (duelFinished) {
+                            print("All rounds were played. Let´s see who wins! ");
+                            print("The winner is/are " + duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(",")));
                         }
-                    }
-                    if (duelFinished) {
-                        print("All rounds were played. Let´s see who wins! ");
-                        print("The winner is/are " + duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(",")));
+                    }else{
+                        print("Apparently you didn´t join a duel.");
                     }
                     break;
                 case 5:
@@ -266,9 +269,9 @@ public class ConsoleApplication implements CommandLineRunner {
             } else if (nextUser.equalsIgnoreCase("exit")) {
                 return -3L;
             } else if (!usernames.contains(nextUser)) {
-                if(duelService.getById(duelStart).get().getPlayers().contains(user)){
+                if (duelService.getById(duelStart).get().getPlayers().contains(user)) {
                     return -4L;
-                }else{
+                } else {
                     return -5L;
                 }
             }
