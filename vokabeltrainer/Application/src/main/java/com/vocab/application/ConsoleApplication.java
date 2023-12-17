@@ -19,10 +19,9 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
- * @todo
- * 1. Try Catch Blöcke für alle Auswahlmöglichkeiten zwecks Exception Handling oder if Blöcke
- *  -> Bei Mehrspieler Duell Auswahl von Spielern implementieren und abfangen wenn Spieler selection outta bounds
- *  -> Standard User muss in der Datenbank vorhanden sein oder abfangen
+ * @todo 1. Try Catch Blöcke für alle Auswahlmöglichkeiten zwecks Exception Handling oder if Blöcke
+ * -> Bei Mehrspieler Duell Auswahl von Spielern implementieren und abfangen wenn Spieler selection outta bounds
+ * -> Standard User muss in der Datenbank vorhanden sein oder abfangen
  * 2. Javadoc überprüfen / Aufräumen Sachen die wir nicht brauchen
  * 3. Testfälle für alle Service Klassen neu machen mit Mockito siehe: https://github.com/MaggusCoding/webtechKassensystemBackend
  * (4.) Evtl. Model View Controller für Frontend evtl.
@@ -53,9 +52,12 @@ public class ConsoleApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Scanner scanner = new Scanner(System.in);
+        // default user
+        loggendInUser = userService.createUser("god").getUserId();
         boolean exit = false;
         while (!exit) {
             print("\nMain Menu:");
+            print("0. Clear DB(for convenience)");
             print("1. Create/Retrieve Another Player");
             print("2. Create Duel");
             print("3. Join Existing Duel");
@@ -65,6 +67,13 @@ public class ConsoleApplication implements CommandLineRunner {
             print("Enter your choice: ");
             int choice = scanner.nextInt();
             switch (choice) {
+                case 0:
+                    print("clears the db completely! You sure? y or n");
+                    if (scanner.next().equalsIgnoreCase("Y")) {
+                        print("not yet implemented");
+                    } else {
+                        print("Nothing happened.");
+                    }
                 case 1:
                     // Step 1: Ask for the username
                     print("Enter your username:");
@@ -121,17 +130,19 @@ public class ConsoleApplication implements CommandLineRunner {
                     List<String> flashcardString = duelService.playRound(duelStart);
                     boolean duelFinished = false;
                     for (int x = 1; x <= 10; x++) {
+                        print("#################### round " + x + "/10 ####################");
                         // Player abort the round
-                        if(!playOneRound(flashcardString, scanner, duelStart)){
+                        if (!playOneRound(flashcardString, scanner, duelStart)) {
                             break;
                         }
                         flashcardString = duelService.playRound(duelStart);
-                        print("Let´s begin the next round!");
-                        if(x == 10){
+                        if (x == 10) {
                             duelFinished = true;
+                        }else{
+                            print("Let´s begin the next round!");
                         }
                     }
-                    if(duelFinished){
+                    if (duelFinished) {
                         print("All rounds were played. Let´s see who wins! ");
                         print("The winner is/are " + duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(",")));
                     }
@@ -200,7 +211,7 @@ public class ConsoleApplication implements CommandLineRunner {
     private boolean playOneRound(List<String> flashcardString, Scanner scanner, Long duelStart) {
         boolean allUsersPlayed = false;
         while (!allUsersPlayed) {
-            print("##############You are now " + userService.getById(loggendInUser).getUsername() + "#######################");
+            print("#################### You are now " + userService.getById(loggendInUser).getUsername() + " ####################");
             print("What is the translation for: " + flashcardString.get(0) + "? (Enter the id of the answer.)");
 
             for (int i = 1; i < 5; i++) {
@@ -210,21 +221,31 @@ public class ConsoleApplication implements CommandLineRunner {
             print("Your answer: " + flashcardString.get(selectedAnswer));
             duelService.saveSelectedAnswer(flashcardString.get(selectedAnswer), duelStart, loggendInUser);
 
-            Long nextUser = printChooseNextPlayer(duelStart, scanner);
-            switch (nextUser.intValue()) {
-                case -1:
-                    print("All players played this round.");
-                    allUsersPlayed = true;
-                    break;
-                case -2:
-                    print("Typed username is incorrect: " + nextUser + ". Play this flashcard again!");
-                    break;
-                case -3:
-                    // Typed exit
-                    return false;
-                default:
-                    loggendInUser = nextUser;
-
+            boolean nextPlayerChosen = false;
+            while (!nextPlayerChosen) {
+                Long nextUser = printChooseNextPlayer(duelStart, scanner);
+                switch (nextUser.intValue()) {
+                    case -1:
+                        print("All players played this round.");
+                        allUsersPlayed = true;
+                        nextPlayerChosen = true;
+                        break;
+                    case -2:
+                        print("Typed username does not exist. Choose other player!");
+                        break;
+                    case -3:
+                        // Typed exit
+                        return false;
+                    case -4:
+                        print("This user already played this round! Choose other player!");
+                        break;
+                    case -5:
+                        print("This user is not participating in the current duel! Choose other player!");
+                        break;
+                    default:
+                        loggendInUser = nextUser;
+                        nextPlayerChosen = true;
+                }
             }
         }
         duelService.activateNextRound(duelStart);
@@ -244,6 +265,12 @@ public class ConsoleApplication implements CommandLineRunner {
                 return -2L;
             } else if (nextUser.equalsIgnoreCase("exit")) {
                 return -3L;
+            } else if (!usernames.contains(nextUser)) {
+                if(duelService.getById(duelStart).get().getPlayers().contains(user)){
+                    return -4L;
+                }else{
+                    return -5L;
+                }
             }
             return user.getUserId();
         }
