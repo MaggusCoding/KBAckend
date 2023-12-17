@@ -1,167 +1,201 @@
-/**package com.vocab.vocabulary_duel_impl;
+package com.vocab.vocabulary_duel_impl;
 
-import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management_impl.services.UserServiceImpl;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.vocab.vocabulary_duel.entities.Answer;
-import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
-import com.vocab.vocabulary_management.entities.Flashcard;
-import com.vocab.vocabulary_management.entities.FlashcardList;
-import com.vocab.vocabulary_management.entities.Translation;
-import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
+import com.vocab.vocabulary_duel.repositories.RoundRepo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
+import com.vocab.user_management_impl.services.UserServiceImpl;
+import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
+import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.user_management.entities.UserEntity;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+@SpringBootTest
 public class DuelServiceImplTest {
 
     @Mock
-    UserServiceImpl service;
+    private FlashcardListServiceImpl flashcardListService;
+    @Mock
+    private UserServiceImpl userService;
+    @Mock
+    private DuelRepo duelRepo;
+    @Mock
+    private RoundRepo roundRepo;
+    @InjectMocks
+    private DuelServiceImpl duelService;
 
-
-    @Test
-    void testCreateDuelExpectOk(){
-        Mockito.when(service.findByUsername("Maggus")).thenReturn(new UserEntity(""))
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGenerateFlashcardListExpect10(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        flashcard.setTranslations(List.of(translation));
-        FlashcardList flashcardList = new FlashcardList(1L, "This is london", "english", "deutsch", List.of(flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard));
-        Duel duel = new Duel(1L, List.of(userEntity), List.of(flashcard));
+    public void testCreateDuel() {
+        // Arrange
+        Long userId = 1L;
+        Long flashcardListId = 1L;
+        UserEntity mockUser = new UserEntity();
+        FlashcardList mockFlashcardList = new FlashcardList();
 
-        List<Flashcard> flashcardsForDuel = service.generateFlashcardList(flashcardList, duel);
+        when(userService.getById(userId)).thenReturn(mockUser);
+        when(flashcardListService.getById(flashcardListId)).thenReturn(mockFlashcardList);
 
-        assertThat(flashcardsForDuel).isNotNull().hasSize(10);
+        // Act
+        Duel result = duelService.createDuel(userId, flashcardListId);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.getPlayers().contains(mockUser));
+        assertEquals(mockFlashcardList, result.getFlashcardsForDuel());
+        assertFalse(result.isStarted());
+        assertFalse(result.isFinished());
+
+        verify(userService).getById(userId);
+        verify(flashcardListService).getById(flashcardListId);
+        verify(duelRepo).save(any(Duel.class));
     }
 
     @Test
-    void testGenerateFlashcardFromNonExistingListExpectEmptyResult(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        flashcard.setTranslations(List.of(translation));
-        FlashcardList flashcardList = new FlashcardList(1L, "This is london", "english", "deutsch", List.of(flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard));
-        Duel duel = new Duel(1L, List.of(userEntity), List.of(flashcard));
+    public void testJoinDuel() {
+        // Arrange
+        long duelId = 1L;
+        long userId = 2L;
+        Duel mockDuel = new Duel();
+        mockDuel.setStarted(false);
+        mockDuel.setPlayers(new ArrayList<>()); // Empty players list
+        UserEntity mockUser = new UserEntity();
+        mockUser.setUserId(userId);
 
-        FlashcardList flashcardList2 = new FlashcardList(2L, "This is latin america", "english", "deutsch", List.of(flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard, flashcard));
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(userService.getById(userId)).thenReturn(mockUser);
 
-        List<Flashcard> flashcardsForDuel = service.generateFlashcardList(flashcardList2, duel);
+        // Act
+        Boolean result = duelService.joinDuel(duelId, userId);
 
-        assertThat(flashcardsForDuel).isNotNull().isEmpty();
+        // Assert
+        assertTrue(result);
+        assertTrue(mockDuel.getPlayers().contains(mockUser));
+
+        verify(duelRepo).save(mockDuel);
+        verify(duelRepo, times(2)).findById(duelId);
+        verify(userService, times(2)).getById(userId);
+    }
+    @Test
+    public void testJoinDuel_DuelAlreadyStarted() {
+        // Arrange
+        long duelId = 1L;
+        long userId = 2L;
+        Duel mockDuel = new Duel();
+        mockDuel.setStarted(true); // Duel already started
+        mockDuel.setPlayers(new ArrayList<>());
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+
+        // Act
+        Boolean result = duelService.joinDuel(duelId, userId);
+
+        // Assert
+        assertFalse(result);
+        verify(duelRepo, never()).save(any(Duel.class));
+    }
+    @Test
+    public void testJoinDuel_UserAlreadyJoined() {
+        // Arrange
+        long duelId = 1L;
+        long userId = 2L;
+        Duel mockDuel = new Duel();
+        mockDuel.setStarted(false);
+        UserEntity mockUser = new UserEntity();
+        mockUser.setUserId(userId);
+        List<UserEntity> players = new ArrayList<>();
+        players.add(mockUser);
+        mockDuel.setPlayers(players); // User already in players list
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(userService.getById(userId)).thenReturn(mockUser);
+
+        // Act
+        Boolean result = duelService.joinDuel(duelId, userId);
+
+        // Assert
+        assertFalse(result);
+        verify(duelRepo, never()).save(any(Duel.class));
     }
 
     @Test
-    void testCalculateWinnerExpect1Winner(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        UserEntity userEntity2 = new UserEntity(2L, "user2");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
-        flashcard.setTranslations(List.of(translation));
-        flashcard2.setTranslations(List.of(translation2));
-        Duel duel = new Duel(1L, List.of(userEntity, userEntity2), List.of(flashcard,flashcard2));
-        Round round = new Round(1L, duel, flashcard, null, List.of("parola italiana", "mot français", "palavra portuguesa"));
-        Round round2 = new Round(2L, duel, flashcard, null, List.of("mies", "wasser", "amazon"));
-        Answer answer = new Answer(1L, userEntity, flashcard, round, "deutsches Wort");
-        answer.setCorrect(true);
-        Answer answer2 = new Answer(2L, userEntity2, flashcard, round, "deutsches Wort");
-        answer2.setCorrect(true);
-        Answer answer3 = new Answer(3L, userEntity, flashcard2, round2, "erstaunlich");
-        answer3.setCorrect(true);
-        Answer answer4 = new Answer(4L, userEntity2, flashcard2, round2, "amazon");
-        answer4.setCorrect(false);
-        round.setSelectedAnswers(List.of(answer, answer2));
-        round2.setSelectedAnswers(List.of(answer3, answer4));
+    public void testCalculateWinner() {
+        // Arrange
+        long duelId = 1L;
+        Duel mockDuel = new Duel();
+        List<UserEntity> players = Arrays.asList(new UserEntity(1L, "Player1"), new UserEntity(2L, "Player2"));
+        mockDuel.setPlayers(players);
 
-        List<UserEntity> winner = service.calculateWinner(duel);
+        List<Round> rounds = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Round round = new Round();
+            round.setDuel(mockDuel);
+            round.setActiveRound(i == 9); // last round active
+            List<Answer> answers = new ArrayList<>();
 
-        assertThat(winner).isNotNull().hasSize(1);
-        assertThat(winner).extracting("username").contains("user1");
+            // Assuming first 6 rounds won by Player1, next 4 by Player2
+            Answer answer = new Answer();
+            answer.setPlayer(i < 6 ? players.get(0) : players.get(1));
+            answer.setCorrect(true);
+            answers.add(answer);
 
+            round.setSelectedAnswers(answers);
+            rounds.add(round);
+        }
+        mockDuel.setRounds(rounds);
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+
+        // Act
+        List<UserEntity> winners = duelService.calculateWinner(duelId);
+
+        // Assert
+        assertNotNull(winners);
+        assertEquals(1, winners.size());
+        assertEquals(players.get(0), winners.get(0)); // Player1 should be the winner
+        verify(duelRepo).findById(duelId);
     }
-
     @Test
-    void testCalculateWinnerExpect2Winner(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        UserEntity userEntity2 = new UserEntity(2L, "user2");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
-        flashcard.setTranslations(List.of(translation));
-        flashcard2.setTranslations(List.of(translation2));
-        Duel duel = new Duel(1L, List.of(userEntity, userEntity2), List.of(flashcard,flashcard2));
-        Round round = new Round(1L, duel, flashcard, null, List.of("parola italiana", "mot français", "palavra portuguesa"));
-        Round round2 = new Round(2L, duel, flashcard, null, List.of("mies", "wasser", "amazon"));
-        Answer answer = new Answer(1L, userEntity, flashcard, round, "deutsches Wort");
-        answer.setCorrect(true);
-        Answer answer2 = new Answer(2L, userEntity2, flashcard, round, "deutsches Wort");
-        answer2.setCorrect(true);
-        Answer answer3 = new Answer(3L, userEntity, flashcard2, round2, "erstaunlich");
-        answer3.setCorrect(true);
-        Answer answer4 = new Answer(4L, userEntity2, flashcard2, round2, "amazon");
-        answer4.setCorrect(true);
-        round.setSelectedAnswers(List.of(answer, answer2));
-        round2.setSelectedAnswers(List.of(answer3, answer4));
+    public void testStartDuel() {
+        // Arrange
+        long duelId = 1L;
+        Duel mockDuel = new Duel();
+        mockDuel.setDuelId(duelId);
+        mockDuel.setStarted(false);
+        List<Round> rounds = new ArrayList<>();
+        Round mockRound = new Round();
+        mockRound.setActiveRound(false);
+        rounds.add(mockRound);
+        mockDuel.setRounds(rounds);
 
-        List<UserEntity> winner = service.calculateWinner(duel);
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
 
-        assertThat(winner).isNotNull().hasSize(2);
-        assertThat(winner).extracting("username").contains("user1", "user2");
-    }
+        // Act
+        boolean result = duelService.startDuel(duelId);
 
-    @Test
-    void testJoinDuelExpectOk(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        UserEntity userEntity2 = new UserEntity(2L, "user2");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
-        flashcard.setTranslations(List.of(translation));
-        flashcard2.setTranslations(List.of(translation2));
-        Duel duel = new Duel(1L, List.of(userEntity), List.of(flashcard,flashcard2));
-
-        assertThat(duel.getPlayers()).hasSize(1).extracting("username").contains("user1");
-
-        service.joinDuel(duel.getDuelId(), userEntity2.getUserId());
-
-        Duel currentDuel = service.getById(duel.getDuelId());
-        assertThat(currentDuel).isNotNull();
-        assertThat(currentDuel.getPlayers()).hasSize(2).extracting("username").contains("user1", "user2");
-
-    }
-
-    @Test
-    void testJoinDuelWhenAlreadyIn(){
-        UserEntity userEntity = new UserEntity(1L, "user1");
-        UserEntity userEntity2 = new UserEntity(2L, "user2");
-        Flashcard flashcard = new Flashcard(1L, "english word", null, null);
-        Flashcard flashcard2= new Flashcard(2L, "amazing", null, null);
-        Translation translation = new Translation(1L,flashcard,"deutsches Wort");
-        Translation translation2 = new Translation(2L,flashcard,"erstaunlich");
-        flashcard.setTranslations(List.of(translation));
-        flashcard2.setTranslations(List.of(translation2));
-        Duel duel = new Duel(1L, List.of(userEntity, userEntity2), List.of(flashcard,flashcard2));
-
-        assertThat(duel.getPlayers()).hasSize(2).extracting("username").contains("user1","user2");
-
-        assertThat(service.joinDuel(duel.getDuelId(), userEntity2.getUserId())).isFalse();
-
-        Duel currentDuel = service.getById(duel.getDuelId());
-        assertThat(currentDuel).isNotNull();
-        assertThat(currentDuel.getPlayers()).hasSize(2).extracting("username").contains("user1", "user2");
-
+        // Assert
+        assertTrue(result);
+        assertTrue(mockDuel.isStarted());
+        verify(duelRepo, times(2)).findById(duelId);
+        verify(duelRepo).save(mockDuel);
     }
 }
-*/
