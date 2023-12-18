@@ -2,6 +2,7 @@ package com.vocab.vocabulary_duel_impl.services;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
+import com.vocab.vocabulary_duel.dto.RankingPlayer;
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
@@ -95,20 +96,13 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     public List<UserEntity> calculateWinner(Long duelId) {
-        HashMap<UserEntity, Integer> ranking = new HashMap<>();
-        Duel duel = duelRepo.findById(duelId).get();
-        // initialize ranking-Map
-        duel.getPlayers().forEach(player -> ranking.put(player, 0));
-        // collect correct Answer for each player by
-        List<Round> allRoundsOfDuel = duel.getRounds();
-        allRoundsOfDuel.forEach(round -> {
-            List<UserEntity> playerWithCorrectAnswer = round.getSelectedAnswers().stream().filter(Answer::getCorrect).map(Answer::getPlayer).toList();
-            playerWithCorrectAnswer.forEach(player -> ranking.computeIfPresent(player, (key, val) -> val + 1));
-            });
-        // sort Hashmap descending
-        List<Map.Entry<UserEntity, Integer>> rankingList = ranking.entrySet().stream().sorted(Map.Entry.<UserEntity, Integer> comparingByValue().reversed()).toList();
-        int topScore = rankingList.get(0).getValue();
-        return rankingList.stream().filter(entry -> entry.getValue().equals(topScore)).map(Map.Entry::getKey).collect(Collectors.toList());
+        List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
+        Long topScore = rankingData.get(0).getAmountCorrectAnswer();
+        return rankingData.stream()
+                .filter(data -> data.getAmountCorrectAnswer() == topScore)
+                .map(RankingPlayer::getPlayer)
+                .map(username -> userService.findByUsername(username).get())
+                .collect(Collectors.toList());
     }
 
 
@@ -221,7 +215,7 @@ public class DuelServiceImpl implements DuelService {
 
         roundStrings.add(question);
         roundStrings.addAll(Arrays.stream(wrongAnswers.split(";")).toList());
-        roundStrings.add(rand.nextInt(1, 4), correctAnswer);
+        roundStrings.add(rand.nextInt(1, 5), correctAnswer);
         return roundStrings;
     }
 
