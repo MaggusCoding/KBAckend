@@ -67,7 +67,7 @@ public class DuelServiceImplTest {
             flashcards.add(new Flashcard(i, "OGText" + i, mockFlashcardList, translations));
         }
         mockFlashcardList.setFlashcards(flashcards);
-
+//
         when(translationRepo.findAll()).thenReturn(translations);
         when(duelRepo.findById(1L)).thenReturn(Optional.of(mockDuel));
 
