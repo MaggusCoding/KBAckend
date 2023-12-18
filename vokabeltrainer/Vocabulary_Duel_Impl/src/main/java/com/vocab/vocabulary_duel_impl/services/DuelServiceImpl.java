@@ -14,6 +14,7 @@ import com.vocab.vocabulary_management.entities.Translation;
 import com.vocab.vocabulary_management.repos.FlashcardRepo;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
+import jakarta.transaction.Transactional;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @ComponentScan(basePackages = {"com.vocab"})
 public class DuelServiceImpl implements DuelService {
 

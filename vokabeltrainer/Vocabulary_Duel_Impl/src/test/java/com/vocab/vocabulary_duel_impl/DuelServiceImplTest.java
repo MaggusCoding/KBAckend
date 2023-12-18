@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Round;
 import com.vocab.vocabulary_duel.repositories.RoundRepo;
+import com.vocab.vocabulary_management.entities.Flashcard;
+import com.vocab.vocabulary_management.entities.Translation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +17,7 @@ import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.user_management.entities.UserEntity;
@@ -36,12 +39,79 @@ public class DuelServiceImplTest {
     private DuelRepo duelRepo;
     @Mock
     private RoundRepo roundRepo;
+    @Mock
+    private Duel duel;
+    @Mock
+    private TranslationRepo translationRepo;
     @InjectMocks
     private DuelServiceImpl duelService;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testGenerateRounds() {
+        // Arrange
+        Duel mockDuel = new Duel();
+        FlashcardList mockFlashcardList = new FlashcardList(1L, "MockCat", "Deutsch", "Englisch", new ArrayList<>());
+        mockDuel.setFlashcardsForDuel(mockFlashcardList);
+
+        List<Translation> translations = new ArrayList<>();
+        for (long i = 0; i < 20; i++) {
+            translations.add(new Translation(i, new Flashcard(), "Bear" + i));
+        }
+        List<Flashcard> flashcards = new ArrayList<>();
+        for (long i = 0; i < 20; i++) {
+            flashcards.add(new Flashcard(i, "OGText" + i, mockFlashcardList, translations));
+        }
+        mockFlashcardList.setFlashcards(flashcards);
+
+        when(translationRepo.findAll()).thenReturn(translations);
+        when(duelRepo.findById(1L)).thenReturn(Optional.of(mockDuel));
+
+        // Act
+        duelService.generateRounds(1L);
+
+        // Assert
+        verify(roundRepo, times(10)).save(any(Round.class));
+    }
+    @Test
+    public void testGetById() {
+        // Arrange
+        long duelId = 1L;
+        Duel mockDuel = new Duel();
+        mockDuel.setDuelId(duelId);
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+
+        // Act
+        Optional<Duel> result = duelService.getById(duelId);
+
+        // Assert
+        assertEquals(Optional.of(mockDuel), result);
+        verify(duelRepo).findById(duelId);
+    }
+
+
+    @Test
+    public void testGetAll() {
+        // Arrange
+        List<Duel> mockDuels = Arrays.asList(
+                new Duel(),
+                new Duel(),
+                new Duel()
+        );
+
+        when(duelRepo.findAll()).thenReturn(mockDuels);
+
+        // Act
+        List<Duel> result = duelService.getAll();
+
+        // Assert
+        assertEquals(mockDuels, result);
+        verify(duelRepo).findAll();
     }
 
     @Test
