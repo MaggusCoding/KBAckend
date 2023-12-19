@@ -72,4 +72,17 @@ public interface DuelService {
      * @return duels
      */
     List<Duel> duelsToStart(Long userId);
+
+    /**
+     * TODO javadoc
+     * @param duelStart Id of duel
+     * @return List<String> content of flashcard
+     */
+    List<String> playRound(Long duelStart);
+
+    /**
+     * Generate 10 rounds of a newly created duel.
+     * @param duelId Id of duel
+     */
+    void generateRounds(Long duelId);
 }

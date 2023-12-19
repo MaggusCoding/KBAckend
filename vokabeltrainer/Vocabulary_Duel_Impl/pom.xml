@@ -18,13 +18,19 @@
     <dependencies>
         <dependency>
             <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Duel_API</artifactId>
-            <version>1.0</version>
+            <artifactId>User_Management_Impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vocab</groupId>
             <artifactId>Vocabulary_Management_Impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vocab</groupId>
+            <artifactId>Vocabulary_Duel_API</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -40,6 +46,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
             </plugin>
         </plugins>
     </build>

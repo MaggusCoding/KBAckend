@@ -15,7 +15,6 @@ import com.vocab.vocabulary_management.entities.Translation;
 import com.vocab.vocabulary_management.repos.FlashcardRepo;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
-import jakarta.transaction.Transactional;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,7 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @ComponentScan(basePackages = {"com.vocab"})
 public class DuelServiceImpl implements DuelService {
 
@@ -96,16 +94,22 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     public List<UserEntity> calculateWinner(Long duelId) {
+        // TODO was ist bei keinem Gewinner?? ArrayIndexOutOfBoundsException
         List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
         Long topScore = rankingData.get(0).getAmountCorrectAnswer();
-        return rankingData.stream()
+        Duel duel = duelRepo.findById(duelId).get();
+        List<UserEntity> winners = rankingData.stream()
                 .filter(data -> data.getAmountCorrectAnswer() == topScore)
                 .map(RankingPlayer::getPlayer)
                 .map(username -> userService.findByUsername(username).get())
                 .collect(Collectors.toList());
+        duel.setWinner(winners);
+        duelRepo.save(duel);
+        return winners;
     }
 
 
+    @Override
     public void generateRounds(Long duelId) {
         Random rand = new Random();
         Duel duel = duelRepo.findById(duelId).get();
@@ -175,6 +179,7 @@ public class DuelServiceImpl implements DuelService {
         return wrongAnswers;
     }
 
+    @Override
     public boolean startDuel(Long duelId) {
         Duel duel = null;
         if (duelRepo.findById(duelId).isPresent()) {
@@ -189,7 +194,7 @@ public class DuelServiceImpl implements DuelService {
         return true;
     }
 
-
+    @Override
     public List<String> playRound(Long duelId) {
         Random rand = new Random();
         List<String> roundStrings = new ArrayList<>();
@@ -222,6 +227,7 @@ public class DuelServiceImpl implements DuelService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new RuntimeException("Duel(ID: " + duelId + ") does not exist."));
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);

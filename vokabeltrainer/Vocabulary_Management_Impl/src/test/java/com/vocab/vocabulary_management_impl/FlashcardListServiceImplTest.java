@@ -2,7 +2,7 @@ package com.vocab.vocabulary_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
-import com.vocab.user_management_impl.factories.UserFactory;
+import com.vocab.user_management.factories.UserFactory;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_management.entities.Flashcard;
@@ -145,7 +145,6 @@ public class FlashcardListServiceImplTest {
 
         List<FlashcardList> flashcardListsBefore = service.getAll();
         assertThat(flashcardListsBefore).isNotNull().hasSize(1);
-        List<Flashcard> flashcardList = flashcardListsBefore.get(0).getFlashcards();
         assertThat(flashcardListsBefore.get(0).getFlashcards()).isNotNull().hasSize(10);
 
         service.createFlashcardList(additionalContent1);

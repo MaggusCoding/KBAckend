@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>Application</artifactId>
-    <version>1.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>Application</name>
     <description>Application</description>
     <properties>
@@ -18,37 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Management_API</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Management_Impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Duel_API</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
             <artifactId>Vocabulary_Duel_Impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>User_Management_API</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>User_Management_Impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

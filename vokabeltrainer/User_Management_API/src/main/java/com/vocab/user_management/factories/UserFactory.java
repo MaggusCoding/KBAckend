@@ -1,4 +1,4 @@
-package com.vocab.user_management_impl.factories;
+package com.vocab.user_management.factories;
 
 import com.vocab.user_management.entities.UserEntity;
 import org.springframework.stereotype.Component;

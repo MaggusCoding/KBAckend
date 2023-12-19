@@ -3,6 +3,7 @@ package com.vocab.user_management.services;
 import com.vocab.user_management.entities.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     /**
@@ -31,5 +32,12 @@ public interface UserService {
      * @return A list of all users
      */
     List<UserEntity> getAll();
+
+    /**
+     * Finds a user by username
+     * @param username String
+     * @return user found user
+     */
+    Optional<UserEntity> findByUsername(String username);
 
 }

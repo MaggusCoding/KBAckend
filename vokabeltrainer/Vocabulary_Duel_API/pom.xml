@@ -9,8 +9,11 @@
     </parent>
     <artifactId>Vocabulary_Duel_API</artifactId>
     <name>Vocabulary_Duel_API</name>
-    <version>1.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <url>http://maven.apache.org</url>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>com.vocab</groupId>
@@ -20,11 +23,6 @@
         <dependency>
             <groupId>com.vocab</groupId>
             <artifactId>Vocabulary_Management_API</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>User_Management_Impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
