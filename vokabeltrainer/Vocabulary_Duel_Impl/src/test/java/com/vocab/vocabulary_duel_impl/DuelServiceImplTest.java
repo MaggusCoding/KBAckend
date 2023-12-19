@@ -1,32 +1,33 @@
 package com.vocab.vocabulary_duel_impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management_impl.services.UserServiceImpl;
+import com.vocab.vocabulary_duel.dto.RankingPlayer;
 import com.vocab.vocabulary_duel.entities.Answer;
+import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
+import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_duel.repositories.RoundRepo;
+import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import com.vocab.vocabulary_management.entities.Flashcard;
+import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.entities.Translation;
+import com.vocab.vocabulary_management.repos.TranslationRepo;
+import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
-import com.vocab.user_management_impl.services.UserServiceImpl;
-import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
-import com.vocab.vocabulary_management.repos.TranslationRepo;
-import com.vocab.vocabulary_duel.entities.Duel;
-import com.vocab.vocabulary_management.entities.FlashcardList;
-import com.vocab.user_management.entities.UserEntity;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class DuelServiceImplTest {
@@ -39,8 +40,6 @@ public class DuelServiceImplTest {
     private DuelRepo duelRepo;
     @Mock
     private RoundRepo roundRepo;
-    @Mock
-    private Duel duel;
     @Mock
     private TranslationRepo translationRepo;
     @InjectMocks
@@ -234,6 +233,8 @@ public class DuelServiceImplTest {
         mockDuel.setRounds(rounds);
 
         when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(duelRepo.getRankingOfDuel(duelId)).thenReturn(List.of(new RankingPlayer(players.get(0).getUsername(), 6L)));
+        when(userService.findByUsername(any())).thenReturn(Optional.ofNullable(players.get(0)));
 
         // Act
         List<UserEntity> winners = duelService.calculateWinner(duelId);
@@ -243,7 +244,53 @@ public class DuelServiceImplTest {
         assertEquals(1, winners.size());
         assertEquals(players.get(0), winners.get(0)); // Player1 should be the winner
         verify(duelRepo).findById(duelId);
+        verify(duelRepo).getRankingOfDuel(duelId);
+        verify(userService).findByUsername("Player1");
     }
+
+    @Test
+    public void testCalculateWinnerNobodyWins(){
+        // Arrange
+        long duelId = 1L;
+        Duel mockDuel = new Duel();
+        List<UserEntity> players = Arrays.asList(new UserEntity(1L, "Player1"), new UserEntity(2L, "Player2"));
+        mockDuel.setPlayers(players);
+
+        List<Round> rounds = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Round round = new Round();
+            round.setDuel(mockDuel);
+            round.setActiveRound(i == 9); // last round active
+            List<Answer> answers = new ArrayList<>();
+
+            // Assuming first 6 rounds won by Player1, next 4 by Player2
+            Answer answer1 = new Answer();
+            answer1.setPlayer(players.get(0));
+            answer1.setCorrect(false);
+            Answer answer2 = new Answer();
+            answer2.setPlayer(players.get(1));
+            answer2.setCorrect(false);
+            answers.add(answer1);
+            answers.add(answer2);
+
+            round.setSelectedAnswers(answers);
+            rounds.add(round);
+        }
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(duelRepo.getRankingOfDuel(duelId)).thenReturn(List.of());
+
+        // Act
+        List<UserEntity> winners = duelService.calculateWinner(duelId);
+
+        // Assert
+        assertNotNull(winners);
+        assertEquals(0, winners.size());
+        verify(duelRepo).findById(duelId);
+        verify(duelRepo).getRankingOfDuel(duelId);
+        verify(userService, times(0)).findByUsername(any());
+    }
+
     @Test
     public void testStartDuel() {
         // Arrange
