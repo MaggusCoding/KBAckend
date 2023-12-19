@@ -12,11 +12,11 @@ public class FlashcardListFactory {
     @Autowired
     FlashcardFactory flashcardFactory;
 
-    public FlashcardList buildFlashcardListDefault(){
-        return FlashcardList.builder().category("english lesson one").flashcards(List.of(flashcardFactory.buildDefaultFlashcardWithTranslations().build())).build();
+    public FlashcardList.FlashcardListBuilder buildFlashcardListDefault(){
+        return FlashcardList.builder().category("english lesson one").flashcards(List.of(flashcardFactory.buildDefaultFlashcardWithTranslations().build()));
     }
 
-    public FlashcardList buildDefaultFlashcardListWithoutFlashcards() {
-        return FlashcardList.builder().category("english lesson one").translationLanguage("German").originalLanguage("English").build();
+    public FlashcardList.FlashcardListBuilder buildDefaultFlashcardListWithoutFlashcards() {
+        return FlashcardList.builder().category("english lesson one").translationLanguage("German").originalLanguage("English");
     }
 }

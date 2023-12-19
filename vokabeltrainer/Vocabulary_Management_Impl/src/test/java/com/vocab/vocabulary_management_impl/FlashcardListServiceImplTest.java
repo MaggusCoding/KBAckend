@@ -1,52 +1,42 @@
 package com.vocab.vocabulary_management_impl;
 
-import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management.factories.UserFactory;
-import com.vocab.user_management.repos.UserRepo;
-import com.vocab.vocabulary_duel.entities.Duel;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
-import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.factories.FlashcardListFactory;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
+import com.vocab.vocabulary_management.repos.FlashcardRepo;
+import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class FlashcardListServiceImplTest {
 
     private static final String testContent = "{{{holidays}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}" + System.lineSeparator() +
-            "{Holiday} : {Urlaub}, {Ferien}" + System.lineSeparator()+
+            "{Holiday} : {Urlaub}, {Ferien}" + System.lineSeparator() +
             "{to travel} : {reisen}, {unterwegs sein}" + System.lineSeparator() +
             "{Destination} : {Reiseziel}, {Zielort}, {Bestimmungsort}" + System.lineSeparator() +
-            "{Beach} : {Strand},{Küste},{Ufer}" + System.lineSeparator()+
-            "{Hotel} : {Hotel},{Herberge},{Gasthaus}" + System.lineSeparator()+
-            "{Tourist} : {Tourist},{Besucher},{Gast}" + System.lineSeparator()+
-            "{Adventure} : {Abenteuer},{Erlebnis},{Expedition}" + System.lineSeparator()+
-            "{Relaxation} : {Entspannung},{Erholung},{Ruhe}" + System.lineSeparator()+
-            "{Sightseeing} : {Besichtigung},{Sehenswürdigkeiten},{Stadtbesichtigung}" + System.lineSeparator()+
+            "{Beach} : {Strand},{Küste},{Ufer}" + System.lineSeparator() +
+            "{Hotel} : {Hotel},{Herberge},{Gasthaus}" + System.lineSeparator() +
+            "{Tourist} : {Tourist},{Besucher},{Gast}" + System.lineSeparator() +
+            "{Adventure} : {Abenteuer},{Erlebnis},{Expedition}" + System.lineSeparator() +
+            "{Relaxation} : {Entspannung},{Erholung},{Ruhe}" + System.lineSeparator() +
+            "{Sightseeing} : {Besichtigung},{Sehenswürdigkeiten},{Stadtbesichtigung}" + System.lineSeparator() +
             "{Souvenir} : {Souvenir},{Andenken},{Erinnerungsstück}";
 
-    private static final String testContent2 = "{{{time}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}" + System.lineSeparator() +
-            "{afternoon} : {Nachmittag}" + System.lineSeparator() +
-            "{clock} : {Uhr}" + System.lineSeparator() +
-            "{eleven} : {elf}" + System.lineSeparator() +
-            "{fifty} : {fünfzehn}" + System.lineSeparator() +
-            "{Friday} : {Freitag}" + System.lineSeparator() +
-            "{half} : {halb}" + System.lineSeparator() +
-            "{midnight} : {Mitternacht}" + System.lineSeparator() +
-            "{Monday} : {Montag}" + System.lineSeparator() +
-            "{night} : {Nacht}" + System.lineSeparator() +
-            "{past} : {nach}";
-
-    private static final String additionalContent1 = "{{{holidays}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}" + System.lineSeparator() +
+    private static final String additionalContent1 = "{{{english lesson one}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}" + System.lineSeparator() +
             "{Sunscreen} : {Sonnencreme},{Sonnenschutz},{Sonnenblocker}" + System.lineSeparator() +
             "{Cruise} : {Kreuzfahrt},{Schifffahrt},{Seereise}" + System.lineSeparator() +
             "{Explore} : {Erkunden},{Erforschen},{Entdecken}" + System.lineSeparator() +
@@ -55,105 +45,129 @@ public class FlashcardListServiceImplTest {
             "{Culture} : {Kultur},{Zivilisation},{Gesittung}" + System.lineSeparator() +
             "{Relax} : {Entspannen},{Ausruhen},{Sich erholen}" + System.lineSeparator() +
             "{Flight} : {Flug},{Flugreise},{Flugzeugreise}" + System.lineSeparator() +
-            "{Suitcase} : {Koffer},{Reisekoffer},{Gepäckstück}" + System.lineSeparator() +
+            "{originalText} : {translationText}" + System.lineSeparator() + //already exists in default flashcardlist of factory
             "{Sightseeing} : {Besichtigung},{Sehenswürdigkeiten},{Stadtbesichtigung}" + System.lineSeparator() +
             "{Train ride} : {Zugfahrt}";
 
-    @Autowired
+    @InjectMocks
     FlashcardListServiceImpl service;
 
     @Autowired
     FlashcardListFactory flashcardListFactory;
 
-    @Autowired
-    UserFactory userFactory;
-
-    @Autowired
-    UserRepo userRepo;
-
-    @Autowired
+    @Mock
     FlashcardListRepo flashcardListRepo;
 
-    @Autowired
-    DuelRepo duelRepo;
+    @Mock
+    FlashcardRepo flashcardRepo;
 
-    @AfterEach
-    void clearDb(){
-        duelRepo.deleteAll();
-        flashcardListRepo.deleteAll();
+    @Mock
+    TranslationRepo translationRepo;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testDeleteFlashcardList(){
-        FlashcardList flashcardList = flashcardListFactory.buildFlashcardListDefault();
-        flashcardListRepo.save(flashcardList);
+    void testDeleteFlashcardListExistsAndIsNotUsed() {
+        FlashcardList flashcardList = flashcardListFactory.buildFlashcardListDefault().flashcardListId(1L).build();
+        when(flashcardListRepo.existsById(flashcardList.getFlashcardListId())).thenReturn(true);
+        when(flashcardListRepo.countDuelByFlashcardList(flashcardList.getFlashcardListId())).thenReturn(0L);
 
         assertThat(service.deleteFlashcardList(flashcardList.getFlashcardListId())).isTrue();
+        verify(flashcardListRepo).existsById(anyLong());
+        verify(flashcardListRepo).countDuelByFlashcardList(anyLong());
     }
 
     @Test
-    void testDeleteFlashcardListAttachedToDuel(){
-        FlashcardList flashcardList = flashcardListRepo.save(flashcardListFactory.buildFlashcardListDefault());
-        List<UserEntity> users = userFactory.createUserListSize2();
-        userRepo.saveAll(users);
-        duelRepo.save(Duel.builder().flashcardsForDuel(flashcardList).players(users).build());
+    void testDeleteFlashcardListNotExistsAndIsNotUsed() {
+        when(flashcardListRepo.existsById(1L)).thenReturn(false);
+        when(flashcardListRepo.countDuelByFlashcardList(1L)).thenReturn(0L);
+
+        assertThat(service.deleteFlashcardList(1L)).isFalse();
+        verify(flashcardListRepo).existsById(anyLong());
+        verify(flashcardListRepo, times(0)).countDuelByFlashcardList(anyLong());
+    }
+
+    @Test
+    void testDeleteFlashcardListAttachedToDuel() {
+        FlashcardList flashcardList = flashcardListFactory.buildFlashcardListDefault().flashcardListId(1L).build();
+        when(flashcardListRepo.existsById(flashcardList.getFlashcardListId())).thenReturn(true);
+        when(flashcardListRepo.countDuelByFlashcardList(flashcardList.getFlashcardListId())).thenReturn(1L);
 
         assertThat(service.deleteFlashcardList(flashcardList.getFlashcardListId())).isFalse();
+        verify(flashcardListRepo).countDuelByFlashcardList(anyLong());
+        verify(flashcardListRepo).existsById(anyLong());
     }
 
     @Test
-    void testCreateFlashcardListExpectOk(){
-        service.createFlashcardList(testContent);
+    void testCreateFlashcardListExpectOk() {
+        when(flashcardListRepo.findByCategory(any())).thenReturn(null);
+        when(flashcardRepo.existsByOriginalText(any())).thenReturn(false);
 
-        FlashcardList list1 = flashcardListRepo.findByCategory("holidays");
+        boolean result = service.createFlashcardList(testContent);
 
-        assertThat(list1).isNotNull();
-        assertThat(list1.getCategory()).isEqualTo("holidays");
-        assertThat(list1.getOriginalLanguage()).isEqualTo("English");
-        assertThat(list1.getTranslationLanguage()).isEqualTo("Deutsch");
-        assertThat(list1.getFlashcards()).hasSize(10);
+        assertThat(result).isTrue();
+        verify(flashcardListRepo).findByCategory(any());
+        verify(flashcardListRepo).save(any());
+        verify(flashcardRepo, times(10)).existsByOriginalText(any());
+        verify(flashcardRepo, times(10)).save(any());
+        verify(translationRepo, times(28)).save(any());
 
     }
 
     @Test
-    void testGetFlashcardByFlashcardListExpectOk(){
-        service.createFlashcardList(testContent);
-        long flashcardListId = flashcardListRepo.findByCategory("holidays").getFlashcardListId();
+    void testCreateFlashcardListAddingAdditionalVocabularyToExistingFlashcardList() {
+        FlashcardList initialFlashcardList = flashcardListFactory.buildFlashcardListDefault().build();
+        when(flashcardListRepo.findByCategory(any())).thenReturn(initialFlashcardList);
+        when(flashcardRepo.existsByOriginalText("originalText")).thenReturn(true);
 
-        List<Flashcard> flashcards = service.getFlashcardsByFlashcardListId(flashcardListId);
+        boolean result = service.createFlashcardList(additionalContent1);
 
-        assertThat(flashcards).isNotNull().hasSize(10);
-        assertThat(flashcards.get(0).getOriginalText()).isEqualTo("Holiday");
-        assertThat(flashcards.get(0).getTranslations()).isNotNull().hasSize(2);
+        assertThat(result).isTrue();
+        verify(flashcardListRepo).findByCategory(any());
+        verify(flashcardListRepo, times(0)).save(any());
+        verify(flashcardRepo, times(11)).existsByOriginalText(any());
+        verify(flashcardRepo, times(10)).save(any());
+        verify(translationRepo, times(28)).save(any());
+
     }
 
     @Test
-    void testGetAllFlashcardListExpect2(){
-        service.createFlashcardList(testContent);
-        service.createFlashcardList(testContent2);
+    void testGetAllFlashcardListExpect2() {
+        FlashcardList flashcardList1 = flashcardListFactory.buildFlashcardListDefault().build();
+        FlashcardList flashcardList2 = flashcardListFactory.buildFlashcardListDefault().category("time").build();
+        when(flashcardListRepo.findAll()).thenReturn(List.of(flashcardList1, flashcardList2));
 
         List<FlashcardList> flashcardLists = service.getAll();
 
         assertThat(flashcardLists).isNotNull().hasSize(2);
-        assertThat(flashcardLists).extracting("category").contains("holidays","time");
-
+        assertThat(flashcardLists).extracting("category").contains("english lesson one", "time");
+        verify(flashcardListRepo).findAll();
     }
 
     @Test
-    void testCreateFlashcardListAddingAdditionalVocabularyToExistingFlashcardList(){
-        service.createFlashcardList(testContent);
+    void testGetFlashcardByIdExpectOk() {
+        FlashcardList expectedFlashcardList = flashcardListFactory.buildFlashcardListDefault().build();
+        when(flashcardListRepo.findById(expectedFlashcardList.getFlashcardListId())).thenReturn(Optional.of(expectedFlashcardList));
 
-        List<FlashcardList> flashcardListsBefore = service.getAll();
-        assertThat(flashcardListsBefore).isNotNull().hasSize(1);
-        assertThat(flashcardListsBefore.get(0).getFlashcards()).isNotNull().hasSize(10);
+        FlashcardList flashcardList = service.getById(expectedFlashcardList.getFlashcardListId());
 
-        service.createFlashcardList(additionalContent1);
+        assertThat(flashcardList).isNotNull();
+        assertThat(flashcardList.getFlashcardListId()).isEqualTo(expectedFlashcardList.getFlashcardListId());
+        verify(flashcardListRepo).findById(expectedFlashcardList.getFlashcardListId());
+    }
 
-        List<FlashcardList> flashcardListsAfter = service.getAll();
-        assertThat(flashcardListsAfter).isNotNull().hasSize(1);
-        assertThat(flashcardListsAfter.get(0).getCategory()).isEqualTo("holidays");
-        assertThat(flashcardListsAfter.get(0).getFlashcards()).isNotNull().hasSize(20);
+    @Test
+    void testGetFlashcardByIdExpectNoResult() {
+        FlashcardList expectedFlashcardList = flashcardListFactory.buildFlashcardListDefault().build();
+        when(flashcardListRepo.findById(expectedFlashcardList.getFlashcardListId())).thenReturn(Optional.empty());
 
+        FlashcardList flashcardList = service.getById(expectedFlashcardList.getFlashcardListId());
+
+        assertThat(flashcardList).isNull();
+        verify(flashcardListRepo).findById(expectedFlashcardList.getFlashcardListId());
     }
 
 }

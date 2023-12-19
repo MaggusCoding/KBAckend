@@ -105,7 +105,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     @Transactional
     public FlashcardList getById(Long id) {
         return flashcardListRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("FlashcardList not found with id: " + id));
+                .orElse(null);
     }
 
     /**
@@ -122,17 +122,8 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      */
     @Override
     @Transactional
-    public List<Flashcard> getFlashcardsByFlashcardListId(Long id) {
-        return flashcardRepo.findByFlashcardListId(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
     public boolean deleteFlashcardList(Long id) {
-        if (flashcardListRepo.countDuelByFlashcardList(id) > 0 || !flashcardListRepo.existsById(id)) {
+        if (!flashcardListRepo.existsById(id) || flashcardListRepo.countDuelByFlashcardList(id) > 0) {
             return false;
         }
         flashcardListRepo.deleteById(id);

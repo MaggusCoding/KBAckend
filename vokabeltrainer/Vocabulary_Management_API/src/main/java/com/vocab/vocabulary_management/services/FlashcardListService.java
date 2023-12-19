@@ -1,6 +1,5 @@
 package com.vocab.vocabulary_management.services;
 
-import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 
 import java.util.List;
@@ -27,13 +26,6 @@ public interface FlashcardListService {
      * @return All flashcard lists
      */
     List<FlashcardList> getAll();
-
-    /**
-     * Gets all Flashcards in a FlashcardList
-     * @param id The ID of the FlashcardList
-     * @return All Flashcards in the FlashcardList
-     */
-    List<Flashcard> getFlashcardsByFlashcardListId(Long id);
 
     /**
      * deletes a flashcardlist if it is not referenced by a duel.
