@@ -131,11 +131,11 @@ public class DuelServiceImpl implements DuelService {
         for (int i = 0; i < 10; i++) {
             Round round = new Round();
 
-            int randomInt = rand.nextInt(flashcards.size());
+            int randomInt = rand.nextInt(0, flashcards.size());
             Flashcard flashcard = flashcards.get(randomInt);
             List<Translation> translations = flashcard.getTranslations();
 
-            int randomIntTrans = rand.nextInt(translations.size());
+            int randomIntTrans = rand.nextInt(0, translations.size());
             Translation translation = translations.get(randomIntTrans);
             String correctAnswer = translation.getTranslationText();
 
