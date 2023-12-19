@@ -63,8 +63,9 @@ public class ConsoleApplication implements CommandLineRunner {
             print("2. Create Duel");
             print("3. Join Existing Duel");
             print("4. Start Duel");
-            print("5. Import/Delete FlashcardList");
-            print("6. Exit");
+            print("5. Delete a Duel");
+            print("6. Import/Delete FlashcardList");
+            print("7. Exit");
             print("Enter your choice: ");
             int choice = -1;
             try {
@@ -214,10 +215,10 @@ public class ConsoleApplication implements CommandLineRunner {
                             if (duelFinished) {
                                 print("All rounds were played. Let´s see who wins! ");
                                 String winners = duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(","));
-                                if(winners.isEmpty()){
+                                if (winners.isEmpty()) {
                                     print("Everybody answered wrong! Nobody wins!");
-                                }else{
-                                    print("The winner is/are " + winners) ;
+                                } else {
+                                    print("The winner is/are " + winners);
                                 }
                             }
                         } else {
@@ -225,6 +226,27 @@ public class ConsoleApplication implements CommandLineRunner {
                         }
                         break;
                     case 5:
+                        print("Delete one of the following duels: ");
+                        List<Duel> duels = duelService.getAll();
+                        duels.forEach(duelTemp -> print(duelTemp.getDuelId() + " - " + duelTemp.getFlashcardsForDuel().getCategory() + " - Players: " + duelTemp.getPlayers().stream().map(UserEntity::getUsername).collect(Collectors.joining(","))));
+                        optionInvalid = true;
+                        while (optionInvalid) {
+                            print("Enter the ID of the duel you want to delete: ");
+                            try {
+                                Long duelToDelete = scanner.nextLong();
+                                if (duelService.deleteDuel(duelToDelete)) {
+                                    print("Deletion was successful.");
+                                    optionInvalid = false;
+                                } else {
+                                    print("Couldn't delete the duel because it doesn´t exist.");
+                                }
+                            } catch (InputMismatchException e) {
+                                print("Entered ID is invalid. Try again!");
+                                scanner.next();
+                            }
+                        }
+                        break;
+                    case 6:
                         print("1. Import new FlashcardList");
                         print("2. Import initial FlashcardLists");
                         print("3. Delete a FlashcardList");
@@ -273,7 +295,7 @@ public class ConsoleApplication implements CommandLineRunner {
                                 }
                                 break;
                             case 3:
-                                print("Existing FlashcardList: ");
+                                print("Existing FlashcardLists: ");
                                 flashcardListService.getAll().forEach(flashcardList ->
                                         print(flashcardList.getFlashcardListId() + " - " + flashcardList.getCategory() + " -- " + flashcardList.getOriginalLanguage() + " - " + flashcardList.getTranslationLanguage()));
                                 print("Enter the id of the FlashcardList to delete: ");
@@ -282,19 +304,19 @@ public class ConsoleApplication implements CommandLineRunner {
                                 if (successDelete) {
                                     print("FlashcardList konnte gelöscht werden.");
                                 } else {
-                                    print("FlashcardList konnte nicht gelöscht werden. Evtl. existiert noch ein Duell, die die FlashcardList nutzt.");
+                                    print("FlashcardList konnte nicht gelöscht werden. Evtl. existiert noch ein Duel, die die FlashcardList nutzt.");
                                 }
                                 break;
                             default:
                         }
                         break;
-                    case 6:
+                    case 7:
                         exit = true;
                         break;
                     default:
-                        print("Invalid choice. Please enter a number between 1 and 6.");
+                        print("Invalid choice. Please enter a number between 1 and 7.");
                 }
-            }catch(InputMismatchException e){
+            } catch (InputMismatchException e) {
                 print("Entered ID is invalid. Try again!");
                 scanner.next();
             }

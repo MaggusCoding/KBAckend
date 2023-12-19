@@ -23,7 +23,7 @@ public class Round {
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name="flashCardId", nullable=false)
     private Flashcard questionedFlashcard;
-    @OneToMany(mappedBy = "round", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "round", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Answer> selectedAnswers;
     private String wrongAnswers;
     private boolean activeRound = false;

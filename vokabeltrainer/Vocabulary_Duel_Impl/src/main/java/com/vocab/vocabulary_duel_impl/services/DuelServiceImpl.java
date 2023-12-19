@@ -152,6 +152,20 @@ public class DuelServiceImpl implements DuelService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public boolean deleteDuel(Long duelId) {
+        if(duelRepo.existsById(duelId)){
+            duelRepo.deleteById(duelId);
+            return true;
+        }
+        return false;
+    }
+
     private List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings) {
         List<String> wrongAnswers = new ArrayList<>();
         LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();

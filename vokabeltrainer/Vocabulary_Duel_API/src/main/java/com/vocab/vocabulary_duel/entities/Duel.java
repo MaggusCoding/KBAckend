@@ -32,7 +32,7 @@ public class Duel {
     @JoinColumn(name="flashcardListId", nullable=false)
     private FlashcardList flashcardsForDuel;
 
-    @OneToMany (mappedBy = "duel", fetch = FetchType.EAGER)
+    @OneToMany (mappedBy = "duel", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Round> rounds;
 
 

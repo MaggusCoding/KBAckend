@@ -85,4 +85,12 @@ public interface DuelService {
      * @param duelId Id of duel
      */
     void generateRounds(Long duelId);
+
+    /**
+     * Deletes a duel.
+     *
+     * @param duelId Id of duel
+     * @return if deletion succeeded
+     */
+    boolean deleteDuel(Long duelId);
 }
