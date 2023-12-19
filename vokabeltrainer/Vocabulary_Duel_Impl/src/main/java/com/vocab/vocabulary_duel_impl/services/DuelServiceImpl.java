@@ -94,16 +94,19 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     public List<UserEntity> calculateWinner(Long duelId) {
-        // TODO was ist bei keinem Gewinner?? ArrayIndexOutOfBoundsException
         List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
-        Long topScore = rankingData.get(0).getAmountCorrectAnswer();
         Duel duel = duelRepo.findById(duelId).get();
+        if(rankingData.isEmpty()){
+            duel.setWinner(List.of());
+            duelRepo.save(duel);
+            return List.of();
+        }
+        Long topScore = rankingData.get(0).getAmountCorrectAnswer();
         List<UserEntity> winners = rankingData.stream()
                 .filter(data -> data.getAmountCorrectAnswer() == topScore)
                 .map(RankingPlayer::getPlayer)
                 .map(username -> userService.findByUsername(username).get())
                 .collect(Collectors.toList());
-        duel.setWinner(winners);
         duelRepo.save(duel);
         return winners;
     }

@@ -214,7 +214,12 @@ public class ConsoleApplication implements CommandLineRunner {
                             }
                             if (duelFinished) {
                                 print("All rounds were played. Let´s see who wins! ");
-                                print("The winner is/are " + duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(",")));
+                                String winners = duelService.calculateWinner(duelStart).stream().map(UserEntity::getUsername).collect(Collectors.joining(","));
+                                if(winners.isEmpty()){
+                                    print("Everybody answered wrong! Nobody wins!");
+                                }else{
+                                    print("The winner is/are " + winners) ;
+                                }
                             }
                         } else {
                             print("Apparently you didn´t join a duel.");
