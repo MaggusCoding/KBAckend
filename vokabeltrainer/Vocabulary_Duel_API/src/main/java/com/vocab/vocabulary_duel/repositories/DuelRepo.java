@@ -1,5 +1,6 @@
 package com.vocab.vocabulary_duel.repositories;
 
+import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel.dto.RankingPlayer;
 import com.vocab.vocabulary_duel.entities.Duel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,6 @@ public interface DuelRepo extends JpaRepository<Duel, Long> {
             "group by u.username " +
             "order by count(u.username) desc")
     List<RankingPlayer> getRankingOfDuel(long duelId);
+
+    boolean existsDuelByPlayersIsContaining(UserEntity user);
 }

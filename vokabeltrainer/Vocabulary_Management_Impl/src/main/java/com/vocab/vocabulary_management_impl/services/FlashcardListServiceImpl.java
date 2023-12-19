@@ -132,11 +132,11 @@ public class FlashcardListServiceImpl implements FlashcardListService {
     @Override
     @Transactional
     public boolean deleteFlashcardList(Long id) {
-        if (flashcardListRepo.countDuelByFlashcardList(id) == 0) {
-            flashcardListRepo.deleteById(id);
-            return true;
+        if (flashcardListRepo.countDuelByFlashcardList(id) > 0 || !flashcardListRepo.existsById(id)) {
+            return false;
         }
-        return false;
+        flashcardListRepo.deleteById(id);
+        return true;
     }
 
 }

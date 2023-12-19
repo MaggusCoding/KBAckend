@@ -3,6 +3,7 @@ package com.vocab.user_management_impl.services;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
+import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepository;
+
+    @Autowired
+    private DuelRepo duelRepo;
 
     public Optional<UserEntity> findByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -37,11 +41,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found with id: " + id);
+    public boolean deleteUser(Long userId) {
+        if (!userRepository.existsById(userId) || duelRepo.existsDuelByPlayersIsContaining(userRepository.findById(userId).get())) {
+            return false;
         }
-        userRepository.deleteById(id);
+        userRepository.deleteById(userId);
+        return true;
     }
 
     /**

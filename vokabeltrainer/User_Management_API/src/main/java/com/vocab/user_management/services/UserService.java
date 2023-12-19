@@ -15,10 +15,12 @@ public interface UserService {
     UserEntity createUser(String userName);
 
     /**
-     * Deletes a user from the database
+     * Deletes a user from the database if the user is not involved in a duel.
+     *
      * @param id Id of the user in question
+     * @return true if deletion succeeded; false if user participate in a duel
      */
-    void deleteUser(Long id) ;
+    boolean deleteUser(Long id) ;
 
     /**
      * Gets a user from the database by id

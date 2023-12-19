@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
  * 2. Javadoc überprüfen / Aufräumen Sachen die wir nicht brauchen
  * 3. Testfälle für alle Service Klassen neu machen mit Mockito siehe: https://github.com/MaggusCoding/webtechKassensystemBackend
  * (4.) Evtl. Model View Controller für Frontend evtl.
- * 6. Duel Lösch Funktionalität
  * 7. Einfach mal weng rumzocken in der Anwendung
  */
 @Component
@@ -60,12 +59,13 @@ public class ConsoleApplication implements CommandLineRunner {
             print("\nMain Menu:");
             print("0. Clear DB(for convenience)");
             print("1. Create/Retrieve Another Player");
-            print("2. Create Duel");
-            print("3. Join Existing Duel");
-            print("4. Start Duel");
-            print("5. Delete a Duel");
-            print("6. Import/Delete FlashcardList");
-            print("7. Exit");
+            print("2. Delete a player");
+            print("3. Create Duel");
+            print("4. Join Existing Duel");
+            print("5. Start Duel");
+            print("6. Delete a Duel");
+            print("7. Import/Delete FlashcardList");
+            print("8. Exit");
             print("Enter your choice: ");
             int choice = -1;
             try {
@@ -91,6 +91,32 @@ public class ConsoleApplication implements CommandLineRunner {
                         loggendInUser = userId;
                         break;
                     case 2:
+                        print("Delete one of the following users if the user is not involved in a duel: ");
+                        List<UserEntity> existingUsers = userService.getAll();
+                        existingUsers.forEach(existingUser -> print(existingUser.getUserId() + " - " + existingUser.getUsername()));
+                        optionInvalid = true;
+                        while (optionInvalid) {
+                            try {
+                                print("Enter the ID of the user you want to delete: ");
+                                Long userToDelete = scanner.nextLong();
+                                if (userService.deleteUser(userToDelete)) {
+                                    print("Deletion was successful.");
+                                    optionInvalid = false;
+                                } else {
+                                    if (existingUsers.stream().anyMatch(userEntity -> userEntity.getUserId().equals(userToDelete))) {
+                                        print("The user with ID " + userToDelete + " participates in a duel. Delete the duel first.");
+                                        optionInvalid = false;
+                                    } else {
+                                        print("The user with ID " + userToDelete + " does not exists.");
+                                    }
+                                }
+                            } catch (InputMismatchException e) {
+                                print("Entered ID is invalid. Try again!");
+                                scanner.next();
+                            }
+                        }
+                        break;
+                    case 3:
                         print("Select User:");
                         List<UserEntity> users = userService.getAll();
                         users.forEach(userEntity ->
@@ -143,7 +169,7 @@ public class ConsoleApplication implements CommandLineRunner {
                         duelService.generateRounds(duel.getDuelId());
                         print("Duel created with ID: " + duel.getDuelId());
                         break;
-                    case 3:
+                    case 4:
                         print("Select Duel to Join:");
                         List<Duel> duelsToJoin = duelService.duelsToJoin();
                         duelsToJoin.forEach(duel1 ->
@@ -173,7 +199,7 @@ public class ConsoleApplication implements CommandLineRunner {
                             print("Logged in User already Joined Duel");
                         }
                         break;
-                    case 4:
+                    case 5:
                         List<Duel> duelsToStart = duelService.duelsToStart(loggendInUser);
                         if (!duelsToStart.isEmpty()) {
                             print("Select Duel to Start:");
@@ -225,7 +251,7 @@ public class ConsoleApplication implements CommandLineRunner {
                             print("Apparently you didn´t join a duel.");
                         }
                         break;
-                    case 5:
+                    case 6:
                         print("Delete one of the following duels: ");
                         List<Duel> duels = duelService.getAll();
                         duels.forEach(duelTemp -> print(duelTemp.getDuelId() + " - " + duelTemp.getFlashcardsForDuel().getCategory() + " - Players: " + duelTemp.getPlayers().stream().map(UserEntity::getUsername).collect(Collectors.joining(","))));
@@ -246,7 +272,7 @@ public class ConsoleApplication implements CommandLineRunner {
                             }
                         }
                         break;
-                    case 6:
+                    case 7:
                         print("1. Import new FlashcardList");
                         print("2. Import initial FlashcardLists");
                         print("3. Delete a FlashcardList");
@@ -296,25 +322,30 @@ public class ConsoleApplication implements CommandLineRunner {
                                 break;
                             case 3:
                                 print("Existing FlashcardLists: ");
-                                flashcardListService.getAll().forEach(flashcardList ->
+                                List<FlashcardList> flashcardListLists = flashcardListService.getAll();
+                                flashcardListLists.forEach(flashcardList ->
                                         print(flashcardList.getFlashcardListId() + " - " + flashcardList.getCategory() + " -- " + flashcardList.getOriginalLanguage() + " - " + flashcardList.getTranslationLanguage()));
                                 print("Enter the id of the FlashcardList to delete: ");
                                 Long id = scanner.nextLong();
                                 boolean successDelete = flashcardListService.deleteFlashcardList(id);
                                 if (successDelete) {
-                                    print("FlashcardList konnte gelöscht werden.");
+                                    print("Deletion of Flashcardlist with ID " + id + " was successful.");
                                 } else {
-                                    print("FlashcardList konnte nicht gelöscht werden. Evtl. existiert noch ein Duel, die die FlashcardList nutzt.");
+                                    if (flashcardListLists.stream().anyMatch(flashcardList -> flashcardList.getFlashcardListId().equals(id))) {
+                                        print("FlashcardList with ID " + id + " couldn´t be deleted. It is used in a duel. Delete the duel first.");
+                                    } else {
+                                        print("FlashcardList with ID " + id + " couldn´t be deleted. It does not exist.");
+                                    }
                                 }
                                 break;
                             default:
                         }
                         break;
-                    case 7:
+                    case 8:
                         exit = true;
                         break;
                     default:
-                        print("Invalid choice. Please enter a number between 1 and 7.");
+                        print("Invalid choice. Please enter a number between 1 and 8.");
                 }
             } catch (InputMismatchException e) {
                 print("Entered ID is invalid. Try again!");
