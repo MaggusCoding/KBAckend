@@ -19,6 +19,7 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public Duel createDuel(Long userId, Long flashcardListId) {
         Duel duel = new Duel();
         duel.setFlashcardsForDuel(flashcardListService.getById(flashcardListId));
@@ -60,6 +62,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public Boolean joinDuel(long duelId, long userId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow();
         UserEntity user = userService.getById(userId);
@@ -77,6 +80,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public Optional<Duel> getById(Long id) {
         return duelRepo.findById(id);
     }
@@ -85,6 +89,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<Duel> getAll() {
         return duelRepo.findAll();
     }
@@ -93,6 +98,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<UserEntity> calculateWinner(Long duelId) {
         List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
         Duel duel = duelRepo.findById(duelId).get();
@@ -113,6 +119,7 @@ public class DuelServiceImpl implements DuelService {
 
 
     @Override
+    @Transactional
     public void generateRounds(Long duelId) {
         Random rand = new Random();
         Duel duel = duelRepo.findById(duelId).get();
@@ -183,6 +190,7 @@ public class DuelServiceImpl implements DuelService {
     }
 
     @Override
+    @Transactional
     public boolean startDuel(Long duelId) {
         Duel duel = null;
         if (duelRepo.findById(duelId).isPresent()) {
@@ -198,6 +206,7 @@ public class DuelServiceImpl implements DuelService {
     }
 
     @Override
+    @Transactional
     public List<String> playRound(Long duelId) {
         Random rand = new Random();
         List<String> roundStrings = new ArrayList<>();
@@ -211,7 +220,7 @@ public class DuelServiceImpl implements DuelService {
         }
 
 
-        Flashcard flashcard = flashcardRepo.findById(activeRound.getQuestionedFlashcard().getFlashCardId()).get();
+        Flashcard flashcard = activeRound.getQuestionedFlashcard();
         String question = flashcard.getOriginalText();
 
         List<Translation> translations = flashcard.getTranslations();
@@ -231,6 +240,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new RuntimeException("Duel(ID: " + duelId + ") does not exist."));
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
@@ -246,6 +256,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void activateNextRound(Long duelId) {
         Duel duel = duelRepo.findById(duelId).get();
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
@@ -267,6 +278,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<Duel> duelsToJoin() {
         return duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse();
     }
@@ -275,6 +287,7 @@ public class DuelServiceImpl implements DuelService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<Duel> duelsToStart(Long userId){
         UserEntity user = userService.getById(userId);
         List<Duel> possibleDuels = duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse();

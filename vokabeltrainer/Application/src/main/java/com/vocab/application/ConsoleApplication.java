@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
  * (4.) Evtl. Model View Controller für Frontend evtl.
  * 6. Duel Lösch Funktionalität
  * 7. Einfach mal weng rumzocken in der Anwendung
- * 8. ALle Service Klassen mit Transactional annotieren
  */
 @Component
 public class ConsoleApplication implements CommandLineRunner {
@@ -205,10 +204,10 @@ public class ConsoleApplication implements CommandLineRunner {
                                 if (!playOneRound(flashcardString, scanner, duelStart)) {
                                     break;
                                 }
-                                flashcardString = duelService.playRound(duelStart);
                                 if (x == 10) {
                                     duelFinished = true;
                                 } else {
+                                    flashcardString = duelService.playRound(duelStart);
                                     print("Let´s begin the next round!");
                                 }
                             }

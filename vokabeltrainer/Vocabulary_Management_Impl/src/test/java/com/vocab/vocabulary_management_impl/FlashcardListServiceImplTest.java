@@ -1,8 +1,8 @@
 package com.vocab.vocabulary_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.factories.UserFactory;
+import com.vocab.user_management.repos.UserRepo;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_management.entities.Flashcard;
@@ -10,7 +10,7 @@ import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.factories.FlashcardListFactory;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -77,7 +77,7 @@ public class FlashcardListServiceImplTest {
     @Autowired
     DuelRepo duelRepo;
 
-    @BeforeEach
+    @AfterEach
     void clearDb(){
         duelRepo.deleteAll();
         flashcardListRepo.deleteAll();

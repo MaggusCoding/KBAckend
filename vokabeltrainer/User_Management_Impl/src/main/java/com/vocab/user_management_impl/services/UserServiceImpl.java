@@ -6,16 +6,17 @@ import com.vocab.user_management.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
+@Transactional
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepository;
-
 
     public Optional<UserEntity> findByUsername(String username) {
         return userRepository.findByUsername(username);

@@ -10,6 +10,7 @@ import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public Boolean createFlashcardList(String content) {
         List<String> lines = List.of(content.split(System.lineSeparator()));
         FlashcardList flashcardList = new FlashcardList();
@@ -59,7 +61,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
                 addFlashcardsToFlashcardlist(existingFlashcardlist, line);
             }
         }
-        flashcardListRepo.flush();
+//        flashcardListRepo.flush();
         return true;
     }
 
@@ -100,6 +102,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public FlashcardList getById(Long id) {
         return flashcardListRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("FlashcardList not found with id: " + id));
@@ -109,6 +112,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<FlashcardList> getAll() {
         return flashcardListRepo.findAll();
     }
@@ -117,6 +121,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<Flashcard> getFlashcardsByFlashcardListId(Long id) {
         return flashcardRepo.findByFlashcardListId(id);
     }
@@ -125,6 +130,7 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public boolean deleteFlashcardList(Long id) {
         if (flashcardListRepo.countDuelByFlashcardList(id) == 0) {
             flashcardListRepo.deleteById(id);
