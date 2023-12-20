@@ -3,11 +3,11 @@ package com.vocab.user_management_impl;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management_impl.services.UserServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-@Import(UserServiceImpl.class)
-
-
 public class UserServiceImplTest {
 
     @Autowired
@@ -32,7 +29,6 @@ public class UserServiceImplTest {
 
     @BeforeEach
     public void setup() {
-        userRepo.deleteAll(); // Setzt die Datenbank zurück
 
         // Erstelle und füge einige Test-UserEntity-Objekte hinzu
         user1 = new UserEntity();
@@ -42,6 +38,11 @@ public class UserServiceImplTest {
         user2 = new UserEntity();
         user2.setUsername("testuser2");
         userRepo.save(user2);
+    }
+
+    @AfterEach
+    public void tearDown(){
+        userRepo.deleteAll(); // Setzt die Datenbank zurück
     }
 
     @Test
@@ -77,6 +78,20 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void testDeleteNotPersistedUser(){
+        // Erstelle User-Objekt, aber es wird nicht persistiert
+        UserEntity newUser = new UserEntity();
+        newUser.setUserId(-1L);
+        newUser.setUsername("notPersistedUser");
+
+        // Führe Löschung durch
+        boolean deleteSuccess = userService.deleteUser(newUser.getUserId());
+
+        // Prüfe, dass nichts gelöscht wurde
+        assertFalse(deleteSuccess, "Benutzer wurde nicht gelöscht");
+    }
+
+    @Test
     public void testGetById() {
         UserEntity foundUser = userService.getById(user1.getUserId());
 
@@ -97,7 +112,7 @@ public class UserServiceImplTest {
 
         // Überprüfe, ob alle Benutzer abgerufen wurden
         assertTrue(users.size() >= 2, "Nicht alle Benutzer wurden abgerufen");
-        assertTrue(users.stream().anyMatch(u -> u.getUsername().equals("user1")), "Benutzer 1 wurde nicht abgerufen");
-        assertTrue(users.stream().anyMatch(u -> u.getUsername().equals("user2")), "Benutzer 2 wurde nicht abgerufen");
+        assertTrue(users.stream().anyMatch(u -> u.getUsername().equals("testuser1")), "Benutzer 1 wurde nicht abgerufen");
+        assertTrue(users.stream().anyMatch(u -> u.getUsername().equals("testuser2")), "Benutzer 2 wurde nicht abgerufen");
     }
 }
