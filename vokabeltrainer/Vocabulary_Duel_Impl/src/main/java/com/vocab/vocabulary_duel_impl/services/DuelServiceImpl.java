@@ -103,8 +103,6 @@ public class DuelServiceImpl implements DuelService {
         List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
         Duel duel = duelRepo.findById(duelId).get();
         if(rankingData.isEmpty()){
-            duel.setWinner(List.of());
-            duelRepo.save(duel);
             return List.of();
         }
         Long topScore = rankingData.get(0).getAmountCorrectAnswer();

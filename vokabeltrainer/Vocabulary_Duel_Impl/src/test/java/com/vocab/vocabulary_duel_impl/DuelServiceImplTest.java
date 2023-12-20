@@ -263,7 +263,7 @@ public class DuelServiceImplTest {
             round.setActiveRound(i == 9); // last round active
             List<Answer> answers = new ArrayList<>();
 
-            // Assuming first 6 rounds won by Player1, next 4 by Player2
+            // Assuming all rounds users answers wrong
             Answer answer1 = new Answer();
             answer1.setPlayer(players.get(0));
             answer1.setCorrect(false);

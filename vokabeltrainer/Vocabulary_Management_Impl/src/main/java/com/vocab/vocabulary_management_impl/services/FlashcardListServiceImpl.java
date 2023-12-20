@@ -61,7 +61,6 @@ public class FlashcardListServiceImpl implements FlashcardListService {
                 addFlashcardsToFlashcardlist(existingFlashcardlist, line);
             }
         }
-//        flashcardListRepo.flush();
         return true;
     }
 

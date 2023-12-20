@@ -35,8 +35,7 @@ public class ImportServiceImpl implements ImportService {
         if (content.isEmpty() || content.trim().isBlank()) {
             return false;
         }
-        flashcardListService.createFlashcardList(content);
-        return true;
+        return flashcardListService.createFlashcardList(content);
     }
 
 
@@ -49,10 +48,9 @@ public class ImportServiceImpl implements ImportService {
 
         for (String filename : files) {
             String content = readFile(filename);
-            if (content.isEmpty()) {
+            if (content.isEmpty() || content.trim().isBlank() || !flashcardListService.createFlashcardList(content)) {
                 return false;
             }
-            flashcardListService.createFlashcardList(content);
         }
         return true;
     }
