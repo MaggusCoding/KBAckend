@@ -185,7 +185,7 @@ public class DuelServiceImplTest {
         verify(answerRepo).save(any(Answer.class));
     }
     @Test
-    public void testActivateNextRound_AllRoundsPlayed() {
+    public void testActivateNextRound() {
         // Arrange
         long duelId = 1L;
         Duel mockDuel = new Duel();
