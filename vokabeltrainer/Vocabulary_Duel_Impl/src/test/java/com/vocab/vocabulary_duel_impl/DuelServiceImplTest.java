@@ -6,6 +6,7 @@ import com.vocab.vocabulary_duel.dto.RankingPlayer;
 import com.vocab.vocabulary_duel.entities.Answer;
 import com.vocab.vocabulary_duel.entities.Duel;
 import com.vocab.vocabulary_duel.entities.Round;
+import com.vocab.vocabulary_duel.repositories.AnswerRepo;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_duel.repositories.RoundRepo;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
@@ -21,10 +22,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,6 +40,8 @@ public class DuelServiceImplTest {
     private RoundRepo roundRepo;
     @Mock
     private TranslationRepo translationRepo;
+    @Mock
+    private AnswerRepo answerRepo;
     @InjectMocks
     private DuelServiceImpl duelService;
 
@@ -92,8 +92,202 @@ public class DuelServiceImplTest {
         assertEquals(Optional.of(mockDuel), result);
         verify(duelRepo).findById(duelId);
     }
+    @Test
+    public void testDeleteDuel() {
+        // Arrange
+        long duelId = 1L;
+        when(duelRepo.existsById(duelId)).thenReturn(true);
+
+        // Act
+        boolean result = duelService.deleteDuel(duelId);
+
+        // Assert
+        assertTrue(result);
+        verify(duelRepo).existsById(duelId);
+        verify(duelRepo).deleteById(duelId);
+    }
+    @Test
+    public void testPlayRound() {
+        // Arrange
+        long duelId = 1L;
+        Duel mockDuel = mock(Duel.class, RETURNS_DEEP_STUBS);
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+
+        Round activeRound = mock(Round.class);
+        Flashcard mockFlashcard = mock(Flashcard.class);
+        Translation mockTranslation = mock(Translation.class);
+        List<Translation> translations = Collections.singletonList(mockTranslation);
+
+        when(mockDuel.getRounds()).thenReturn(Collections.singletonList(activeRound));
+        when(activeRound.isActiveRound()).thenReturn(true);
+        when(activeRound.getQuestionedFlashcard()).thenReturn(mockFlashcard);
+        when(mockFlashcard.getOriginalText()).thenReturn("Question");
+        when(mockFlashcard.getTranslations()).thenReturn(translations);
+        when(mockTranslation.getTranslationText()).thenReturn("Correct Answer");
+        when(activeRound.getWrongAnswers()).thenReturn("Wrong Answer 1;Wrong Answer 2");
+
+        // Act
+        List<String> result = duelService.playRound(duelId);
+
+        // Assert
+        assertNotNull(result);
+
+        assertTrue(result.contains("Question"));
+        assertTrue(result.contains("Wrong Answer 1"));
+        assertTrue(result.contains("Wrong Answer 2"));
+        assertTrue(result.contains("Correct Answer"));
+
+        verify(duelRepo).findById(duelId);
+        verify(activeRound, atLeastOnce()).getQuestionedFlashcard();
+        verify(mockFlashcard, atLeastOnce()).getOriginalText();
+        verify(mockFlashcard, atLeastOnce()).getTranslations();
+        verify(mockTranslation, atLeastOnce()).getTranslationText();
+        verify(activeRound, atLeastOnce()).getWrongAnswers();
+    }
 
 
+    @Test
+    public void testSaveSelectedAnswer() {
+        // Arrange
+        Long duelId = 1L;
+        Long playerId = 1L;
+
+        // Create a mock Duel
+        Duel mockDuel = new Duel();
+        mockDuel.setDuelId(duelId);
+
+        // Create a mock UserEntity
+        UserEntity mockUser = new UserEntity();
+        mockUser.setUserId(playerId);
+
+        // Create a mock Translation
+        Translation mockTranslation = new Translation();
+        mockTranslation.setTranslationText("Answer");
+
+        // Create a mock Flashcard with a Translation
+        Flashcard mockFlashcard = new Flashcard();
+        mockFlashcard.setOriginalText("Question");
+        mockFlashcard.setTranslations(Collections.singletonList(mockTranslation));
+
+        // Create a mock Round with a valid questionedFlashcard
+        Round mockRound = new Round();
+        mockRound.setDuel(mockDuel);
+        mockRound.setQuestionedFlashcard(mockFlashcard);
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(roundRepo.findRoundByDuelAndActiveRoundTrue(mockDuel)).thenReturn(mockRound);
+        when(userService.getById(playerId)).thenReturn(mockUser);
+
+        // Act
+        duelService.saveSelectedAnswer("Answer", duelId, playerId);
+
+        // Assert
+        verify(answerRepo).save(any(Answer.class));
+    }
+    @Test
+    public void testActivateNextRound_AllRoundsPlayed() {
+        // Arrange
+        long duelId = 1L;
+        Duel mockDuel = new Duel();
+        mockDuel.setDuelId(duelId);
+
+        Round currentRound = new Round();
+        currentRound.setDuel(mockDuel);
+        currentRound.setActiveRound(true);
+
+        // Simulate that there are no more rounds to play
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(roundRepo.findRoundByDuelAndActiveRoundTrue(mockDuel)).thenReturn(currentRound);
+        when(roundRepo.findFirstByDuelAndSelectedAnswersEmpty(mockDuel)).thenReturn(null); // No next round
+
+        // Act
+        duelService.activateNextRound(duelId);
+
+        // Assert
+        assertFalse(currentRound.isActiveRound()); // Current round should be deactivated
+        verify(roundRepo).findRoundByDuelAndActiveRoundTrue(mockDuel);
+
+        // Verify that when there are no more rounds, the duel is set as finished
+        verify(roundRepo, never()).save(any(Round.class)); // No rounds saved when there are no more rounds to play
+        verify(duelRepo).save(mockDuel); // Duel should be saved to set it as finished
+    }
+
+    @Test
+    public void testDuelsToJoin() {
+        // Arrange
+        UserEntity mockUser = new UserEntity();
+        mockUser.setUserId(1L);
+
+        Duel mockDuel1 = new Duel();
+        mockDuel1.setStarted(false);
+        mockDuel1.setFinished(false);
+        mockDuel1.setPlayers(Collections.singletonList(mockUser));
+
+        Duel mockDuel2 = new Duel();
+        mockDuel1.setStarted(false);
+        mockDuel1.setFinished(false);
+        mockDuel1.setPlayers(Collections.singletonList(mockUser));
+
+        List<Duel> mockDuels = Arrays.asList(mockDuel1, mockDuel2);
+
+        when(duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse()).thenReturn(mockDuels);
+        when(userService.getById(mockUser.getUserId())).thenReturn(mockUser);
+
+        // Act
+        List<Duel> result = duelService.duelsToJoin();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size()); // Only the first duel is eligible to join
+        assertEquals(mockDuel1, result.get(0));
+
+        verify(duelRepo).findDuelsByStartedIsFalseAndFinishedIsFalse();
+    }
+
+    @Test
+    public void testDuelsToStart() {
+        // Arrange
+        UserEntity mockUser = new UserEntity();
+        mockUser.setUserId(1L);
+
+        Duel mockDuel1 = new Duel();
+        mockDuel1.setStarted(false);
+        mockDuel1.setFinished(false);
+        mockDuel1.setPlayers(Collections.singletonList(mockUser));
+
+        Duel mockDuel2 = new Duel();
+        mockDuel1.setStarted(false);
+        mockDuel1.setFinished(false);
+        mockDuel1.setPlayers(Collections.singletonList(mockUser));
+
+        List<Duel> mockDuels = Arrays.asList(mockDuel1, mockDuel2);
+
+        when(duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse()).thenReturn(mockDuels);
+        when(userService.getById(mockUser.getUserId())).thenReturn(mockUser);
+
+        // Act
+        List<Duel> result = duelService.duelsToJoin();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size()); // Only the first duel is eligible to join
+        assertEquals(mockDuel1, result.get(0));
+
+        verify(duelRepo).findDuelsByStartedIsFalseAndFinishedIsFalse();
+    }
+    @Test
+    public void testGenerateWrongAnswers() {
+        // Arrange
+        String correctAnswer = "CorrectAnswer";
+        List<String> allTranslationStrings = Arrays.asList("CorrectAnswerr", "CorrectAnswerrr", "CorrectAnswerrrr", "CorrectAnswerrrrrr", "CorrectAnswerrrrrrr", "CorrectAnswerrrrrrr");
+
+        // Act
+        List<String> result = duelService.generateWrongAnswers(correctAnswer, allTranslationStrings);
+
+        // Assert
+        assertEquals(List.of("CorrectAnswerr","CorrectAnswerrr","CorrectAnswerrrr"),result);
+
+    }
     @Test
     public void testGetAll() {
         // Arrange

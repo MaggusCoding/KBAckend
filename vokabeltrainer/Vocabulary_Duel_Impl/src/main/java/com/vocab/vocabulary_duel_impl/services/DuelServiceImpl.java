@@ -115,7 +115,9 @@ public class DuelServiceImpl implements DuelService {
         return winners;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void generateRounds(Long duelId) {
@@ -164,7 +166,7 @@ public class DuelServiceImpl implements DuelService {
         return false;
     }
 
-    private List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings) {
+    public List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings) {
         List<String> wrongAnswers = new ArrayList<>();
         LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
 

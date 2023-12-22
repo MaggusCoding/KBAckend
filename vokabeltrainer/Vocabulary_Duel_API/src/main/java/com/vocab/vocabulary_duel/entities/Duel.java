@@ -11,6 +11,8 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -42,5 +44,18 @@ public class Duel {
     public void setPlayer(UserEntity player){
         this.players.add(player);
     }
+    @Override
+    public String toString() {
+        String playerInfo = players != null
+                ? players.stream().map(user -> "Player ID: " + user.getUserId()).collect(Collectors.joining(", "))
+                : "null";
 
+        return "Duel{" +
+                "duelId=" + duelId +
+                ", flashcardsForDuel=" + (flashcardsForDuel != null ? flashcardsForDuel.getFlashcardListId() : null) +
+                ", players=" + playerInfo +
+                ", started=" + started +
+                ", finished=" + finished +
+                '}';
+    }
 }

@@ -27,4 +27,13 @@ public class Round {
     private List<Answer> selectedAnswers;
     private String wrongAnswers;
     private boolean activeRound = false;
+    @Override
+    public String toString() {
+        return "Round{" +
+                "roundId=" + roundId +
+                ", questionedFlashcard=" + (questionedFlashcard != null ? questionedFlashcard.getOriginalText() : null) +
+                ", wrongAnswers='" + wrongAnswers + '\'' +
+                ", activeRound=" + activeRound +
+                '}';
+    }
 }
