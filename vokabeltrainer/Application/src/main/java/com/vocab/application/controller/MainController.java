@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
 @Controller
 public class MainController {
 
@@ -11,6 +12,8 @@ public class MainController {
     private final DuelController duelController;
     private final FlashcardListController flashcardListController;
     private final DatabaseController databaseController;
+
+    private Long loggedInUser = null;
 
     public MainController(UserController userController, DuelController duelController,
                           FlashcardListController flashcardListController,
@@ -27,7 +30,7 @@ public class MainController {
         while (!exit) {
             System.out.println("\nMain Menu:");
             System.out.println("0. Clear DB (for convenience)");
-            System.out.println("1. Create/Retrieve Another Player");
+            System.out.println("1. Create/Retrieve a Player");
             System.out.println("2. Delete a player");
             System.out.println("3. Create Duel");
             System.out.println("4. Join Existing Duel");
@@ -45,19 +48,35 @@ public class MainController {
                         databaseController.clearDatabase(scanner);
                         break;
                     case 1:
-                        userController.createUser(scanner);
+                        loggedInUser = userController.createUser(scanner);
                         break;
                     case 2:
-                        userController.deleteUser(scanner);
+                        if (loggedInUser != null) {
+                            userController.deleteUser(scanner, loggedInUser);
+                        } else {
+                            System.out.println("Please retrieve a user.");
+                        }
                         break;
                     case 3:
-                        duelController.createDuel(scanner);
+                        if (loggedInUser != null) {
+                            duelController.createDuel(scanner, loggedInUser);
+                        } else {
+                            System.out.println("Please retrieve a user.");
+                        }
                         break;
-                    case    4:
-                        duelController.joinDuel(scanner);
+                    case 4:
+                        if (loggedInUser != null) {
+                            duelController.joinDuel(scanner, loggedInUser);
+                        } else {
+                            System.out.println("Please retrieve a user.");
+                        }
                         break;
                     case 5:
-                        duelController.startDuel(scanner);
+                        if (loggedInUser != null) {
+                            duelController.startDuel(scanner, loggedInUser);
+                        } else {
+                            System.out.println("Please retrieve a user.");
+                        }
                         break;
                     case 6:
                         duelController.deleteDuel(scanner);
@@ -76,6 +95,8 @@ public class MainController {
                 scanner.next(); // clear the incorrect input
             }
         }
+        System.out.println("Have a nice day!");
+        System.exit(0);
     }
 }
 

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
 @Controller
 public class FlashcardListController {
     private final FlashcardListServiceImpl flashcardListService;
@@ -21,6 +22,7 @@ public class FlashcardListController {
     }
 
     public void manageFlashcardList(Scanner scanner) {
+        System.out.println("0. Go back");
         System.out.println("1. Import new FlashcardList");
         System.out.println("2. Import initial FlashcardLists");
         System.out.println("3. Delete a FlashcardList");
@@ -31,7 +33,7 @@ public class FlashcardListController {
         while (optionInvalid) {
             try {
                 option = scanner.nextInt();
-                if (0 < option && option < 4) {
+                if (0 <= option && option < 4) {
                     optionInvalid = false;
                 } else {
                     System.out.println("Entered ID is invalid. Try again!");
@@ -42,17 +44,21 @@ public class FlashcardListController {
             }
         }
         switch (option) {
+            case 0:
+                break;
             case 1:
                 System.out.println("Enter an absolute filepath: ");
                 String path = scanner.next();
                 try {
                     if (importService.importFile(path)) {
                         System.out.println("Importing new Flashcardlist was successful.");
+                    } else {
+                        System.out.println("Importing Flashcardlist was unsuccessful. The file might be empty.");
                     }
                 } catch (FileNotFoundException fex) {
-                    System.out.println("Zu dem angegebenen Pfad existiert keine Datei. Pfad: " + path);
+                    System.out.println("No file found at the given path. Path: " + path);
                 } catch (Exception ex) {
-                    System.out.println("Etwas ist schief gelaufen. Kontaktieren Sie ihren Administrator.");
+                    System.out.println("Something went wrong. Contact your administrator.");
                 }
                 break;
             case 2:
@@ -63,9 +69,9 @@ public class FlashcardListController {
                     }
                 } catch (IOException ioex) {
                     if (ioex instanceof FileNotFoundException) {
-                        System.out.println("Zu dem angegebenen Pfad existiert keine Datei. Fehlernachricht: " + ioex.getMessage());
+                        System.out.println("No files found at the default path.");
                     } else {
-                        System.out.println("Etwas ist schief gelaufen. Kontaktieren Sie ihren Administrator.");
+                        System.out.println("Something went wrong. Contact your administrator.");
                     }
                 }
                 break;
@@ -74,16 +80,34 @@ public class FlashcardListController {
                 List<FlashcardList> flashcardListLists = flashcardListService.getAll();
                 flashcardListLists.forEach(flashcardList ->
                         System.out.println(flashcardList.getFlashcardListId() + " - " + flashcardList.getCategory() + " -- " + flashcardList.getOriginalLanguage() + " - " + flashcardList.getTranslationLanguage()));
-                System.out.println("Enter the id of the FlashcardList to delete: ");
-                Long id = scanner.nextLong();
-                boolean successDelete = flashcardListService.deleteFlashcardList(id);
-                if (successDelete) {
-                    System.out.println("Deletion of Flashcardlist with ID " + id + " was successful.");
-                } else {
-                    if (flashcardListLists.stream().anyMatch(flashcardList -> flashcardList.getFlashcardListId().equals(id))) {
-                        System.out.println("FlashcardList with ID " + id + " couldn´t be deleted. It is used in a duel. Delete the duel first.");
+                System.out.println("Enter the id of the FlashcardList to delete or '0' to go back: ");
+                Long id = 0L;
+                optionInvalid = true;
+                while (optionInvalid) {
+                    try {
+                        id = scanner.nextLong();
+                        Long finalId1 = id;
+                        if (flashcardListLists.stream().anyMatch(flashcardList -> flashcardList.getFlashcardListId().equals(finalId1)) || finalId1.equals(0L)) {
+                            optionInvalid = false;
+                        } else {
+                            System.out.println("Entered ID is invalid. Try again!");
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Entered ID is invalid. Try again!");
+                        scanner.next();
+                    }
+                }
+                if (id > 0) {
+                    boolean successDelete = flashcardListService.deleteFlashcardList(id);
+                    if (successDelete) {
+                        System.out.println("Deletion of Flashcardlist with ID " + id + " was successful.");
                     } else {
-                        System.out.println("FlashcardList with ID " + id + " couldn´t be deleted. It does not exist.");
+                        Long finalId = id;
+                        if (flashcardListLists.stream().anyMatch(flashcardList -> flashcardList.getFlashcardListId().equals(finalId))) {
+                            System.out.println("FlashcardList with ID " + id + " couldn´t be deleted. It is used in a duel. Delete the duel first.");
+                        } else {
+                            System.out.println("FlashcardList with ID " + id + " couldn´t be deleted. It does not exist.");
+                        }
                     }
                 }
         }

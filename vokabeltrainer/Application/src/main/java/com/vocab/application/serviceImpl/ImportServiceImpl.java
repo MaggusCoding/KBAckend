@@ -24,7 +24,7 @@ public class ImportServiceImpl implements ImportService {
     @Autowired
     FlashcardListService flashcardListService;
 
-    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + "\\vocabFiles\\";
+    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + File.separator + "vocabFiles" + File.separator;
 
     /**
      * {@inheritDoc}

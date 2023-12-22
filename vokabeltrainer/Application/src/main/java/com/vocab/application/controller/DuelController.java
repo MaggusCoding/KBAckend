@@ -21,37 +21,15 @@ public class DuelController {
     private final UserServiceImpl userService;
     private final FlashcardListServiceImpl flashcardListService;
 
-    private Long loggendInUser = 1L;
+    private Long currentPlayerOfDuel = 0L;
 
     public DuelController(DuelServiceImpl duelService, UserServiceImpl userService, FlashcardListServiceImpl flashcardListService) {
         this.duelService = duelService;
         this.userService = userService;
         this.flashcardListService = flashcardListService;
-        this.loggendInUser = userService.createUser("god").getUserId();
     }
 
-    public void createDuel(Scanner scanner) {
-        System.out.println("Select User:");
-        List<UserEntity> users = userService.getAll();
-        users.forEach(user -> System.out.println(user.getUserId() + " - " + user.getUsername()));
-
-        Long userIdDuel = null;
-        boolean optionInvalid = true;
-        while (optionInvalid) {
-            System.out.print("Enter ID of the user: ");
-            try {
-                userIdDuel = scanner.nextLong();
-                Long finalUserIdDuel = userIdDuel;
-                if (users.stream().anyMatch(user -> user.getUserId().equals(finalUserIdDuel))) {
-                    optionInvalid = false;
-                } else {
-                    System.out.println("Entered ID is invalid. Try again!");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Entered ID is invalid. Try again!");
-                scanner.next();
-            }
-        }
+    public void createDuel(Scanner scanner, Long loggedInUser) {
 
         System.out.println("Available Flashcard Lists:");
         List<FlashcardList> flashcardLists = flashcardListService.getAll();
@@ -59,14 +37,16 @@ public class DuelController {
                 System.out.println(flashcardList.getFlashcardListId() + " - " + flashcardList.getCategory()));
 
         Long flashcardListId = null;
-        optionInvalid = true;
+        boolean optionInvalid = true;
         while (optionInvalid) {
-            System.out.print("Enter the ID of the Flashcard List for the duel: ");
+            System.out.print("Enter the ID of the Flashcard List for the duel or '0' to go back: ");
             try {
                 flashcardListId = scanner.nextLong();
                 Long finalFlashcardListId = flashcardListId;
                 if (flashcardLists.stream().anyMatch(flashcardList -> flashcardList.getFlashcardListId().equals(finalFlashcardListId))) {
                     optionInvalid = false;
+                } else if (flashcardListId.equals(0L)) {
+                    return;
                 } else {
                     System.out.println("Entered ID is invalid. Try again!");
                 }
@@ -76,26 +56,28 @@ public class DuelController {
             }
         }
 
-        Duel duel = duelService.createDuel(userIdDuel, flashcardListId);
+        Duel duel = duelService.createDuel(loggedInUser, flashcardListId);
         duelService.generateRounds(duel.getDuelId());
         System.out.println("Duel created with ID: " + duel.getDuelId());
     }
 
-    public void joinDuel(Scanner scanner) {
+    public void joinDuel(Scanner scanner, Long loggedInUser) {
         System.out.println("Select Duel to Join:");
-        List<Duel> duelsToJoin = duelService.duelsToJoin();
+        List<Duel> duelsToJoin = duelService.duelsToJoin(loggedInUser);
         duelsToJoin.forEach(duel ->
                 System.out.println(duel.getDuelId() + " - " + duel.getFlashcardsForDuel().getCategory()));
 
         Long duelId = null;
         boolean optionInvalid = true;
         while (optionInvalid) {
-            System.out.print("Enter the ID of the Duel to Join: ");
+            System.out.print("Enter the ID of the Duel to Join or '0' to go back: ");
             try {
                 duelId = scanner.nextLong();
                 Long finalDuelId = duelId;
                 if (duelsToJoin.stream().anyMatch(duel -> duel.getDuelId().equals(finalDuelId))) {
                     optionInvalid = false;
+                } else if (duelId.equals(0L)) {
+                    return;
                 } else {
                     System.out.println("Entered ID is invalid. Try again!");
                 }
@@ -105,7 +87,7 @@ public class DuelController {
             }
         }
 
-        boolean success = duelService.joinDuel(duelId, loggendInUser);
+        boolean success = duelService.joinDuel(duelId, loggedInUser);
         if (success) {
             System.out.println("Successfully joined Duel");
         } else {
@@ -113,8 +95,8 @@ public class DuelController {
         }
     }
 
-    public void startDuel(Scanner scanner) {
-        List<Duel> duelsToStart = duelService.duelsToStart(loggendInUser);
+    public void startDuel(Scanner scanner, Long loggedInUser) {
+        List<Duel> duelsToStart = duelService.duelsToStart(loggedInUser);
         if (!duelsToStart.isEmpty()) {
             System.out.println("Select Duel to Start:");
             duelsToStart.forEach(duel1 ->
@@ -122,12 +104,14 @@ public class DuelController {
             boolean optionInvalid = true;
             Long duelStart = null;
             while (optionInvalid) {
-                System.out.println("Enter the ID of the Duel to start:");
+                System.out.println("Enter the ID of the Duel to start or '0' to go back:");
                 try {
                     duelStart = scanner.nextLong();
                     Long finalDuelStart = duelStart;
                     if (duelsToStart.stream().anyMatch(duelTemp2 -> duelTemp2.getDuelId().equals(finalDuelStart))) {
                         optionInvalid = false;
+                    } else if (duelStart.equals(0L)) {
+                        return;
                     } else {
                         System.out.println("Entered ID is invalid. Try again!");
                     }
@@ -138,10 +122,11 @@ public class DuelController {
             }
             duelService.startDuel(duelStart);
             List<String> flashcardString = duelService.playRound(duelStart);
+            currentPlayerOfDuel = loggedInUser;
             boolean duelFinished = false;
             for (int x = 1; x <= 10; x++) {
                 System.out.println("#################### round " + x + "/10 ####################");
-                // Player abort the round
+                // Player abort the round?
                 if (!playOneRound(flashcardString, scanner, duelStart)) {
                     break;
                 }
@@ -172,24 +157,36 @@ public class DuelController {
         duels.forEach(duel ->
                 System.out.println(duel.getDuelId() + " - " + duel.getFlashcardsForDuel().getCategory()));
 
-        System.out.print("Enter the ID of the Duel to delete: ");
+        System.out.print("Enter the ID of the Duel to delete or '0' to go back: ");
         Long duelId = null;
-        try {
-            duelId = scanner.nextLong();
-            duelService.deleteDuel(duelId);
+        boolean optionInvalid = true;
+        while (optionInvalid) {
+            try {
+                duelId = scanner.nextLong();
+                Long finalDuelId = duelId;
+                if (duels.stream().anyMatch(duel -> duel.getDuelId().equals(finalDuelId))) {
+                    optionInvalid = false;
+                } else if (duelId.equals(0L)) {
+                    return;
+                } else {
+                    System.out.println("Entered ID is invalid. Try again!");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid Duel ID.");
+                scanner.next(); // Consume the invalid input
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+        if (duelService.deleteDuel(duelId)) {
             System.out.println("Duel deleted successfully.");
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid Duel ID.");
-            scanner.next(); // Consume the invalid input
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 
     private boolean playOneRound(List<String> flashcardString, Scanner scanner, Long duelStart) {
         boolean allUsersPlayed = false;
         while (!allUsersPlayed) {
-            System.out.println("#################### You are now " + userService.getById(loggendInUser).getUsername() + " ####################");
+            System.out.println("#################### You are now " + userService.getById(currentPlayerOfDuel).getUsername() + " ####################");
             System.out.println("What is the translation for: " + flashcardString.get(0) + "? (Enter the id of the answer.)");
 
             for (int i = 1; i < 5; i++) {
@@ -211,7 +208,7 @@ public class DuelController {
                 }
             }
             System.out.println("Your answer: " + flashcardString.get(selectedAnswer));
-            duelService.saveSelectedAnswer(flashcardString.get(selectedAnswer), duelStart, loggendInUser);
+            duelService.saveSelectedAnswer(flashcardString.get(selectedAnswer), duelStart, currentPlayerOfDuel);
 
             boolean nextPlayerChosen = false;
             while (!nextPlayerChosen) {
@@ -223,11 +220,11 @@ public class DuelController {
                         nextPlayerChosen = true;
                         break;
                     case -2:
-                        System.out.println("Typed username does not exist. Choose other player!");
-                        break;
-                    case -3:
                         // Typed exit
                         return false;
+                    case -3:
+                        System.out.println("Typed username does not exist. Choose other player!");
+                        break;
                     case -4:
                         System.out.println("This user already played this round! Choose other player!");
                         break;
@@ -235,7 +232,7 @@ public class DuelController {
                         System.out.println("This user is not participating in the current duel! Choose other player!");
                         break;
                     default:
-                        loggendInUser = nextUser;
+                        currentPlayerOfDuel = nextUser;
                         nextPlayerChosen = true;
                 }
             }
@@ -253,9 +250,9 @@ public class DuelController {
             System.out.println(usernames.stream().collect(Collectors.joining(System.lineSeparator())));
             String nextUser = scanner.next();
             UserEntity user = userService.findByUsername(nextUser).orElse(null);
-            if (user == null) {
+            if (nextUser.equalsIgnoreCase("exit")) {
                 return -2L;
-            } else if (nextUser.equalsIgnoreCase("exit")) {
+            } else if (user == null) {
                 return -3L;
             } else if (!usernames.contains(nextUser)) {
                 if (duelService.getById(duelStart).get().getPlayers().contains(user)) {
@@ -267,6 +264,7 @@ public class DuelController {
             return user.getUserId();
         }
     }
+
     private List<String> getUsersWhoNotPlayed(Long duelStart) {
         List<UserEntity> usersAlreadyPlayed = duelService.getById(duelStart).get()
                 .getRounds().stream().filter(Round::isActiveRound).findFirst().get()
