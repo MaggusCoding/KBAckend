@@ -12,7 +12,6 @@ import com.vocab.vocabulary_duel.repositories.RoundRepo;
 import com.vocab.vocabulary_duel.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.Translation;
-import com.vocab.vocabulary_management.repos.FlashcardRepo;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -40,8 +39,6 @@ public class DuelServiceImpl implements DuelService {
     private RoundRepo roundRepo;
     @Autowired
     private AnswerRepo answerRepo;
-    @Autowired
-    private FlashcardRepo flashcardRepo;
 
     /**
      * {@inheritDoc}
@@ -301,8 +298,10 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     @Transactional
-    public List<Duel> duelsToJoin() {
-        return duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse();
+    public List<Duel> duelsToJoin(Long loggedInUser) {
+        UserEntity user = userService.getById(loggedInUser);
+        List<Duel> possibleDuels =duelRepo.findDuelsByStartedIsFalseAndFinishedIsFalse();
+        return possibleDuels.stream().filter(duel -> !duel.getPlayers().contains(user)).collect(Collectors.toList());
     }
 
     /**

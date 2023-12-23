@@ -66,10 +66,10 @@ public interface DuelService {
     void activateNextRound(Long duelId);
 
     /**
-     * returns not played and not finished duels.
+     * returns not played and not finished duels which the user not joined yet.
      * @return duels
      */
-    List<Duel> duelsToJoin();
+    List<Duel> duelsToJoin(Long loggedInUser);
 
     /**
      * returns duels that are not started and not finished and the user has joined.
