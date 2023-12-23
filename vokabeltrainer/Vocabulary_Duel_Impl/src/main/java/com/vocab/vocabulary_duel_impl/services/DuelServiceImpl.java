@@ -155,7 +155,6 @@ public class DuelServiceImpl implements DuelService {
     /**
      * {@inheritDoc}
      *
-     * @return
      */
     @Override
     public boolean deleteDuel(Long duelId) {
@@ -165,7 +164,10 @@ public class DuelServiceImpl implements DuelService {
         }
         return false;
     }
-
+    /**
+     * {@inheritDoc}
+     *
+     */
     public List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings) {
         List<String> wrongAnswers = new ArrayList<>();
         LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
@@ -203,6 +205,9 @@ public class DuelServiceImpl implements DuelService {
         return wrongAnswers;
     }
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
     @Transactional
     public boolean startDuel(Long duelId) {
@@ -219,6 +224,9 @@ public class DuelServiceImpl implements DuelService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public List<String> playRound(Long duelId) {

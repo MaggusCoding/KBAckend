@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Round {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

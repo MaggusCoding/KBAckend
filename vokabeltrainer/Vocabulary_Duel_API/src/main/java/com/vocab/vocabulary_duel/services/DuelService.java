@@ -44,6 +44,11 @@ public interface DuelService {
      */
     List<UserEntity> calculateWinner(Long duelId);
 
+    /**
+     * Starts the duel so that nobody can join anymore and sets the first round to active
+     * @param duelId Id of the duel to start
+     * @return If starting the duel was successfull
+     */
     boolean startDuel(Long duelId);
 
     /**
@@ -74,7 +79,7 @@ public interface DuelService {
     List<Duel> duelsToStart(Long userId);
 
     /**
-     * TODO javadoc
+     * Returns a list of Strings with the Question, Correct Answer and the wrong answers
      * @param duelStart Id of duel
      * @return List<String> content of flashcard
      */
@@ -93,4 +98,12 @@ public interface DuelService {
      * @return if deletion succeeded
      */
     boolean deleteDuel(Long duelId);
+
+    /**
+     * Generates Wrong answers for a round by using the Levenshtein distance
+     * @param correctAnswer The correct Translation
+     * @param allTranslationStrings All Translations from the Translation Repo
+     * @return 3 wrong answers
+     */
+    List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings);
 }
