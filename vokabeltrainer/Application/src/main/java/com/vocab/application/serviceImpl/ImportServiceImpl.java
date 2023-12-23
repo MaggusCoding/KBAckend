@@ -1,6 +1,5 @@
 package com.vocab.application.serviceImpl;
 
-import com.vocab.application.service.ImportService;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,17 +18,16 @@ import java.util.zip.ZipInputStream;
 
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
-public class ImportServiceImpl implements ImportService {
+public class ImportServiceImpl {
 
     @Autowired
     FlashcardListService flashcardListService;
 
-    private final String DEFAULT_PATH = Paths.get("").toAbsolutePath().toString() + File.separator + "vocabFiles" + File.separator;
+    private String DEFAULT_PATH = null;
 
     /**
      * {@inheritDoc}
      */
-    @Override
     public boolean importFile(String path) throws IOException {
         String content = readFile(path);
         if (content.isEmpty() || content.trim().isBlank()) {
@@ -42,7 +40,6 @@ public class ImportServiceImpl implements ImportService {
     /**
      * {@inheritDoc}
      */
-    @Override
     public boolean importInitialFiles() throws IOException {
         Set<String> files = retrieveFilenamesFromFolder();
 
@@ -58,6 +55,8 @@ public class ImportServiceImpl implements ImportService {
     private Set<String> retrieveFilenamesFromFolder() throws IOException {
         // read all filenames in folder
         Set<String> filenames;
+        initializeDefaultPath();
+        System.out.println("DEfault_PATH: " + DEFAULT_PATH);
         Path default_folder = Paths.get(DEFAULT_PATH);
         try (Stream<Path> stream = Files.list(default_folder)) {
             filenames = stream.filter(file -> !Files.isDirectory(file))
@@ -85,6 +84,11 @@ public class ImportServiceImpl implements ImportService {
                     .map(Path::toString)
                     .collect(Collectors.toSet());
         }
+    }
+
+    private void initializeDefaultPath() {
+        String temp = Paths.get("").toAbsolutePath().toString();
+        DEFAULT_PATH = temp.substring(0, temp.lastIndexOf("KBAckend")) + "KBAckend" + File.separator + "vocabFiles" + File.separator;
     }
 
     private void extractFilesFromZip(String zipFile) throws IOException {

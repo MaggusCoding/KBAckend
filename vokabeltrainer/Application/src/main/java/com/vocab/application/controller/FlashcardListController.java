@@ -65,7 +65,9 @@ public class FlashcardListController {
                 try {
                     boolean importSuccess = importService.importInitialFiles();
                     if (importSuccess) {
-                        System.out.println("initiale Flashcards wurden importiert.");
+                        System.out.println("initial Flashcards successfully imported.");
+                    } else{
+                        System.out.println("Couldn´t import initial flashcardlists. Maybe default path is empty.");
                     }
                 } catch (IOException ioex) {
                     if (ioex instanceof FileNotFoundException) {
