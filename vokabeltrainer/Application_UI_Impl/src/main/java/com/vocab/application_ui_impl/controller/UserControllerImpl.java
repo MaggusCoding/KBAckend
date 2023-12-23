@@ -1,19 +1,22 @@
-package com.vocab.application.controller;
+package com.vocab.application_ui_impl.controller;
 
+import com.vocab.application_ui_impl.views.UserView;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
 @Controller
-public class UserController {
+public class UserControllerImpl {
     private final UserServiceImpl userService;
 
-    public UserController(UserServiceImpl userService) {
+    private final UserView userView;
+
+    public UserControllerImpl(UserServiceImpl userService, UserView userView) {
         this.userService = userService;
+        this.userView = userView;
     }
 
     public void initializeDefaultUser() {
@@ -24,48 +27,47 @@ public class UserController {
         }
     }
 
-    public Long createUser(Scanner scanner) {
-        System.out.println("Enter the username to create the new user or log in as the user:");
-        scanner.nextLine();  // Consume newline left-over
-        String username = scanner.nextLine();
+    public Long createUser() {
+        userView.printCreateInstruction();
+        String username = userView.readString();
         UserEntity user = userService.createUser(username);
-        System.out.println("Logged in with user ID: " + user.getUserId());
+        userView.printLoginMessage(user.getUserId());
         return user.getUserId();
     }
 
-    public void deleteUser(Scanner scanner, Long loggedInUser) {
-        System.out.println("Available users:");
+    public void deleteUser(Long loggedInUser) {
+        userView.printAvailableUsers("Available users:");
         List<UserEntity> users = userService.getAll().stream().filter(user -> !user.getUserId().equals(loggedInUser)).toList();
-        users.forEach(user -> System.out.println(user.getUserId() + " - " + user.getUsername()));
+        users.forEach(user -> userView.printAvailableUsers(user.getUserId() + " - " + user.getUsername()));
 
-        System.out.println("Enter the ID of the user to delete or '0' to go back:");
+        userView.printDeleteInstruction();
         boolean optionInvalid = true;
         Long userId = 0L;
         while (optionInvalid) {
             try {
-                userId = scanner.nextLong();
+                userId = userView.readLong();
                 Long finalUserId = userId;
                 if (users.stream().anyMatch(user -> user.getUserId().equals(finalUserId)) || userId.equals(0L)) {
                     optionInvalid = false;
                 } else {
-                    System.out.println("Entered ID is invalid. Try again!");
+                    userView.printInputFailMessage();
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Entered ID is invalid. Try again!");
-                scanner.next();
+                userView.printInputFailMessage();
+                userView.readString();
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                userView.printErrorMessage("Error: " + e.getMessage());
             }
         }
         if (userId > 0) {
             if (userService.deleteUser(userId)) {
-                System.out.println("User deleted successfully.");
+                userView.printDeletionSuccess();
             } else {
                 Long finalUserId1 = userId;
                 if(users.stream().anyMatch(user -> user.getUserId().equals(finalUserId1))){
-                    System.out.println("User deletion was unsuccessful. The user participates in a duel. Delete the duel first.");
+                    userView.printUserExistsInADuel();
                 } else {
-                    System.out.println("User deletion was unsuccessful. The user does not exist.");
+                    userView.printUserDoesNotExist();
                 }
             }
         }

@@ -1,31 +1,34 @@
-package com.vocab.application.controller;
+package com.vocab.application_ui_impl.controller;
 
+import com.vocab.application_ui_impl.views.DbView;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.vocabulary_duel.repositories.DuelRepo;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
 
-import java.util.Scanner;
-
 @Controller
-public class DatabaseController {
+public class DatabaseControllerImpl {
     private final UserRepo userRepository;
     private final DuelRepo duelRepository;
     private final FlashcardListRepo flashcardListRepository;
 
+    private final DbView dbView;
 
-    public DatabaseController(UserRepo userRepository, DuelRepo duelRepository, FlashcardListRepo flashcardListRepository /*, weitere Repositories */) {
+
+    public DatabaseControllerImpl(UserRepo userRepository, DuelRepo duelRepository, FlashcardListRepo flashcardListRepository, DbView dbView) {
         this.userRepository = userRepository;
         this.duelRepository = duelRepository;
         this.flashcardListRepository = flashcardListRepository;
-        // Initialisiere weitere Repositories
+        this.dbView = dbView;
+        // Initialisiere weiterer Repositories
     }
 
     @Transactional
-    public void clearDatabase(Scanner scanner) {
-        System.out.println("This will clear the in-memory database completely! Are you sure? (y/n)");
-        String confirmation = scanner.next();
+    public void clearDatabase() {
+
+        dbView.displayOptions();
+        String confirmation = dbView.readString();
         if (confirmation.equalsIgnoreCase("y")) {
             // Lösche alle Entitäten
             duelRepository.deleteAll();
@@ -33,9 +36,11 @@ public class DatabaseController {
             flashcardListRepository.deleteAll();
             // Füge hier Befehle zum Löschen aus weiteren Repositories hinzu
 
-            System.out.println("In-memory database cleared successfully.");
+            dbView.printSuccessMessage();
         } else {
-            System.out.println("Database clear cancelled.");
+            dbView.printFailMessage();
         }
     }
+
+
 }

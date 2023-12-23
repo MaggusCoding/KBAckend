@@ -18,7 +18,13 @@
     <dependencies>
         <dependency>
             <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Duel_Impl</artifactId>
+            <artifactId>Application_UI_API</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vocab</groupId>
+            <artifactId>Application_UI_Impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

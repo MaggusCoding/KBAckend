@@ -4,6 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
+        <module>Application_UI_Impl</module>
+        <module>Application_UI_API</module>
         <module>Vocabulary_Duel_API</module>
         <module>Vocabulary_Duel_Impl</module>
         <module>User_Management_API</module>

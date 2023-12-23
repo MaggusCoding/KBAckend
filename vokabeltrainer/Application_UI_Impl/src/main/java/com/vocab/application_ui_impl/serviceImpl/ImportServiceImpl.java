@@ -1,4 +1,4 @@
-package com.vocab.application.serviceImpl;
+package com.vocab.application_ui_impl.serviceImpl;
 
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.springframework.beans.factory.annotation.Autowired;

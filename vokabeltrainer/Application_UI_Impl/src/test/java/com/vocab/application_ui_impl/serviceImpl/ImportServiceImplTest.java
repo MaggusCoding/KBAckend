@@ -1,21 +1,15 @@
-package com.vocab.application;
+package com.vocab.application_ui_impl.serviceImpl;
 
-import com.vocab.application.serviceImpl.ImportServiceImpl;
 import com.vocab.vocabulary_management.services.FlashcardListService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 public class ImportServiceImplTest {
 
@@ -35,36 +29,36 @@ public class ImportServiceImplTest {
 
     @Test
     public void testImportFile() throws IOException {
-        when(flashcardListService.createFlashcardList(anyString())).thenReturn(true);
+        Mockito.when(flashcardListService.createFlashcardList(ArgumentMatchers.anyString())).thenReturn(true);
 
         boolean successImport = importService.importFile(FILE_PATH);
 
-        assertTrue(successImport);
-        verify(flashcardListService).createFlashcardList(anyString());
+        Assertions.assertTrue(successImport);
+        Mockito.verify(flashcardListService).createFlashcardList(ArgumentMatchers.anyString());
 
     }
 
     @Test
     public void testImportInitialFiles() throws IOException {
-        when(flashcardListService.createFlashcardList(anyString())).thenReturn(true);
+        Mockito.when(flashcardListService.createFlashcardList(ArgumentMatchers.anyString())).thenReturn(true);
 
         boolean importSuccess = importService.importInitialFiles();
 
-        assertTrue(importSuccess);
-        verify(flashcardListService, times(16)).createFlashcardList(anyString());
+        Assertions.assertTrue(importSuccess);
+        Mockito.verify(flashcardListService, Mockito.times(16)).createFlashcardList(ArgumentMatchers.anyString());
     }
 
     @Test
     public void testImportFileExpectFileNotFoundException(){
-        assertThrows(FileNotFoundException.class, () -> importService.importFile(""));
+        Assertions.assertThrows(FileNotFoundException.class, () -> importService.importFile(""));
     }
 
     @Test
     public void testImportEmptyFile() throws IOException {
         boolean successImport = importService.importFile(EMPTY_FILE_PATH);
 
-        assertFalse(successImport);
-        verify(flashcardListService, times(0)).createFlashcardList(anyString());
+        Assertions.assertFalse(successImport);
+        Mockito.verify(flashcardListService, Mockito.times(0)).createFlashcardList(ArgumentMatchers.anyString());
     }
 
 }
