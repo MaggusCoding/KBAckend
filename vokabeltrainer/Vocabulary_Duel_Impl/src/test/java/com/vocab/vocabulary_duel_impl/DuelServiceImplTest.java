@@ -221,12 +221,11 @@ public class DuelServiceImplTest {
         Duel mockDuel1 = new Duel();
         mockDuel1.setStarted(false);
         mockDuel1.setFinished(false);
-        mockDuel1.setPlayers(Collections.singletonList(mockUser));
 
         Duel mockDuel2 = new Duel();
-        mockDuel1.setStarted(false);
-        mockDuel1.setFinished(false);
-        mockDuel1.setPlayers(Collections.singletonList(mockUser));
+        mockDuel2.setStarted(true);
+        mockDuel2.setFinished(false);
+        mockDuel2.setPlayer(mockUser);
 
         List<Duel> mockDuels = Arrays.asList(mockDuel1, mockDuel2);
 
@@ -234,11 +233,11 @@ public class DuelServiceImplTest {
         when(userService.getById(mockUser.getUserId())).thenReturn(mockUser);
 
         // Act
-        List<Duel> result = duelService.duelsToJoin();
+        List<Duel> result = duelService.duelsToJoin(1L);
 
         // Assert
         assertNotNull(result);
-        assertEquals(2, result.size()); // Only the first duel is eligible to join
+        assertEquals(1, result.size()); // Only the first duel is eligible to join
         assertEquals(mockDuel1, result.get(0));
 
         verify(duelRepo).findDuelsByStartedIsFalseAndFinishedIsFalse();
@@ -253,12 +252,11 @@ public class DuelServiceImplTest {
         Duel mockDuel1 = new Duel();
         mockDuel1.setStarted(false);
         mockDuel1.setFinished(false);
-        mockDuel1.setPlayers(Collections.singletonList(mockUser));
 
         Duel mockDuel2 = new Duel();
-        mockDuel1.setStarted(false);
-        mockDuel1.setFinished(false);
-        mockDuel1.setPlayers(Collections.singletonList(mockUser));
+        mockDuel2.setStarted(true);
+        mockDuel2.setFinished(false);
+        mockDuel2.setPlayer(mockUser);
 
         List<Duel> mockDuels = Arrays.asList(mockDuel1, mockDuel2);
 
@@ -266,11 +264,11 @@ public class DuelServiceImplTest {
         when(userService.getById(mockUser.getUserId())).thenReturn(mockUser);
 
         // Act
-        List<Duel> result = duelService.duelsToJoin();
+        List<Duel> result = duelService.duelsToJoin(1L);
 
         // Assert
         assertNotNull(result);
-        assertEquals(2, result.size()); // Only the first duel is eligible to join
+        assertEquals(1, result.size()); // Only the first duel is eligible to join
         assertEquals(mockDuel1, result.get(0));
 
         verify(duelRepo).findDuelsByStartedIsFalseAndFinishedIsFalse();
