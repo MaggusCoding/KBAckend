@@ -56,7 +56,6 @@ public class ImportServiceImpl {
         // read all filenames in folder
         Set<String> filenames;
         initializeDefaultPath();
-        System.out.println("DEfault_PATH: " + DEFAULT_PATH);
         Path default_folder = Paths.get(DEFAULT_PATH);
         try (Stream<Path> stream = Files.list(default_folder)) {
             filenames = stream.filter(file -> !Files.isDirectory(file))
