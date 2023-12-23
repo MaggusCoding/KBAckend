@@ -81,7 +81,7 @@ public interface DuelService {
     /**
      * Returns a list of Strings with the Question, Correct Answer and the wrong answers
      * @param duelStart Id of duel
-     * @return List<String> content of flashcard
+     * @return content of flashcard
      */
     List<String> playRound(Long duelStart);
 

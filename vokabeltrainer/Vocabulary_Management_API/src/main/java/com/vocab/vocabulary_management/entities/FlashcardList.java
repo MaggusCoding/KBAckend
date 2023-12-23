@@ -28,6 +28,9 @@ public class FlashcardList {
     @OneToMany(mappedBy = "flashcardList", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Flashcard> flashcards;
 
+    //make javadoc happy
+    public static class FlashcardListBuilder{}
+
     @Override
     public String toString() {
         return "FlashcardList{" +

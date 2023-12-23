@@ -24,6 +24,9 @@ public class Translation {
 
     private String translationText;
 
+    //make javadoc happy
+    public static class TranslationBuilder{}
+
     @Override
     public String toString() {
         return "Translation{" +
