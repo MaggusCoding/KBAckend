@@ -28,8 +28,8 @@ public class DatabaseController {
         String confirmation = scanner.next();
         if (confirmation.equalsIgnoreCase("y")) {
             // Lösche alle Entitäten
-            userRepository.deleteAll();
             duelRepository.deleteAll();
+            userRepository.deleteAll();
             flashcardListRepository.deleteAll();
             // Füge hier Befehle zum Löschen aus weiteren Repositories hinzu
 
