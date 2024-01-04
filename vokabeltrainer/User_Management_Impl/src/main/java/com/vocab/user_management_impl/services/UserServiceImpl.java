@@ -40,6 +40,17 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+
+    public UserEntity createUserRest(UserEntity user) {
+        Optional<UserEntity> existingUser = findByUsername(user.getUsername());
+
+        return existingUser.orElseGet(() -> {
+            UserEntity newUser = new UserEntity();
+            newUser.setUsername(user.getUsername());
+            return userRepository.save(newUser);
+        });
+    }
+
     @Override
     public boolean deleteUser(Long userId) {
         if (!userRepository.existsById(userId) || duelRepo.existsDuelByPlayersIsContaining(userRepository.findById(userId).get())) {

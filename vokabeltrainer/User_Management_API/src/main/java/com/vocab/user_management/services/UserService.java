@@ -14,6 +14,7 @@ public interface UserService {
 
     UserEntity createUser(String userName);
 
+    UserEntity createUserRest(UserEntity user);
     /**
      * Deletes a user from the database if the user is not involved in a duel.
      *
