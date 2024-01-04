@@ -26,6 +26,10 @@ public class Round {
     private List<Answer> selectedAnswers;
     private String wrongAnswers;
     private boolean activeRound = false;
+
+    @Version
+    private Long changeCounter;
+
     @Override
     public String toString() {
         return "Round{" +

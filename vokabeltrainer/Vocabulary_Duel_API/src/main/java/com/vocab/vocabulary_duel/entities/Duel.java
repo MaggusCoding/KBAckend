@@ -41,6 +41,10 @@ public class Duel {
     private boolean started;
 
     private boolean finished;
+
+    @Version
+    private Long changeCounter;
+
     public void setPlayer(UserEntity player){
         this.players.add(player);
     }

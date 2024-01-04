@@ -23,6 +23,8 @@ public class Answer {
     @JoinColumn(name="roundId", nullable=false)
     private Round round;
     private Boolean correct;
+    @Version
+    private Long changeCounter;
 
 
 }

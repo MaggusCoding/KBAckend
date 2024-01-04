@@ -17,4 +17,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     private String username;
+
+    @Version
+    private Long changeCounter;
 }
