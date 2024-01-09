@@ -8,7 +8,6 @@
         <version>1.0</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.vocab</groupId>
     <artifactId>Vocabulary_Duel_Rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Vocabulary_Duel_Rest</name>
@@ -19,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Duel_Impl</artifactId>
+            <artifactId>User_Management_Impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -29,9 +28,13 @@
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.vocab</groupId>
+            <artifactId>Vocabulary_Duel_Impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
-
-
     <build>
         <plugins>
             <plugin>

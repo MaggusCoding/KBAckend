@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel;
+package com.vocab.vocabulary_duel_API;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

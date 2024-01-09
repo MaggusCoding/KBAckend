@@ -3,7 +3,7 @@ package com.vocab.user_management_impl;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management_impl.services.UserServiceImpl;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

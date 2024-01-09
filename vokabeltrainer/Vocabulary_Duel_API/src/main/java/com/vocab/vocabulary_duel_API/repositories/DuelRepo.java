@@ -1,8 +1,8 @@
-package com.vocab.vocabulary_duel.repositories;
+package com.vocab.vocabulary_duel_API.repositories;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.vocabulary_duel.dto.RankingPlayer;
-import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_duel_API.dto.RankingPlayer;
+import com.vocab.vocabulary_duel_API.entities.Duel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,7 +14,7 @@ public interface DuelRepo extends JpaRepository<Duel, Long> {
 
     List<Duel> findDuelsByStartedIsFalseAndFinishedIsFalse();
 
-    @Query("select new com.vocab.vocabulary_duel.dto.RankingPlayer(u.username, count(u.username)) from UserEntity u " +
+    @Query("select new com.vocab.vocabulary_duel_API.dto.RankingPlayer(u.username, count(u.username)) from UserEntity u " +
             "join Duel d on d.finished = true " +
             "join Round r on r.duel = d " +
             "join Answer a on a.round = r and a.player = u " +

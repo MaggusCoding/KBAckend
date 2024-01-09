@@ -3,7 +3,7 @@ package com.vocab.user_management_impl.services;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;

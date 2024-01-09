@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel.dto;
+package com.vocab.vocabulary_duel_API.dto;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel.entities;
+package com.vocab.vocabulary_duel_API.entities;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_management.entities.FlashcardList;

@@ -1,7 +1,7 @@
-package com.vocab.vocabulary_duel.services;
+package com.vocab.vocabulary_duel_API.services;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_duel_API.entities.Duel;
 
 import java.util.List;
 import java.util.Optional;

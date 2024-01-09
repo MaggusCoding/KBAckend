@@ -27,7 +27,6 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>Vocabulary_Duel</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,7 +1,7 @@
 package com.vocab.vocabulary_duel_rest;
 
-import com.vocab.vocabulary_duel.dto.DuelCreateRequest;
-import com.vocab.vocabulary_duel.entities.Duel;
+import com.vocab.vocabulary_duel_API.dto.DuelCreateRequest;
+import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
