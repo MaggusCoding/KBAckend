@@ -2,7 +2,6 @@ package com.vocab.user_management_rest;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.services.UserService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,11 @@ public class UserManagamentRestController {
 
     @GetMapping("/api/user")
     public ResponseEntity<List<UserEntity>> getAllUsers(){
-       return  ResponseEntity.ok(userService.getAll());
+        try {
+            return ResponseEntity.ok(userService.getAll());
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/api/user/{id}")
@@ -34,9 +37,13 @@ public class UserManagamentRestController {
     }
     @PostMapping("/api/user")
     public ResponseEntity<Void> createUser(@RequestBody UserEntity request) throws URISyntaxException {
-        UserEntity user = userService.createUserRest(request);
-        URI uri = new URI("/api/user/"+user.getUserId());
-        return ResponseEntity.created(uri).build();
+        try {
+            UserEntity user = userService.createUserRest(request);
+            URI uri = new URI("/api/user/" + user.getUserId());
+            return ResponseEntity.created(uri).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @DeleteMapping("api/user/{id}")
