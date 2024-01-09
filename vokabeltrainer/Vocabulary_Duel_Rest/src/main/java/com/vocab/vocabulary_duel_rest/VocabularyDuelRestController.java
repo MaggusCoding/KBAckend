@@ -14,7 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
-@ComponentScan("com.vocab")
+@ComponentScan(basePackages = {"com.vocab"})
 public class VocabularyDuelRestController {
     @Autowired
     DuelServiceImpl duelService;
