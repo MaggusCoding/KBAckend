@@ -1,5 +1,6 @@
 package com.vocab.vocabulary_duel_API.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class Round {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long roundId;
+    @JsonBackReference
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name="duelId", nullable=false)
     private Duel duel;
