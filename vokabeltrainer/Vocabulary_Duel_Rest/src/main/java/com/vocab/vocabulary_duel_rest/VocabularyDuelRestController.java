@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.tree.ExpandVetoException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -36,6 +37,20 @@ public class VocabularyDuelRestController {
             List<Duel> duels = duelService.getAll();
             List<DuelDTO> duelDTOLIst = duels.stream().map(DuelDTO::fromEntity).toList();
             return ResponseEntity.ok(duelDTOLIst);
+    }
+    @GetMapping("api/duel/{duelID}")
+    public ResponseEntity<DuelDTO> getDuelById(@PathVariable Long duelID){
+        Duel duel;
+        DuelDTO duelDTO = new DuelDTO();
+        try{
+            if(duelService.getById(duelID).isPresent()){
+                duel = duelService.getById(duelID).get();
+                duelDTO = DuelDTO.fromEntity(duel);
+            }
+            return ResponseEntity.ok(duelDTO);
+        } catch (Exception e){
+           return ResponseEntity.internalServerError().build();
+        }
     }
     @PutMapping("/api/duel/{duelID}/{userID}")
     public ResponseEntity<Void> joinDuel(@PathVariable Long duelID, @PathVariable Long userID){
