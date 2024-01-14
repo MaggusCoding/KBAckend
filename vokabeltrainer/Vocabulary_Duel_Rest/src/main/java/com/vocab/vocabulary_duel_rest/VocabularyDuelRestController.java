@@ -1,5 +1,6 @@
 package com.vocab.vocabulary_duel_rest;
 
+import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel_API.dto.DuelCreateRequest;
 import com.vocab.vocabulary_duel_API.dto.DuelDTO;
 import com.vocab.vocabulary_duel_API.entities.Duel;
@@ -8,12 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.tree.ExpandVetoException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @ComponentScan(basePackages = {"com.vocab"})
@@ -37,6 +35,15 @@ public class VocabularyDuelRestController {
             List<Duel> duels = duelService.getAll();
             List<DuelDTO> duelDTOLIst = duels.stream().map(DuelDTO::fromEntity).toList();
             return ResponseEntity.ok(duelDTOLIst);
+    }
+    @GetMapping("/api/duel/winners/{duelID}")
+    public ResponseEntity<List<UserEntity>> getWinners(@PathVariable Long duelID){
+        try {
+            List<UserEntity> userEntities = duelService.calculateWinner(duelID);
+            return ResponseEntity.ok(userEntities);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
     @GetMapping("api/duel/{duelID}")
     public ResponseEntity<DuelDTO> getDuelById(@PathVariable Long duelID){
