@@ -7,10 +7,7 @@ import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,5 +37,13 @@ public class VocabularyDuelRestController {
             List<DuelDTO> duelDTOLIst = duels.stream().map(DuelDTO::fromEntity).toList();
             return ResponseEntity.ok(duelDTOLIst);
     }
-
+    @PutMapping("/api/duel/{duelID}/{userID}")
+    public ResponseEntity<Void> joinDuel(@PathVariable Long duelID, @PathVariable Long userID){
+        try {
+            duelService.joinDuel(duelID, userID);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
