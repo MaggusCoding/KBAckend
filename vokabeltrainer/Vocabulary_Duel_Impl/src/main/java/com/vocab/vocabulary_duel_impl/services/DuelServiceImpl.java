@@ -211,7 +211,7 @@ public class DuelServiceImpl implements DuelService {
     @Override
     @Transactional
     public boolean startDuel(Long duelId) {
-        Duel duel = null;
+        Duel duel;
         if (duelRepo.findById(duelId).isPresent()) {
             duel = duelRepo.findById(duelId).get();
         } else return false;
@@ -241,7 +241,6 @@ public class DuelServiceImpl implements DuelService {
             }
         }
 
-
         Flashcard flashcard = activeRound.getQuestionedFlashcard();
         String question = flashcard.getOriginalText();
 
@@ -266,13 +265,19 @@ public class DuelServiceImpl implements DuelService {
     public void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new RuntimeException("Duel(ID: " + duelId + ") does not exist."));
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
+
         boolean isCorrect = currentRound.getQuestionedFlashcard().getTranslations().stream().anyMatch(translation -> translation.getTranslationText().equalsIgnoreCase(selectedAnswer));
         Answer answer = new Answer();
         answer.setCorrect(isCorrect);
         answer.setRound(currentRound);
         answer.setPlayer(userService.getById(playerId));
         answerRepo.save(answer);
+
+        if (allPlayersAnswered(currentRound, duel.getPlayers())) {
+            activateNextRound(duelId);
+        }
     }
+
 
     /**
      * {@inheritDoc}
@@ -283,18 +288,28 @@ public class DuelServiceImpl implements DuelService {
         Duel duel = duelRepo.findById(duelId).get();
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
         currentRound.setActiveRound(false);
+
         Round nextRound = roundRepo.findFirstByDuelAndSelectedAnswersEmpty(duel);
-        // all rounds played?
         if (nextRound != null) {
-            nextRound.setActiveRound(true);
-            roundRepo.save(currentRound);
-            roundRepo.save(nextRound);
-        }else{
+            if (allPlayersAnswered(currentRound, duel.getPlayers())) {
+                nextRound.setActiveRound(true);
+                roundRepo.save(currentRound);
+                roundRepo.save(nextRound);
+            }
+        } else {
             duel.setFinished(true);
             duelRepo.save(duel);
         }
-
     }
+
+    private boolean allPlayersAnswered(Round activeRound, List<UserEntity> players) {
+        List<UserEntity> playersWithAnswer = activeRound.getSelectedAnswers().stream()
+                .map(Answer::getPlayer)
+                .toList();
+
+        return playersWithAnswer.containsAll(players);
+    }
+
 
     /**
      * {@inheritDoc}
