@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+todo: Evtl Observer einbauen der nächste Runde automatisch aktiviert sobald alle Spieler geantwortet haben
+ */
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
 public class DuelServiceImpl implements DuelService {

@@ -68,4 +68,30 @@ public class VocabularyDuelRestController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    @GetMapping("/api/duel/tojoin/{userID}")
+    public ResponseEntity<List<Duel>> getDuelsToJoin(@PathVariable Long userID){
+        try{
+           return ResponseEntity.ok(duelService.duelsToJoin(userID));
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("api/duel/tostart/{userID}")
+    public ResponseEntity<List<Duel>> getDuelsToStart(@PathVariable Long userID){
+        try{
+            return ResponseEntity.ok(duelService.duelsToStart(userID));
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping("api/duel/start/{duelID}")
+    public ResponseEntity<Void> startDuel(@PathVariable Long duelID){
+        try{
+            duelService.startDuel(duelID);
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            ResponseEntity.notFound().build();
+        }
+        return null;
+    }
 }

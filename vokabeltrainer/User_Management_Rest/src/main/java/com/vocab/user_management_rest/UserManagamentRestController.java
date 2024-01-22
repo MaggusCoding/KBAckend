@@ -35,12 +35,20 @@ public class UserManagamentRestController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/api/user/{username}")
+    public ResponseEntity<UserEntity> getUserByUsername(@PathVariable String username){
+        try {
+            UserEntity user = userService.findByUsername(username).get();
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @PostMapping("/api/user")
-    public ResponseEntity<Void> createUser(@RequestBody UserEntity request) throws URISyntaxException {
+    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) throws URISyntaxException {
         try {
             UserEntity user = userService.createUserRest(request);
-            URI uri = new URI("/api/user/" + user.getUserId());
-            return ResponseEntity.created(uri).build();
+            return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
