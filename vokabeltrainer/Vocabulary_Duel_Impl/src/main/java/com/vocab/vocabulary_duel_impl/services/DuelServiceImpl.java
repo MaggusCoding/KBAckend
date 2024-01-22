@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /*
-todo: Evtl Observer einbauen der nächste Runde automatisch aktiviert sobald alle Spieler geantwortet haben
+todo: Einen check implementieren der überprüft ob der Spieler für diese Runde bereits eine Answer abgegeben hat
  */
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
@@ -253,7 +253,7 @@ public class DuelServiceImpl implements DuelService {
 
         roundStrings.add(question);
         roundStrings.addAll(Arrays.stream(wrongAnswers.split(";")).toList());
-        roundStrings.add(rand.nextInt(1, 5), correctAnswer);
+        roundStrings.add(correctAnswer);
         return roundStrings;
     }
 
@@ -291,11 +291,9 @@ public class DuelServiceImpl implements DuelService {
 
         Round nextRound = roundRepo.findFirstByDuelAndSelectedAnswersEmpty(duel);
         if (nextRound != null) {
-            if (allPlayersAnswered(currentRound, duel.getPlayers())) {
                 nextRound.setActiveRound(true);
                 roundRepo.save(currentRound);
                 roundRepo.save(nextRound);
-            }
         } else {
             duel.setFinished(true);
             duelRepo.save(duel);
@@ -303,6 +301,7 @@ public class DuelServiceImpl implements DuelService {
     }
 
     private boolean allPlayersAnswered(Round activeRound, List<UserEntity> players) {
+        if(activeRound.getSelectedAnswers() == null) return false;
         List<UserEntity> playersWithAnswer = activeRound.getSelectedAnswers().stream()
                 .map(Answer::getPlayer)
                 .toList();
