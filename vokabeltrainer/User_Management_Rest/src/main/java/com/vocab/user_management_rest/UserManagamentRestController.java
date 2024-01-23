@@ -26,7 +26,7 @@ public class UserManagamentRestController {
         }
     }
 
-    @GetMapping("/api/user/{id}")
+    @GetMapping("/api/user/byid/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable Long id){
         try {
             UserEntity user = userService.getById(id);
@@ -35,7 +35,7 @@ public class UserManagamentRestController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/api/user/{username}")
+    @GetMapping("/api/user/byusername/{username}")
     public ResponseEntity<UserEntity> getUserByUsername(@PathVariable String username){
         try {
             UserEntity user = userService.findByUsername(username).get();
