@@ -272,7 +272,7 @@ public class DuelServiceImpl implements DuelService {
         answer.setRound(currentRound);
         answer.setPlayer(userService.getById(playerId));
         answerRepo.save(answer);
-
+        currentRound.setSingleAnswer(answer);
         if (allPlayersAnswered(currentRound, duel.getPlayers())) {
             activateNextRound(duelId);
         }

@@ -37,4 +37,7 @@ public class Round {
                 ", activeRound=" + activeRound +
                 '}';
     }
+    public void setSingleAnswer(Answer answer){
+        this.selectedAnswers.add(answer);
+    }
 }
