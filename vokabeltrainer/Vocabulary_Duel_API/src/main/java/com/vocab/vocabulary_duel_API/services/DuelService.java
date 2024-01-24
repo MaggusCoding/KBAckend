@@ -58,7 +58,7 @@ public interface DuelService {
      * @param duelId current duel
      * @param playerId current player
      */
-    void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId);
+    boolean saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId);
 
     /**
      * deactivates current round and activates the next round. If all rounds were played the duel is updated to finished.

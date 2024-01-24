@@ -267,10 +267,13 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     @Transactional
-    public void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
+    public boolean saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new RuntimeException("Duel(ID: " + duelId + ") does not exist."));
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
-
+        List<Answer> answers = currentRound.getSelectedAnswers();
+        List<UserEntity> userAnswers = answers.stream().map(Answer::getPlayer).toList();
+        if(userAnswers.contains(userService.getById(playerId)))
+            return false;
         boolean isCorrect = currentRound.getQuestionedFlashcard().getTranslations().stream().anyMatch(translation -> translation.getTranslationText().equalsIgnoreCase(selectedAnswer));
         Answer answer = new Answer();
         answer.setCorrect(isCorrect);
@@ -281,6 +284,7 @@ public class DuelServiceImpl implements DuelService {
         if (allPlayersAnswered(currentRound, duel.getPlayers())) {
             activateNextRound(duelId);
         }
+        return true;
     }
 
 

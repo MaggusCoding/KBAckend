@@ -5,6 +5,7 @@ import com.vocab.vocabulary_duel_API.dto.AnswerDTO;
 import com.vocab.vocabulary_duel_API.dto.DuelCreateRequest;
 import com.vocab.vocabulary_duel_API.dto.DuelDTO;
 import com.vocab.vocabulary_duel_API.dto.RoundDTO;
+import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,17 +131,20 @@ public class VocabularyDuelRestController {
             RoundDTO roundDTO = RoundDTO.fromList(list);
             return ResponseEntity.ok(roundDTO);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/api/duel/answer")
     public ResponseEntity<Void> playerAnswer(@RequestBody AnswerDTO request) {
         try {
-            duelService.saveSelectedAnswer(request.getAnswer(), request.getDuelID(), request.getPlayerID());
-            return ResponseEntity.ok().build();
+           if(duelService.saveSelectedAnswer(request.getAnswer(), request.getDuelID(), request.getPlayerID())){
+               return ResponseEntity.ok().build();
+           }else{
+               return ResponseEntity.status(HttpStatus.CONFLICT).build();
+           }
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 }
