@@ -40,6 +40,7 @@ public class VocabularyDuelRestController {
     public ResponseEntity<List<DuelDTO>> getAllDuels() {
         List<Duel> duels = duelService.getAll();
         List<DuelDTO> duelDTOLIst = duels.stream().map(DuelDTO::fromEntity).toList();
+        if(duelDTOLIst.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(duelDTOLIst);
     }
 
