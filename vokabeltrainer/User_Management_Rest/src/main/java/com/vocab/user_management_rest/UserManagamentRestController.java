@@ -18,32 +18,34 @@ public class UserManagamentRestController {
     private UserService userService;
 
     @GetMapping("/api/user")
-    public ResponseEntity<List<UserEntity>> getAllUsers(){
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
         try {
             return ResponseEntity.ok(userService.getAll());
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/api/user/byid/{id}")
-    public ResponseEntity<UserEntity> getUserById(@PathVariable Long id){
+    @GetMapping("/api/user/byid")
+    public ResponseEntity<UserEntity> getUserById(@RequestParam Long userid) {
         try {
-            UserEntity user = userService.getById(id);
+            UserEntity user = userService.getById(userid);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/api/user/byusername/{username}")
-    public ResponseEntity<UserEntity> getUserByUsername(@PathVariable String username){
+
+    @GetMapping("/api/user/byusername")
+    public ResponseEntity<UserEntity> getUserByUsername(@RequestParam String username) {
         try {
-            UserEntity user = userService.findByUsername(username).get();
+            UserEntity user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PostMapping("/api/user")
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) throws URISyntaxException {
         try {
@@ -54,13 +56,14 @@ public class UserManagamentRestController {
         }
     }
 
-    @DeleteMapping("api/user/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
-        try{
-            userService.deleteUser(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e){
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/api/user")
+    public ResponseEntity<Void> deleteUser(@RequestParam Long userid) {
+        try {
+            if(userService.deleteUser(userid)) {
+                return ResponseEntity.ok().build();
+            }else return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
