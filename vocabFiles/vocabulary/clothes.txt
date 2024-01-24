@@ -1,0 +1,25 @@
+{{{clothes}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}
+{boots} : {Stiefel}
+{cap} : {Kappe}
+{coat} : {Mantel}
+{cold} : {kalt}
+{dress} : {Kleid}
+{gloves} : {Fingerhandschuh}
+{hat} : {Hut}
+{hot} : {heiß}
+{jacket} : {Jacke}
+{jeans} : {Jeans}
+{jumper} : {Pullover}
+{mittens} : {Fausthandschuh}
+{pullover} : {Pullover}
+{scarf} : {Schal}
+{shirt} : {Unterhemd}
+{shoe} : {Schuh}
+{skirt} : {Rock}
+{sock} : {Socke}
+{T-shirt} : {T-Shirt}
+{tights} : {Strumpfhose}
+{trainers} : {Turnschuhe}
+{trousers} : {Hose}
+{underpants} : {Unterhose}
+{wooly hat} : {Wollmütze}

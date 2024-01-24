@@ -1,0 +1,17 @@
+{{{Unidad 4 - Bloque B}}}{{{Spanisch}}}{{{Deutsch}}}{{{¡Vamos! ¡Adelante!}}}
+{A mí no.} : {Mir nicht.}, {Ich nicht.}
+{A mí sí.} : {Mir ja.}, {Ich ja.}
+{A mí tambíen.} : {Mir auch.}
+{A mí tampoco.} : {Mir auch nicht.}, {Ich auch nicht.}
+{el deporte} : {der Sport}
+{el fútbol} : {der Fußball}
+{el tiempo libre} : {die Freizeit}
+{hablar por teléfono} : {telefonieren}
+{ir de compras} : {shoppen gehen}
+{ir} : {gehen}, {fahren}
+{jugar a algo con alguien} : {mit jdm. etw. spielen}
+{la bicicleta} : {das Fahrrad}
+{montar en bicicleta} : {Rad fahren}
+{por la mañana} : {Morgen}, {am Morgen, Vormittag, am Vormittag}
+{salir} : {ausgehen}
+{tocar} : {spielen}

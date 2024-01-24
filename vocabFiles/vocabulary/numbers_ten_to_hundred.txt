@@ -1,0 +1,20 @@
+{{{numbers_ten_to_hundred}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}
+#{eighteen} : {achtzehn}
+#{eighty} : {achzig}
+#{eleven} : {elf}
+#{fifteen} : {fünfzehn}
+#{fifty} : {fünfzig}
+#{fourteen} : {vierzehn}
+#{fourty} : {vierzig}
+{hundred} : {hundert}
+#{nineteen} : {neunzehn}
+#{ninety} : {neunzig}
+#{seventeen} : {siebzehn}
+{seventy} : {siebzig}
+#{sixteen} : {sechzehn}
+#{sixty} : {sechzig}
+#{ten} : {zehn}
+#{thirteen} : {dreizehn}
+#{thirty} : {dreizig}
+#{twelve} : {zwölf}
+#{twenty} : {zwanzig}

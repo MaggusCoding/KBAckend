@@ -1,0 +1,17 @@
+{{{Unidad 1 - Primer paso}}}{{{Spanisch}}}{{{Deutsch}}}{{{¡Vamos! ¡Adelante!}}}
+{el amigo} : {der Freund}
+{el colegio} : {die Schule}
+{el hermano} : {der Bruder}
+{el mundo} : {die Welt}
+{el padre} : {der Vater}
+{la amiga} : {die Freundin}
+{la hermana} : {die Schwester}
+{la madre} : {die Mutter}
+{la mascota} : {das Haustier}
+{los hermanos} : {die Geschwister}
+{los padres} : {die Eltern}
+{mejor} : {besser}
+{no} : {nein}, {nicht}, {kein, keine}
+{Se llama ...} : {Er heißt ..., Sie heißt ...}
+{tener} : {haben}
+{tu} : {dein, deine}

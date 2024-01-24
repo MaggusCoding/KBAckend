@@ -1,0 +1,47 @@
+{{{Unit 3 Big dreams - small steps - Part B}}}{{{English}}}{{{Deutsch}}}{{{access 5}}}
+{(to) announce} : {bekanntgeben, verkünden}
+{(to) develop} : {entwickeln}, {sich entwickeln}
+{(to) diagnose} : {diagnostizieren}
+{(to) focus (on sth.)} : {sich (auf etwas) konzentrieren}
+{(to) have sth. done} : {etwas machen (erledigen) lassen}
+{(to) include} : {einschließen}, {beinhalten}
+{(to) limit sth. (to)} : {etwas beschränken, begrenzen (auf)}, {etwas einschränken}
+{(to) produce} : {produzieren, erzeugen}, {herstellen}
+{(to) quote} : {zitieren}
+{(to) refuse (to do sth.)} : {sich weigern (\,etwas zu tun)}, {ablehnen}
+{(to) search sth. for sth.} : {etwas nach etwas durchsuchen}
+{(to) submit} : {etwas einreichen(bei)}
+{(to) succeed (in sth.)} : {erfolgreich sein, Erfolg haben (mit etwas\, bei etwas)}
+{(to) tackle sth.} : {etwas in Angriff nehmen}
+{biology} : {Biologie}
+{blind alley} : {Sackgasse, Irrweg}
+{carefully} : {sorgfältig, aufmerksam}
+{chemical} : {Chemikalie}
+{company} : {Firma}
+{current} : {aktuelle(r\, s), gegenwärtige(r\, s)}
+{equal} : {gleich}
+{evolution} : {Evolution}
+{experiment} : {Experiment}
+{fair} : {Ausstellung, Messe}
+{fur} : {Fell}, {Pelz}
+{gesture} : {Geste}, {Handbewegung}
+{in the long term} : {langfristig, auf lange Sicht}
+{in time (for)} : {rechtzeitig (zu/für)}
+{lab, laboratory} : {Labor}
+{medicine} : {Medizin}, {Arznei}
+{motivation} : {Motivation, Bewegrund}
+{mouse} : {Maus}
+{passion} : {Leidenschaft}
+{pirate} : {Pirat, Piratin}
+{principle} : {Prinzip}
+{quotation marks} : {Anführungszeichen}, {Anführungsstriche}
+{refrigeration} : {Kühlung}
+{source} : {Quelle}
+{spontaneous} : {spontan}
+{such as} : {wie etwa}
+{the sooner ...\, the better  ...} : {je eher ..\, desto besser ...}
+{they do eat more white mice} : {sie fressen wirkich mehr weiße Mäuse}
+{thick} : {dick}
+{understanding} : {Verständniss}
+{unless} : {es sei denn}, {außer, außer wenn}
+{virus} : {Virus}

@@ -15,6 +15,7 @@
         <module>Vocabulary_Management_API</module>
         <module>Vocabulary_Management_Impl</module>
         <module>Application</module>
+        <module>Vocabulary_Management_Rest</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

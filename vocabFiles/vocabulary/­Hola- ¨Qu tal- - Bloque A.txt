@@ -1,0 +1,38 @@
+{{{¡Hola! ¿Qué tal? - Bloque A}}}{{{Spanisch}}}{{{Deutsch}}}{{{¡Vamos! ¡Adelante!}}}
+{ahora} : {jetzt}
+{con acento} : {mit Akzent}
+{con dos puntos} : {mit Umlaut}
+{doble} : {Doppel-}
+{el apellido} : {der Nachname}
+{el burro} : {der Esel}
+{el caballo} : {das Pferd}
+{el centro} : {das Zentrum, das Stadtzentrum}
+{el elefante} : {der Elefant}
+{el gato} : {die Katze}
+{el hotel} : {das Hotel}
+{el mono} : {der Affe}
+{el museo} : {das Museum}
+{el móvil} : {das Handz}
+{el número} : {die Nummer}, {die Zahl}
+{el parque} : {der Park}
+{el perro} : {der Hund}
+{el restaurante} : {das Restaurant}
+{el teléfono} : {das Telefon}
+{el zoo} : {der Zoo}
+{el zorro} : {der Fuchs}
+{es} : {er/sie/es ist}
+{la abeja} : {die Biene}
+{la casa} : {das Haus}, {die Wohnung}
+{la ciudad} : {Stadt}
+{la libreria} : {die Buchhandlung}
+{la plaza} : {der Platz}
+{la rana} : {der Frosch}
+{la tarántula} : {die Vogelspinne}, {die Tarantel}
+{la vaca} : {die Kuh}
+{mi} : {mein}, {meine}
+{pero} : {aber}
+{Se escribe ...} : {Man schreibt ...}
+{Tengo ... años.} : {Ich bin ... Jahre alt.}
+{¿Cuánto años tienes?} : {Wie alt bist du?}
+{¿Cómo es to apellidu?} : {Wie ist dein Nachname?}
+{¿Cómo se escribe ...?} : {Wie schreibt man ...?}

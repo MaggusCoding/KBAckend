@@ -1,0 +1,78 @@
+{{{Irregular Verbs}}}{{{English}}}{{{Deutsch}}}{{{Camden Market 2}}}
+{beat}, {beat}, {beaten} : {schlagen}, {besiegen}
+{became}, {became}, {become} : {werden}
+{begin}, {began}, {begun} : {anfangen, beginnen}
+{be}, {was/were}, {been} : {sein}
+{bite}, {bit}, {bitten} : {beißen}
+{break}, {broke}, {broken} : {brechen, zerbrechen}
+{bring}, {brought}, {brought} : {bringen, mitbringen}
+{build}, {built}, {built} : {bauen}
+{burn}, {burnt}, {burnt} : {brennen}
+{buy}, {bought}, {bought} : {kaufen}
+{catch}, {caught}, {caught} : {fangen}, {festnehmen}
+{choose}, {chose}, {chosen} : {auswählen}
+{come}, {came}, {come} : {kommen}
+{cost}, {cost}, {cost} : {kosten}
+{cut}, {cut}, {cut} : {schneiden}
+{do}, {did}, {done} : {machen, tun}
+{draw}, {drew}, {drawn} : {zeichnen}
+{dream}, {dreamt}, {dreamt} : {träumen}
+{drink}, {drank}, {drunk} : {trinken}
+{drive}, {drove}, {driven} : {fahren}
+{eat}, {ate}, {eaten} : {essen}
+{fall}, {fell}, {fallen} : {fallen}
+{feed}, {fed}, {fed} : {füttern, zu Essen geben}
+{feel}, {felt}, {felt} : {fühlen, sich fühlen}
+{fight}, {fought}, {fought} : {kämpfen, bekämpfen}
+{find}, {found}, {found} : {finden}
+{fit}, {fit}, {fit} : {passen, passen zu}
+{fly}, {flew}, {flown} : {fliegen}
+{forget}, {forgot}, {forgotten} : {vergessen}
+{get}, {got}, {gotten} : {erhalten, bekommen}, {werden}, {holen}, {verstehen}, {kommen, ankommen}
+{give}, {gave}, {given} : {geben}
+{go}, {went}, {gone} : {gehen}, {fahren}
+{hang}, {hung}, {hung} : {hängen, aufhängen}
+{have}, {had}, {had} : {haben}, {essen}
+{hear}, {heard}, {heard} : {hören}
+{hide}, {hid}, {hidden} : {verstecken, sich verstecken}
+{hit}, {hit}, {hit} : {schlagen}
+{hold}, {held}, {held} : {halten}
+{keep}, {kept}, {kept} : {halten, behalten}, {aufbewahren}
+{know}, {knew}, {known} : {wissen}, {kennen}
+{lead}, {led}, {led} : {führen}
+{learn}, {learnt}, {learnt} : {lernen}
+{leave}, {left}, {left} : {verlassen}, {abfahren}, {gehen, weggehen}, {lassen}
+{let}, {let}, {let} : {lassen}
+{lose}, {lost}, {lost} : {verlieren}
+{make}, {made}, {made} : {machen}
+{mean}, {meant}, {meant} : {bedeuten}, {meinen}
+{meet}, {met}, {met} : {treffen, sich treffen}, {kennenlernen}
+{put}, {put}, {put} : {setzen, legen, stellen}
+{read}, {read}, {read} : {lesen}
+{ride}, {rode}, {ridden} : {fahren}, {reiten}
+{run}, {ran}, {run} : {laufen, rennen}, {fahren, verkehren}
+{say}, {said}, {said} : {sagen}
+{see}, {saw}, {seen} : {sehen}
+{sell}, {sold}, {sold} : {verkaufen}
+{send}, {sent}, {sent} : {schicken, zuschicken}
+{show}, {showed}, {shown} : {zeigen}
+{sing}, {sang}, {sung} : {singen}
+{sit}, {sat}, {sat} : {sitzen}
+{sleep}, {slept}, {slept} : {schlafen}
+{sneak}, {snuck}, {snuck} : {schleichen}
+{speak}, {spoke}, {spoken} : {sprechen, reden}
+{spell}, {spelt}, {spelt} : {buchstabieren}
+{spend}, {spent}, {spent} : {ausgeben}, {verbringen}{{{ausgeben (Geld)\; verbringen (Zeit)}}}{{{}}}
+{spit}, {spit}, {spit} : {spucken}
+{stand}, {stood}, {stood} : {stehen}, {ertragen, aushalten}
+{steal}, {stole}, {stolen} : {stehlen, klauen}
+{swim}, {swam}, {swum} : {schwimmen}
+{take}, {took}, {taken} : {nehmen, mitnehmen}, {bringen}
+{teach}, {taught}, {taught} : {unterrichten}
+{tell}, {told}, {told} : {erzählen}, {vorhersagen}, {sagen}
+{think}, {thought}, {thought} : {denken, glauben, meinen}
+{throw}, {threw}, {thrown} : {werfen}
+{understand}, {understood}, {understood} : {verstehen}
+{wear}, {worn}, {worn} : {tragen}{{{(Kleidung)}}}{{{}}}
+{win}, {won}, {won} : {gewinnen}
+{write}, {wrote}, {written} : {schreiben}

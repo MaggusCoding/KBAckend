@@ -1,0 +1,25 @@
+{{{¡Hola! ¿Qué tal? - Primer paso}}}{{{Spanisch}}}{{{Deutsch}}}{{{¡Vamos! ¡Adelante!}}}
+{Alemania} : {Deutschland}
+{Así así.} : {So,so., Es geht.}
+{bien} : {gut}
+{de} : {von}, {aus}
+{Gracias.} : {Danke.}
+{mal} : {schlecht}
+{Me llamo ...} : {Ich heiße ...}
+{muy} : {sehr}
+{sí} : {ja}
+{también} : {auch}
+{Yo soy ...} : {Ich bin ...}
+{y} : {und}
+{¡Adiós!} : {Auf Wiedersehen!, Tschüs!}
+{¡Buenas noches!} : {Gute Nacht!}, {Guten Abend!}
+{¡Buenas tardes!} : {Guten Tag!}, {Guten Abend!}
+{¡Buenos dias!} : {Guten Morgen!}, {Guten Tag!}
+{¡Hasta luego!} : {Bis später!}
+{¡Hola!} : {Hallo!}
+{¿Cómo ...?} : {Wie ...?}
+{¿Cómo te llamas?} : {Wie heißt du?}
+{¿De dónde ...?} : {Woher ...?}
+{¿De dónde eres?} : {Woher kommst du?}
+{¿Qué tal?} : {Wie geht's?}
+{¿Y tú?} : {Und du?}

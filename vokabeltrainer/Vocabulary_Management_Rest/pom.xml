@@ -8,41 +8,23 @@
         <version>1.0</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
-    <artifactId>Application</artifactId>
+    <artifactId>Vocabulary_Management_Rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Application</name>
-    <description>Application</description>
+    <name>Vocabulary_Management_Rest</name>
+    <description>Vocabulary_Management_Rest</description>
     <properties>
         <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.vocab</groupId>
-            <artifactId>Application_UI_API</artifactId>
+            <artifactId>Vocabulary_Management_API</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vocab</groupId>
-            <artifactId>Application_UI_Impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>User_Management_Rest</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Duel_Rest</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vocab</groupId>
-            <artifactId>Vocabulary_Management_Rest</artifactId>
+            <artifactId>Vocabulary_Management_Impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

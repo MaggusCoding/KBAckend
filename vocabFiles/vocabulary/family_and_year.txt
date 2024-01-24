@@ -1,0 +1,3 @@
+{{{family_and_year}}}{{{English}}}{{{Deutsch}}}{{{schreiner_4_klasse}}}
+{brother} : {Bruder}
+{sister} : {Schwester}
