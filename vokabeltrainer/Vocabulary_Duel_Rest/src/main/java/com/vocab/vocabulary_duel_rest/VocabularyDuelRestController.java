@@ -45,12 +45,14 @@ public class VocabularyDuelRestController {
     }
 
     @GetMapping("/api/duel/winners")
-    public ResponseEntity<List<UserEntity>> getWinners(@RequestParam Long duelID) {
+    public ResponseEntity<List<UserEntity>> getWinners(@RequestParam Long duelid) {
         try {
-            List<UserEntity> userEntities = duelService.calculateWinner(duelID);
+            List<UserEntity> userEntities = duelService.calculateWinner(duelid);
+            if(userEntities.isEmpty())
+                return ResponseEntity.notFound().build();
             return ResponseEntity.ok(userEntities);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -61,27 +63,31 @@ public class VocabularyDuelRestController {
             DuelDTO  duelDTO = DuelDTO.fromEntity(duel);
             return ResponseEntity.ok(duelDTO);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/api/duel/join")
-    public ResponseEntity<Void> joinDuel(@RequestParam Long duelid, @RequestParam Long userid) {
+    public ResponseEntity<DuelDTO> joinDuel(@RequestParam Long duelid, @RequestParam Long userid) {
         try {
-            duelService.joinDuel(duelid, userid);
-            return ResponseEntity.ok().build();
+            if(!duelService.joinDuel(duelid, userid))
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            DuelDTO duelDTO = DuelDTO.fromEntity(duelService.getById(duelid).get());
+            return ResponseEntity.status(HttpStatus.OK).body(duelDTO);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/api/duel/tojoin")
-    public ResponseEntity<List<DuelDTO>> getDuelsToJoin(@RequestParam Long userID) {
+    public ResponseEntity<List<DuelDTO>> getDuelsToJoin(@RequestParam Long userid) {
         try {
-            List<Duel> duels = duelService.duelsToJoin(userID);
+            List<Duel> duels = duelService.duelsToJoin(userid);
             List<DuelDTO> duelDTOS = duels.stream()
                     .map(DuelDTO::fromEntity)
                     .collect(Collectors.toList());
+            if(duelDTOS.isEmpty())
+                return ResponseEntity.notFound().build();
             return ResponseEntity.ok(duelDTOS);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -89,13 +95,14 @@ public class VocabularyDuelRestController {
     }
 
     @GetMapping("/api/duel/tostart")
-    public ResponseEntity<List<DuelDTO>> getDuelsToStart(@RequestParam Long userID) {
+    public ResponseEntity<List<DuelDTO>> getDuelsToStart(@RequestParam Long userid) {
         try {
-            List<Duel> duels = duelService.duelsToStart(userID);
+            List<Duel> duels = duelService.duelsToStart(userid);
             List<DuelDTO> duelDTOS = duels.stream()
                     .map(DuelDTO::fromEntity)
                     .collect(Collectors.toList());
-
+            if(duelDTOS.isEmpty())
+                return ResponseEntity.notFound().build();
             return ResponseEntity.ok(duelDTOS);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -103,19 +110,23 @@ public class VocabularyDuelRestController {
     }
 
     @PutMapping("/api/duel/start")
-    public ResponseEntity<Void> startDuel(@RequestParam Long duelID) {
+    public ResponseEntity<DuelDTO> startDuel(@RequestParam Long duelid, @RequestParam Long userid) {
         try {
-            duelService.startDuel(duelID);
-            return ResponseEntity.ok().build();
+            if(!duelService.startDuel(duelid, userid))
+                return ResponseEntity.notFound().build();
+            DuelDTO duel = DuelDTO.fromEntity(duelService.getById(duelid).get());
+            if(duel.isStarted())
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(duel);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/api/duel/playround")
-    public ResponseEntity<RoundDTO> playRound(@RequestParam Long duelID) {
+    public ResponseEntity<RoundDTO> playRound(@RequestParam Long duelid) {
         try {
-            List<String> list = duelService.playRound(duelID);
+            List<String> list = duelService.playRound(duelid);
             RoundDTO roundDTO = RoundDTO.fromList(list);
             return ResponseEntity.ok(roundDTO);
         } catch (Exception e) {

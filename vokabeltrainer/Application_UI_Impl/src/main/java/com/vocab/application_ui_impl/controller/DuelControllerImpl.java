@@ -123,7 +123,7 @@ public class DuelControllerImpl {
                     duelView.readString();
                 }
             }
-            duelService.startDuel(duelStart);
+            duelService.startDuel(duelStart,loggedInUser);
             List<String> flashcardString = duelService.playRound(duelStart);
             currentPlayerOfDuel = loggedInUser;
             boolean duelFinished = false;

@@ -47,9 +47,10 @@ public interface DuelService {
     /**
      * Starts the duel so that nobody can join anymore and sets the first round to active
      * @param duelId Id of the duel to start
+     * @param userID Id of the User who wants to start the duel
      * @return If starting the duel was successfull
      */
-    boolean startDuel(Long duelId);
+    boolean startDuel(Long duelId, Long userID);
 
     /**
      * Saves the selected Answer and determines if it is correct.

@@ -487,6 +487,7 @@ public class DuelServiceImplTest {
     public void testStartDuel() {
         // Arrange
         long duelId = 1L;
+        long userID = 1L;
         Duel mockDuel = new Duel();
         mockDuel.setDuelId(duelId);
         mockDuel.setStarted(false);
@@ -499,7 +500,7 @@ public class DuelServiceImplTest {
         when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
 
         // Act
-        boolean result = duelService.startDuel(duelId);
+        boolean result = duelService.startDuel(duelId, userID);
 
         // Assert
         assertTrue(result);

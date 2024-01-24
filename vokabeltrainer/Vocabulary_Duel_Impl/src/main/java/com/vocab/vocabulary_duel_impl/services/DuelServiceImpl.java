@@ -102,6 +102,8 @@ public class DuelServiceImpl implements DuelService {
     public List<UserEntity> calculateWinner(Long duelId) {
         List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
         Duel duel = duelRepo.findById(duelId).get();
+        if(!duel.getWinner().isEmpty())
+            return duel.getWinner();
         if(rankingData.isEmpty()){
             return List.of();
         }
@@ -111,6 +113,7 @@ public class DuelServiceImpl implements DuelService {
                 .map(RankingPlayer::getPlayer)
                 .map(username -> userService.findByUsername(username).get())
                 .collect(Collectors.toList());
+        duel.setWinner(winners);
         duelRepo.save(duel);
         return winners;
     }
@@ -210,11 +213,13 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     @Transactional
-    public boolean startDuel(Long duelId) {
+    public boolean startDuel(Long duelId, Long userID) {
         Duel duel;
         if (duelRepo.findById(duelId).isPresent()) {
             duel = duelRepo.findById(duelId).get();
         } else return false;
+        if(!duel.getPlayers().contains(userService.getById(userID)))
+            return false;
         duel.setStarted(true);
         List<Round> rounds = duel.getRounds();
         Round round = rounds.get(0);
