@@ -1,6 +1,0 @@
-{{{Unit 1 Block A}}}{{{Spanisch}}}{{{Deutsch}}}{{{Spanisch 9 Klasse}}}
-#{de colores} : {bunt}
-{el colegio} : {die Schule}
-{el mundo} : {die Welt}
-#{el sombrero} : {der Hut}
-#{el traje tipíco} : {die Tracht}

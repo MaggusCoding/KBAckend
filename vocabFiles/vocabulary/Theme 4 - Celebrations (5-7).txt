@@ -1,7 +1,0 @@
-{{{Theme 4 - Celebrations (5-7)}}}{{{English}}}{{{Deutsch}}}{{{Camden Market 2}}}
-{born} : {geboren}{{{}}}{{{My sister was born in 2003.}}}
-{brave} : {mutig}, {unerschrocken}
-{charming} : {bezaubernd}, {charmant}{{{}}}{{{Rajiv is very charming.}}}
-{creative} : {kreativ}
-{rat} : {Ratte}
-{sign} : {Zeichen}, {Straßenschild, Verkehrsschild, Schild}
