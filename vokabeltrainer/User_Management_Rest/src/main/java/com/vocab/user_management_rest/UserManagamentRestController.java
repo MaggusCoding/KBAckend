@@ -4,6 +4,7 @@ import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +51,7 @@ public class UserManagamentRestController {
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) throws URISyntaxException {
         try {
             UserEntity user = userService.createUserRest(request);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
