@@ -21,7 +21,6 @@ public class DuelDTO {
     private List<Long> playerIds;
     private List<String> playerUsernames;
     private Long flashcardsForDuelId;
-    private List<Long> roundIds;
     private boolean started;
     private boolean finished;
 
@@ -34,7 +33,6 @@ public class DuelDTO {
         dto.setPlayerIds(duel.getPlayers().stream().map(UserEntity::getUserId).collect(Collectors.toList()));
         dto.setPlayerUsernames(duel.getPlayers().stream().map(UserEntity::getUsername).collect(Collectors.toList()));
         dto.setFlashcardsForDuelId(duel.getFlashcardsForDuel().getFlashcardListId());
-        dto.setRoundIds(duel.getRounds().stream().map(Round::getRoundId).collect(Collectors.toList()));
         dto.setStarted(duel.isStarted());
         dto.setFinished(duel.isFinished());
 
