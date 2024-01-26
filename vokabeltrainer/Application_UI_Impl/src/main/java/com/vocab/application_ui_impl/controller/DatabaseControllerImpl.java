@@ -2,7 +2,7 @@ package com.vocab.application_ui_impl.controller;
 
 import com.vocab.application_ui_impl.views.DbView;
 import com.vocab.user_management.repos.UserRepo;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;

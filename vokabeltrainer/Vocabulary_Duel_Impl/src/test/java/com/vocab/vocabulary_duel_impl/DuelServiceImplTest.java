@@ -2,13 +2,13 @@ package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
-import com.vocab.vocabulary_duel.dto.RankingPlayer;
-import com.vocab.vocabulary_duel.entities.Answer;
-import com.vocab.vocabulary_duel.entities.Duel;
-import com.vocab.vocabulary_duel.entities.Round;
-import com.vocab.vocabulary_duel.repositories.AnswerRepo;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
-import com.vocab.vocabulary_duel.repositories.RoundRepo;
+import com.vocab.vocabulary_duel_API.dto.RankingPlayer;
+import com.vocab.vocabulary_duel_API.entities.Answer;
+import com.vocab.vocabulary_duel_API.entities.Duel;
+import com.vocab.vocabulary_duel_API.entities.Round;
+import com.vocab.vocabulary_duel_API.repositories.AnswerRepo;
+import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_API.repositories.RoundRepo;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
@@ -487,6 +487,7 @@ public class DuelServiceImplTest {
     public void testStartDuel() {
         // Arrange
         long duelId = 1L;
+        long userID = 1L;
         Duel mockDuel = new Duel();
         mockDuel.setDuelId(duelId);
         mockDuel.setStarted(false);
@@ -499,7 +500,7 @@ public class DuelServiceImplTest {
         when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
 
         // Act
-        boolean result = duelService.startDuel(duelId);
+        boolean result = duelService.startDuel(duelId, userID);
 
         // Assert
         assertTrue(result);

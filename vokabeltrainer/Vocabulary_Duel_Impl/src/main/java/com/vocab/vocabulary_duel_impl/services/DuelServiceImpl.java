@@ -2,14 +2,14 @@ package com.vocab.vocabulary_duel_impl.services;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management_impl.services.UserServiceImpl;
-import com.vocab.vocabulary_duel.dto.RankingPlayer;
-import com.vocab.vocabulary_duel.entities.Answer;
-import com.vocab.vocabulary_duel.entities.Duel;
-import com.vocab.vocabulary_duel.entities.Round;
-import com.vocab.vocabulary_duel.repositories.AnswerRepo;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
-import com.vocab.vocabulary_duel.repositories.RoundRepo;
-import com.vocab.vocabulary_duel.services.DuelService;
+import com.vocab.vocabulary_duel_API.dto.RankingPlayer;
+import com.vocab.vocabulary_duel_API.entities.Answer;
+import com.vocab.vocabulary_duel_API.entities.Duel;
+import com.vocab.vocabulary_duel_API.entities.Round;
+import com.vocab.vocabulary_duel_API.repositories.AnswerRepo;
+import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_API.repositories.RoundRepo;
+import com.vocab.vocabulary_duel_API.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.Translation;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+todo: Einen check implementieren der überprüft ob der Spieler für diese Runde bereits eine Answer abgegeben hat
+ */
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
 public class DuelServiceImpl implements DuelService {
@@ -99,6 +102,8 @@ public class DuelServiceImpl implements DuelService {
     public List<UserEntity> calculateWinner(Long duelId) {
         List<RankingPlayer> rankingData = duelRepo.getRankingOfDuel(duelId);
         Duel duel = duelRepo.findById(duelId).get();
+        if(!duel.getWinner().isEmpty())
+            return duel.getWinner();
         if(rankingData.isEmpty()){
             return List.of();
         }
@@ -108,6 +113,7 @@ public class DuelServiceImpl implements DuelService {
                 .map(RankingPlayer::getPlayer)
                 .map(username -> userService.findByUsername(username).get())
                 .collect(Collectors.toList());
+        duel.setWinner(winners);
         duelRepo.save(duel);
         return winners;
     }
@@ -207,11 +213,13 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     @Transactional
-    public boolean startDuel(Long duelId) {
-        Duel duel = null;
+    public boolean startDuel(Long duelId, Long userID) {
+        Duel duel;
         if (duelRepo.findById(duelId).isPresent()) {
             duel = duelRepo.findById(duelId).get();
         } else return false;
+        if(!duel.getPlayers().contains(userService.getById(userID)))
+            return false;
         duel.setStarted(true);
         List<Round> rounds = duel.getRounds();
         Round round = rounds.get(0);
@@ -238,7 +246,6 @@ public class DuelServiceImpl implements DuelService {
             }
         }
 
-
         Flashcard flashcard = activeRound.getQuestionedFlashcard();
         String question = flashcard.getOriginalText();
 
@@ -251,7 +258,7 @@ public class DuelServiceImpl implements DuelService {
 
         roundStrings.add(question);
         roundStrings.addAll(Arrays.stream(wrongAnswers.split(";")).toList());
-        roundStrings.add(rand.nextInt(1, 5), correctAnswer);
+        roundStrings.add(correctAnswer);
         return roundStrings;
     }
 
@@ -260,16 +267,26 @@ public class DuelServiceImpl implements DuelService {
      */
     @Override
     @Transactional
-    public void saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
+    public boolean saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
         Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new RuntimeException("Duel(ID: " + duelId + ") does not exist."));
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
+        List<Answer> answers = currentRound.getSelectedAnswers();
+        List<UserEntity> userAnswers = answers.stream().map(Answer::getPlayer).toList();
+        if(userAnswers.contains(userService.getById(playerId)))
+            return false;
         boolean isCorrect = currentRound.getQuestionedFlashcard().getTranslations().stream().anyMatch(translation -> translation.getTranslationText().equalsIgnoreCase(selectedAnswer));
         Answer answer = new Answer();
         answer.setCorrect(isCorrect);
         answer.setRound(currentRound);
         answer.setPlayer(userService.getById(playerId));
         answerRepo.save(answer);
+        currentRound.setSingleAnswer(answer);
+        if (allPlayersAnswered(currentRound, duel.getPlayers())) {
+            activateNextRound(duelId);
+        }
+        return true;
     }
+
 
     /**
      * {@inheritDoc}
@@ -280,18 +297,27 @@ public class DuelServiceImpl implements DuelService {
         Duel duel = duelRepo.findById(duelId).get();
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
         currentRound.setActiveRound(false);
+
         Round nextRound = roundRepo.findFirstByDuelAndSelectedAnswersEmpty(duel);
-        // all rounds played?
         if (nextRound != null) {
-            nextRound.setActiveRound(true);
-            roundRepo.save(currentRound);
-            roundRepo.save(nextRound);
-        }else{
+                nextRound.setActiveRound(true);
+                roundRepo.save(currentRound);
+                roundRepo.save(nextRound);
+        } else {
             duel.setFinished(true);
             duelRepo.save(duel);
         }
-
     }
+
+    private boolean allPlayersAnswered(Round activeRound, List<UserEntity> players) {
+        if(activeRound.getSelectedAnswers() == null) return false;
+        List<UserEntity> playersWithAnswer = activeRound.getSelectedAnswers().stream()
+                .map(Answer::getPlayer)
+                .toList();
+
+        return playersWithAnswer.containsAll(players);
+    }
+
 
     /**
      * {@inheritDoc}

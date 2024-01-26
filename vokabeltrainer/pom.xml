@@ -8,11 +8,14 @@
         <module>Application_UI_API</module>
         <module>Vocabulary_Duel_API</module>
         <module>Vocabulary_Duel_Impl</module>
+        <module>Vocabulary_Duel_Rest</module>
         <module>User_Management_API</module>
         <module>User_Management_Impl</module>
+        <module>User_Management_Rest</module>
         <module>Vocabulary_Management_API</module>
         <module>Vocabulary_Management_Impl</module>
         <module>Application</module>
+        <module>Vocabulary_Management_Rest</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -65,6 +68,7 @@
             <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
 

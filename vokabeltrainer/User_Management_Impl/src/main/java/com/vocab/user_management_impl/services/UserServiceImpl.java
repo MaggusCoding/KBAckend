@@ -3,7 +3,7 @@ package com.vocab.user_management_impl.services;
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
-import com.vocab.vocabulary_duel.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -36,6 +36,17 @@ public class UserServiceImpl implements UserService {
         return existingUser.orElseGet(() -> {
             UserEntity newUser = new UserEntity();
             newUser.setUsername(userName);
+            return userRepository.save(newUser);
+        });
+    }
+
+
+    public UserEntity createUserRest(UserEntity user) {
+        Optional<UserEntity> existingUser = findByUsername(user.getUsername());
+
+        return existingUser.orElseGet(() -> {
+            UserEntity newUser = new UserEntity();
+            newUser.setUsername(user.getUsername());
             return userRepository.save(newUser);
         });
     }
