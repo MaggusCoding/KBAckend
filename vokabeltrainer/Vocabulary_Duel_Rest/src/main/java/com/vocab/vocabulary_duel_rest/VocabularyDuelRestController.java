@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @ComponentScan(basePackages = {"com.vocab"})
+@CrossOrigin(origins = "http://localhost:5173") // Frontend-Server-URL
+
 public class VocabularyDuelRestController {
     @Autowired
     DuelServiceImpl duelService;

@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @ComponentScan(basePackages = {"com.vocab"})
+@CrossOrigin(origins = "http://localhost:5173") // Frontend-Server-URL
 public class UserManagamentRestController {
     @Autowired
     private UserService userService;

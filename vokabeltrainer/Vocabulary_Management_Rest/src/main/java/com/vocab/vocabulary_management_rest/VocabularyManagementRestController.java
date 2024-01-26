@@ -6,6 +6,7 @@ import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @ComponentScan(basePackages = {"com.vocab"})
+@CrossOrigin(origins = "http://localhost:5173") // Frontend-Server-URL
 public class VocabularyManagementRestController {
     @Autowired
     FlashcardListService flashcardListService;
