@@ -5,17 +5,16 @@ import com.vocab.vocabulary_duel_API.dto.AnswerDTO;
 import com.vocab.vocabulary_duel_API.dto.DuelCreateRequest;
 import com.vocab.vocabulary_duel_API.dto.DuelDTO;
 import com.vocab.vocabulary_duel_API.dto.RoundDTO;
-import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class VocabularyDuelRestController {
             duelService.generateRounds(duel.getDuelId());
             Duel duelCreated = duelService.getById(duel.getDuelId()).get();
             return ResponseEntity.status(HttpStatus.CREATED).body(DuelDTO.fromEntity(duelCreated));
-        }catch (Exception e){
+        } catch (Exception e){
            return ResponseEntity.notFound().build();
        }
     }
@@ -77,6 +76,8 @@ public class VocabularyDuelRestController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             DuelDTO duelDTO = DuelDTO.fromEntity(duelService.getById(duelid).get());
             return ResponseEntity.status(HttpStatus.OK).body(duelDTO);
+        } catch (ObjectOptimisticLockingFailureException oe) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Duel-Daten nicht aktuell. Bitte neu laden!");
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -121,6 +122,8 @@ public class VocabularyDuelRestController {
             if(duel.isStarted())
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             return ResponseEntity.status(HttpStatus.OK).body(duel);
+        } catch (ObjectOptimisticLockingFailureException oe) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Duel-Date nicht aktuell. Bitte neu laden!");
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
@@ -149,4 +152,6 @@ public class VocabularyDuelRestController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // TODO: Endpoint deleteDuel
 }

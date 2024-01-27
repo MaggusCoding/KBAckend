@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -49,7 +49,7 @@ public class UserManagamentRestController {
     }
 
     @PostMapping("/api/user")
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) throws URISyntaxException {
+    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) {
         try {
             UserEntity user = userService.createUserRest(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -61,9 +61,11 @@ public class UserManagamentRestController {
     @DeleteMapping("/api/user")
     public ResponseEntity<Void> deleteUser(@RequestParam Long userid) {
         try {
-            if(userService.deleteUser(userid)) {
+            if (userService.deleteUser(userid)) {
                 return ResponseEntity.ok().build();
-            }else return ResponseEntity.notFound().build();
+            } else return ResponseEntity.notFound().build();
+        } catch (ObjectOptimisticLockingFailureException oe) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User-Daten nicht aktuell. Bitte neu laden!");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

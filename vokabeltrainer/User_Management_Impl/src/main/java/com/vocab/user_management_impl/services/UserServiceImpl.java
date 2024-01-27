@@ -4,6 +4,7 @@ import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
 import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
     }
 
     /**

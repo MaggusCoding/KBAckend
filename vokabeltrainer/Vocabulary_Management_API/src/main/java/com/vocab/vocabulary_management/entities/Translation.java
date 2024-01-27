@@ -24,6 +24,9 @@ public class Translation {
 
     private String translationText;
 
+    @Version
+    private Long changeCounter;
+
     //make javadoc happy
     public static class TranslationBuilder{}
 

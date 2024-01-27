@@ -20,6 +20,9 @@ public class Flashcard {
     @OneToMany(mappedBy = "flashcard", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Translation> translations;
 
+    @Version
+    private Long changeCounter;
+
     //make javadoc happy
     public static class FlashcardBuilder{}
 
