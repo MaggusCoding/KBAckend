@@ -14,6 +14,7 @@ import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.Translation;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -68,7 +69,7 @@ public class DuelServiceImpl implements DuelService {
         UserEntity user = userService.getById(userId);
         boolean isAlreadyJoined = duelRepo.findById(duelId).get().getPlayers().contains(user);
         if (!duel.isStarted() && !isAlreadyJoined) {
-            duel.setPlayer(userService.getById(userId));
+            duel.setPlayer(user);
             duelRepo.save(duel);
             return true;
         } else {
@@ -218,8 +219,9 @@ public class DuelServiceImpl implements DuelService {
         if (duelRepo.findById(duelId).isPresent()) {
             duel = duelRepo.findById(duelId).get();
         } else return false;
-        if(!duel.getPlayers().contains(userService.getById(userID)))
+        if(!duel.getPlayers().contains(userService.getById(userID)) || duel.isStarted()){
             return false;
+        }
         duel.setStarted(true);
         List<Round> rounds = duel.getRounds();
         Round round = rounds.get(0);
@@ -268,7 +270,7 @@ public class DuelServiceImpl implements DuelService {
     @Override
     @Transactional
     public boolean saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId) {
-        Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new RuntimeException("Duel(ID: " + duelId + ") does not exist."));
+        Duel duel = duelRepo.findById(duelId).orElseThrow(() -> new EntityNotFoundException("Duel(ID: " + duelId + ") does not exist."));
         Round currentRound = roundRepo.findRoundByDuelAndActiveRoundTrue(duel);
         List<Answer> answers = currentRound.getSelectedAnswers();
         List<UserEntity> userAnswers = answers.stream().map(Answer::getPlayer).toList();
@@ -281,6 +283,7 @@ public class DuelServiceImpl implements DuelService {
         answer.setPlayer(userService.getById(playerId));
         answerRepo.save(answer);
         currentRound.setSingleAnswer(answer);
+        roundRepo.save(currentRound);
         if (allPlayersAnswered(currentRound, duel.getPlayers())) {
             activateNextRound(duelId);
         }
@@ -301,8 +304,7 @@ public class DuelServiceImpl implements DuelService {
         Round nextRound = roundRepo.findFirstByDuelAndSelectedAnswersEmpty(duel);
         if (nextRound != null) {
                 nextRound.setActiveRound(true);
-                roundRepo.save(currentRound);
-                roundRepo.save(nextRound);
+                roundRepo.saveAll(List.of(currentRound, nextRound));
         } else {
             duel.setFinished(true);
             duelRepo.save(duel);

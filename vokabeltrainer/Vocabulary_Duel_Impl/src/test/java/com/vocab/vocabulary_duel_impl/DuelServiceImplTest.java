@@ -54,16 +54,16 @@ public class DuelServiceImplTest {
     public void testGenerateRounds() {
         // Arrange
         Duel mockDuel = new Duel();
-        FlashcardList mockFlashcardList = new FlashcardList(1L, "MockCat", "Deutsch", "Englisch", new ArrayList<>());
+        FlashcardList mockFlashcardList = new FlashcardList(1L, "MockCat", "Deutsch", "Englisch", new ArrayList<>(), 1L);
         mockDuel.setFlashcardsForDuel(mockFlashcardList);
 
         List<Translation> translations = new ArrayList<>();
         for (long i = 0; i < 20; i++) {
-            translations.add(new Translation(i, new Flashcard(), "Bear" + i));
+            translations.add(new Translation(i, new Flashcard(), "Bear" + i, 1L));
         }
         List<Flashcard> flashcards = new ArrayList<>();
         for (long i = 0; i < 20; i++) {
-            flashcards.add(new Flashcard(i, "OGText" + i, mockFlashcardList, translations));
+            flashcards.add(new Flashcard(i, "OGText" + i, mockFlashcardList, translations, 1L));
         }
         mockFlashcardList.setFlashcards(flashcards);
 //
@@ -173,6 +173,7 @@ public class DuelServiceImplTest {
         Round mockRound = new Round();
         mockRound.setDuel(mockDuel);
         mockRound.setQuestionedFlashcard(mockFlashcard);
+        mockRound.setSelectedAnswers(new ArrayList<>());
 
         when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
         when(roundRepo.findRoundByDuelAndActiveRoundTrue(mockDuel)).thenReturn(mockRound);
@@ -354,7 +355,7 @@ public class DuelServiceImplTest {
 
         verify(duelRepo).save(mockDuel);
         verify(duelRepo, times(2)).findById(duelId);
-        verify(userService, times(2)).getById(userId);
+        verify(userService, times(1)).getById(userId);
     }
     @Test
     public void testJoinDuel_DuelAlreadyStarted() {
@@ -403,7 +404,7 @@ public class DuelServiceImplTest {
         // Arrange
         long duelId = 1L;
         Duel mockDuel = new Duel();
-        List<UserEntity> players = Arrays.asList(new UserEntity(1L, "Player1"), new UserEntity(2L, "Player2"));
+        List<UserEntity> players = Arrays.asList(new UserEntity(1L, "Player1",1L), new UserEntity(2L, "Player2", 1L));
         mockDuel.setPlayers(players);
 
         List<Round> rounds = new ArrayList<>();
@@ -445,7 +446,7 @@ public class DuelServiceImplTest {
         // Arrange
         long duelId = 1L;
         Duel mockDuel = new Duel();
-        List<UserEntity> players = Arrays.asList(new UserEntity(1L, "Player1"), new UserEntity(2L, "Player2"));
+        List<UserEntity> players = Arrays.asList(new UserEntity(1L, "Player1", 1L), new UserEntity(2L, "Player2",1L));
         mockDuel.setPlayers(players);
 
         List<Round> rounds = new ArrayList<>();
@@ -487,10 +488,11 @@ public class DuelServiceImplTest {
     public void testStartDuel() {
         // Arrange
         long duelId = 1L;
-        long userID = 1L;
+        UserEntity mockUser = new UserEntity(1L, "testuser", 1L);
         Duel mockDuel = new Duel();
         mockDuel.setDuelId(duelId);
         mockDuel.setStarted(false);
+        mockDuel.setPlayers(List.of(mockUser));
         List<Round> rounds = new ArrayList<>();
         Round mockRound = new Round();
         mockRound.setActiveRound(false);
@@ -498,9 +500,38 @@ public class DuelServiceImplTest {
         mockDuel.setRounds(rounds);
 
         when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(userService.getById(mockUser.getUserId())).thenReturn(mockUser);
 
         // Act
-        boolean result = duelService.startDuel(duelId, userID);
+        boolean result = duelService.startDuel(duelId, mockUser.getUserId());
+
+        // Assert
+        assertTrue(result);
+        assertTrue(mockDuel.isStarted());
+        verify(duelRepo, times(2)).findById(duelId);
+        verify(duelRepo).save(mockDuel);
+    }
+
+    @Test
+    public void testStartDuelOptimisticLockingHandling() {
+        // Arrange
+        long duelId = 1L;
+        UserEntity mockUser = new UserEntity(1L, "testuser", 1L);
+        Duel mockDuel = new Duel();
+        mockDuel.setDuelId(duelId);
+        mockDuel.setStarted(false);
+        mockDuel.setPlayers(List.of(mockUser));
+        List<Round> rounds = new ArrayList<>();
+        Round mockRound = new Round();
+        mockRound.setActiveRound(false);
+        rounds.add(mockRound);
+        mockDuel.setRounds(rounds);
+
+        when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
+        when(userService.getById(mockUser.getUserId())).thenReturn(mockUser);
+
+        // Act
+        boolean result = duelService.startDuel(duelId, mockUser.getUserId());
 
         // Assert
         assertTrue(result);
