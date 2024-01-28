@@ -252,7 +252,7 @@ public class DuelControllerImpl {
             duelView.printNextPlayer();
             duelView.printAvailableNextPlayer(usernames.stream().collect(Collectors.joining(System.lineSeparator())));
             String nextUser = duelView.readString();
-            UserEntity user = userService.findByUsername(nextUser).orElse(null);
+            UserEntity user = userService.findByUsername(nextUser);
             if (nextUser.equalsIgnoreCase("exit")) {
                 return -2L;
             } else if (user == null) {

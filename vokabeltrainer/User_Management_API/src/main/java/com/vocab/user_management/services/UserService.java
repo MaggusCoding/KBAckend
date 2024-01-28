@@ -1,15 +1,15 @@
 package com.vocab.user_management.services;
 
 import com.vocab.user_management.entities.UserEntity;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     /**
      * Creates a User for playing the vocab game and saves it in the database
      * @param userName The User which is to be created
-     * @return The created user
+     * @return The created user or null
      */
 
     UserEntity createUser(String userName);
@@ -28,7 +28,7 @@ public interface UserService {
      * @param id Id of the user in question
      * @return The user retrieved by the database
      */
-    UserEntity getById(Long id);
+    UserEntity getById(Long id) throws EntityNotFoundException;
 
     /**
      * All users which are present in the database
@@ -41,6 +41,6 @@ public interface UserService {
      * @param username String
      * @return user found user
      */
-    Optional<UserEntity> findByUsername(String username);
+    UserEntity findByUsername(String username) throws EntityNotFoundException;
 
 }

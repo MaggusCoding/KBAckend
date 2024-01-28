@@ -427,7 +427,7 @@ public class DuelServiceImplTest {
 
         when(duelRepo.findById(duelId)).thenReturn(Optional.of(mockDuel));
         when(duelRepo.getRankingOfDuel(duelId)).thenReturn(List.of(new RankingPlayer(players.get(0).getUsername(), 6L)));
-        when(userService.findByUsername(any())).thenReturn(Optional.ofNullable(players.get(0)));
+        when(userService.findByUsername(any())).thenReturn(players.get(0));
 
         // Act
         List<UserEntity> winners = duelService.calculateWinner(duelId);

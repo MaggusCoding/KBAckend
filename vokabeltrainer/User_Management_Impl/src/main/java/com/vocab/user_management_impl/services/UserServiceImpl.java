@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @ComponentScan(basePackages = {"com.vocab"})
@@ -23,8 +22,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private DuelRepo duelRepo;
 
-    public Optional<UserEntity> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserEntity findByUsername(String username) throws EntityNotFoundException{
+        return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User mit username " + username + " nicht gefunden."));
     }
 
     /**
@@ -32,24 +31,33 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserEntity createUser(String userName) {
-        Optional<UserEntity> existingUser = findByUsername(userName);
-
-        return existingUser.orElseGet(() -> {
+        try {
+            UserEntity existingUser = findByUsername(userName);
+            if (existingUser != null) {
+                return existingUser;
+            }
+        } catch (EntityNotFoundException enfe) {
             UserEntity newUser = new UserEntity();
             newUser.setUsername(userName);
             return userRepository.save(newUser);
-        });
+        }
+        return null;
     }
 
 
     public UserEntity createUserRest(UserEntity user) {
-        Optional<UserEntity> existingUser = findByUsername(user.getUsername());
+        try {
+            UserEntity existingUser = findByUsername(user.getUsername());
 
-        return existingUser.orElseGet(() -> {
+            if (existingUser != null) {
+                return existingUser;
+            }
+        } catch (EntityNotFoundException enfe){
             UserEntity newUser = new UserEntity();
             newUser.setUsername(user.getUsername());
             return userRepository.save(newUser);
-        });
+        }
+        return null;
     }
 
     @Override
@@ -62,13 +70,13 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     /**
+     * /**
      * {@inheritDoc}
      */
     @Override
     public UserEntity getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("User nicht gefunden mit id: " + id));
     }
 
     /**

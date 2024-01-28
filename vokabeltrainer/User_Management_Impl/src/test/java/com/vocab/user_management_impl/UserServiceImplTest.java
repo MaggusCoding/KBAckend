@@ -77,11 +77,11 @@ public class UserServiceImplTest {
         when(userRepo.findByUsername(user1.getUsername())).thenReturn(Optional.ofNullable(user1));
 
         // Versuche, den Benutzer über findByUsername zu finden
-        Optional<UserEntity> foundUser = userService.findByUsername(user1.getUsername());
+        UserEntity foundUser = userService.findByUsername(user1.getUsername());
 
         // Überprüfe, ob der Benutzer gefunden wurde und ob die Daten übereinstimmen
-        assertTrue(foundUser.isPresent(), "Benutzer wurde nicht gefunden");
-        assertEquals("testuser1", foundUser.get().getUsername(), "Benutzername stimmt nicht überein");
+        assertNotNull(foundUser, "Benutzer wurde nicht gefunden");
+        assertEquals("testuser1", foundUser.getUsername(), "Benutzername stimmt nicht überein");
         verify(userRepo).findByUsername(user1.getUsername());
     }
 

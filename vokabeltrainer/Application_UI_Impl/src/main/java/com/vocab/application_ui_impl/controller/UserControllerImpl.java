@@ -22,9 +22,7 @@ public class UserControllerImpl {
     public void initializeDefaultUser() {
         String defaultUsername = "god";
         // Überprüfe, ob der Benutzer bereits existiert
-        if (userService.findByUsername(defaultUsername).isEmpty()) {
-            userService.createUser(defaultUsername);
-        }
+        userService.createUser(defaultUsername);
     }
 
     public Long createUser() {

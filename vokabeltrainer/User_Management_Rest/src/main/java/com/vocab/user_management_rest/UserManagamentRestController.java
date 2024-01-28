@@ -2,6 +2,7 @@ package com.vocab.user_management_rest;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.user_management.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class UserManagamentRestController {
         try {
             return ResponseEntity.ok(userService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -33,18 +34,22 @@ public class UserManagamentRestController {
         try {
             UserEntity user = userService.getById(userid);
             return ResponseEntity.ok(user);
+        } catch(EntityNotFoundException enfe){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, enfe.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @GetMapping("/api/user/byusername")
     public ResponseEntity<UserEntity> getUserByUsername(@RequestParam String username) {
         try {
-            UserEntity user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            UserEntity user = userService.findByUsername(username);
             return ResponseEntity.ok(user);
+        } catch(EntityNotFoundException enfe){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, enfe.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -52,6 +57,9 @@ public class UserManagamentRestController {
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) {
         try {
             UserEntity user = userService.createUserRest(request);
+            if(user == null){
+                return ResponseEntity.internalServerError().build();
+            }
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
