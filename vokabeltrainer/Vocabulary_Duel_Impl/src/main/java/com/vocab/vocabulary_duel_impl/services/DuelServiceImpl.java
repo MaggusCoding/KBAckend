@@ -356,9 +356,9 @@ public class DuelServiceImpl implements DuelService {
         answerRepo.save(answer);
         currentRound.setSingleAnswer(answer);
         roundRepo.save(currentRound);
-        if (allPlayersAnswered(currentRound, duel.getPlayers())) {
-            activateNextRound(duelId);
-        }
+//        if (allPlayersAnswered(currentRound, duel.getPlayers())) {
+//            activateNextRound(duelId);
+//        }
         return true;
     }
 

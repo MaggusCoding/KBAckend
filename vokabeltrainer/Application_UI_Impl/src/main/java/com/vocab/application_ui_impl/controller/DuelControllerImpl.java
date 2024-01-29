@@ -272,9 +272,9 @@ public class DuelControllerImpl {
     }
 
     private List<String> getUsersWhoNotPlayed(Long duelStart) {
-        List<UserEntity> usersAlreadyPlayed = duelService.getById(duelStart).get()
-                .getRounds().stream().filter(Round::isActiveRound).findFirst().get()
-                .getSelectedAnswers().stream().map(Answer::getPlayer).toList();
+        Duel duel = duelService.getById(duelStart).get();
+        Round activeRound = duel.getRounds().stream().filter(Round::isActiveRound).findFirst().get();
+        List<UserEntity> usersAlreadyPlayed = activeRound.getSelectedAnswers().stream().map(Answer::getPlayer).toList();
         List<UserEntity> players = duelService.getById(duelStart).get().getPlayers();
         if (usersAlreadyPlayed.size() == players.size()) {
             return List.of();
