@@ -2,12 +2,15 @@ package com.vocab.application_ui_impl.controller;
 
 import com.vocab.application_ui_impl.views.DuelView;
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.services.UserService;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_API.entities.Round;
+import com.vocab.vocabulary_duel_API.services.DuelService;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.vocabulary_management.services.FlashcardListService;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.springframework.stereotype.Controller;
 
@@ -17,9 +20,9 @@ import java.util.stream.Collectors;
 
 @Controller
 public class DuelControllerImpl {
-    private final DuelServiceImpl duelService;
-    private final UserServiceImpl userService;
-    private final FlashcardListServiceImpl flashcardListService;
+    private final DuelService duelService;
+    private final UserService userService;
+    private final FlashcardListService flashcardListService;
 
     private final DuelView duelView;
 

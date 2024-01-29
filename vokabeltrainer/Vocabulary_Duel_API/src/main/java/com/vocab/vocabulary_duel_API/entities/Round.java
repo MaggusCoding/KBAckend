@@ -27,6 +27,7 @@ public class Round {
     @OneToMany(mappedBy = "round", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
     private List<Answer> selectedAnswers;
     private String wrongAnswers;
+    // bleibt für die Konsolenapplikation noch erhalten
     private boolean activeRound = false;
 
     @Version

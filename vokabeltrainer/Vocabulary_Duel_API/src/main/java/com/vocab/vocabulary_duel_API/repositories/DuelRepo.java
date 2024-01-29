@@ -29,4 +29,8 @@ public interface DuelRepo extends JpaRepository<Duel, Long> {
 
     @Lock(LockModeType.OPTIMISTIC)
     boolean existsDuelByPlayersIsContaining(UserEntity user);
+
+    @Lock(LockModeType.OPTIMISTIC)
+    List<Duel> findDuelsByStartedIsTrueAndFinishedIsFalseAndPlayersContaining(UserEntity user);
+
 }

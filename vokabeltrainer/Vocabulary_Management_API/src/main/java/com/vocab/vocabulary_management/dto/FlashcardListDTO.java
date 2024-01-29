@@ -9,13 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FlashcardListDTO {
-    public Long flashcardListId;
-    public String flashcardListname;
+    private Long flashcardListId;
+    private String flashcardListName;
+    private String content;
+    private String errorMessage;
 
     public static FlashcardListDTO fromEntity(FlashcardList flashcardList){
         FlashcardListDTO flashcardListDTO = new FlashcardListDTO();
         flashcardListDTO.setFlashcardListId(flashcardList.getFlashcardListId());
-        flashcardListDTO.setFlashcardListname(flashcardList.getCategory());
+        flashcardListDTO.setFlashcardListName(flashcardList.getCategory());
         return flashcardListDTO;
     }
 }
