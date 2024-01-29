@@ -128,8 +128,8 @@ public class DuelServiceImplIT {
         duelService.generateRounds(duel.getDuelId());
         duelService.joinDuel(duel.getDuelId(), user2.getUserId());
         duelService.joinDuel(duel.getDuelId(), user3.getUserId());
-        AtomicReference<Duel> duel1 = null;
-        AtomicReference<Duel> duel2 = null;
+        AtomicReference<Duel> duel1 = new AtomicReference<>();
+        AtomicReference<Duel> duel2 = new AtomicReference<>();
 
         // when
         final ExecutorService executor = Executors.newFixedThreadPool(2);
