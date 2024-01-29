@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_duel_API.repositories;
+package com.vocab.vocabulary_duel_impl.repos;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel_API.entities.Duel;

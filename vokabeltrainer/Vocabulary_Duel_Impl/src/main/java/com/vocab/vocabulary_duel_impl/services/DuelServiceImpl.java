@@ -6,13 +6,13 @@ import com.vocab.vocabulary_duel_API.dto.RankingPlayer;
 import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_API.entities.Round;
-import com.vocab.vocabulary_duel_API.repositories.AnswerRepo;
-import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
-import com.vocab.vocabulary_duel_API.repositories.RoundRepo;
+import com.vocab.vocabulary_duel_impl.repos.AnswerRepo;
+import com.vocab.vocabulary_duel_impl.repos.DuelRepo;
+import com.vocab.vocabulary_duel_impl.repos.RoundRepo;
 import com.vocab.vocabulary_duel_API.services.DuelService;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.Translation;
-import com.vocab.vocabulary_management.repos.TranslationRepo;
+import com.vocab.vocabulary_management_impl.repos.TranslationRepo;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -37,8 +37,11 @@ public class DuelServiceImpl implements DuelService {
     private UserService userService;
     @Autowired
     private DuelRepo duelRepo;
+
+    // TODO: translationService benutzen anstelle TranslationRepo Anmerkung aus Feedback Übungsblatt02 "dependencies zwischen impl-Projekte vermeiden"
     @Autowired
     private TranslationRepo translationRepo;
+
     @Autowired
     private RoundRepo roundRepo;
     @Autowired

@@ -1,4 +1,4 @@
-package com.vocab.vocabulary_management.repos;
+package com.vocab.vocabulary_management_impl.repos;
 
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import jakarta.persistence.LockModeType;

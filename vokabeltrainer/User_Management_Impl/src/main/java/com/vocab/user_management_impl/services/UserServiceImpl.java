@@ -1,9 +1,9 @@
 package com.vocab.user_management_impl.services;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
-import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
+import com.vocab.user_management_impl.repos.UserRepo;
+import com.vocab.vocabulary_duel_impl.repos.DuelRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUser(Long userId) {
+        // TODO: Prüfung ob user in einem duel steckt über Service lösen maybe
         if (!userRepository.existsById(userId) || duelRepo.existsDuelByPlayersIsContaining(userRepository.findById(userId).get())) {
             return false;
         }

@@ -2,9 +2,9 @@ package com.vocab.vocabulary_management_impl;
 
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.factories.FlashcardListFactory;
-import com.vocab.vocabulary_management.repos.FlashcardListRepo;
-import com.vocab.vocabulary_management.repos.FlashcardRepo;
-import com.vocab.vocabulary_management.repos.TranslationRepo;
+import com.vocab.vocabulary_management_impl.repos.FlashcardListRepo;
+import com.vocab.vocabulary_management_impl.repos.FlashcardRepo;
+import com.vocab.vocabulary_management_impl.repos.TranslationRepo;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

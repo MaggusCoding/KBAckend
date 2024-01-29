@@ -1,20 +1,20 @@
 package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management_impl.services.UserServiceImpl;
+import com.vocab.user_management.services.UserService;
 import com.vocab.vocabulary_duel_API.dto.RankingPlayer;
 import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_API.entities.Round;
-import com.vocab.vocabulary_duel_API.repositories.AnswerRepo;
-import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
-import com.vocab.vocabulary_duel_API.repositories.RoundRepo;
+import com.vocab.vocabulary_duel_impl.repos.AnswerRepo;
+import com.vocab.vocabulary_duel_impl.repos.DuelRepo;
+import com.vocab.vocabulary_duel_impl.repos.RoundRepo;
 import com.vocab.vocabulary_duel_impl.services.DuelServiceImpl;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.entities.Translation;
-import com.vocab.vocabulary_management.repos.TranslationRepo;
-import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
+import com.vocab.vocabulary_management.services.FlashcardListService;
+import com.vocab.vocabulary_management_impl.repos.TranslationRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,9 +31,9 @@ import static org.mockito.Mockito.*;
 public class DuelServiceImplTest {
 
     @Mock
-    private FlashcardListServiceImpl flashcardListService;
+    private FlashcardListService flashcardListService;
     @Mock
-    private UserServiceImpl userService;
+    private UserService userService;
     @Mock
     private DuelRepo duelRepo;
     @Mock

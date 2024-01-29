@@ -1,17 +1,17 @@
 package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management.repos.UserRepo;
+import com.vocab.user_management_impl.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
 import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_API.entities.Round;
-import com.vocab.vocabulary_duel_API.repositories.AnswerRepo;
-import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
-import com.vocab.vocabulary_duel_API.repositories.RoundRepo;
+import com.vocab.vocabulary_duel_impl.repos.AnswerRepo;
+import com.vocab.vocabulary_duel_impl.repos.DuelRepo;
+import com.vocab.vocabulary_duel_impl.repos.RoundRepo;
 import com.vocab.vocabulary_duel_API.services.DuelService;
 import com.vocab.vocabulary_management.entities.FlashcardList;
-import com.vocab.vocabulary_management.repos.FlashcardListRepo;
+import com.vocab.vocabulary_management_impl.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

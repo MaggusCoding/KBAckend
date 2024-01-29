@@ -1,4 +1,4 @@
-package com.vocab.user_management.repos;
+package com.vocab.user_management_impl.repos;
 
 import com.vocab.user_management.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,9 +1,9 @@
 package com.vocab.user_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
-import com.vocab.user_management.repos.UserRepo;
+import com.vocab.user_management_impl.repos.UserRepo;
 import com.vocab.user_management_impl.services.UserServiceImpl;
-import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
+import com.vocab.vocabulary_duel_impl.repos.DuelRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
