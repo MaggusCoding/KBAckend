@@ -3,6 +3,7 @@ package com.vocab.vocabulary_management_rest;
 import com.vocab.vocabulary_management.dto.FlashcardListDTO;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.services.FlashcardListService;
+import com.vocab.vocabulary_management_impl.services.ImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,20 @@ import java.util.List;
 public class VocabularyManagementRestController {
     @Autowired
     FlashcardListService flashcardListService;
+    @Autowired
+    ImportService importService;
 
+    @PostMapping("api/vocablist/createinitial")
+    public ResponseEntity<FlashcardListDTO> createInitialFlashcardlist(){
+        try{
+            importService.importInitialFiles();
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            FlashcardListDTO flashcardListDTO = new FlashcardListDTO();
+            flashcardListDTO.setErrorMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(flashcardListDTO);
+        }
+    }
     @GetMapping("/api/vocablist/byid")
     public ResponseEntity<FlashcardListDTO> getById(@RequestParam Long flashcardListId){
         try{
