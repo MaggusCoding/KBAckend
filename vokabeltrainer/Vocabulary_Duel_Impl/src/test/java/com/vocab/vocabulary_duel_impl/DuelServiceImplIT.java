@@ -1,16 +1,20 @@
 package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
 import com.vocab.vocabulary_duel_API.entities.Answer;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_API.entities.Round;
+import com.vocab.vocabulary_duel_API.exceptions.*;
 import com.vocab.vocabulary_duel_API.repositories.AnswerRepo;
 import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
 import com.vocab.vocabulary_duel_API.repositories.RoundRepo;
 import com.vocab.vocabulary_duel_API.services.DuelService;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.junit.jupiter.api.AfterEach;
@@ -77,7 +81,7 @@ public class DuelServiceImplIT {
     private FlashcardList flashcardList;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() throws ContentEmptyException {
         user1 = userService.createUser("testuser1");
         user2 = userService.createUser("testuser2");
         user3 = userService.createUser("testuser3");
@@ -94,7 +98,7 @@ public class DuelServiceImplIT {
     }
 
     @Test
-    public void testJoinDuelAlreadyStartedOptimisticLockingHandling() throws InterruptedException {
+    public void testJoinDuelAlreadyStartedOptimisticLockingHandling() throws InterruptedException, UserNotExistException, DuelNotExistException, FlashcardListNotExistException {
         // given
         Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.getFlashcardListId());
         duelService.generateRounds(duel.getDuelId());
@@ -106,8 +110,20 @@ public class DuelServiceImplIT {
         final ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // then
-        executor.execute(() -> duelJoined1.set(duelService.joinDuel(duel.getDuelId(), user2.getUserId())));
-        executor.execute(() -> duelJoined2.set(duelService.joinDuel(duel.getDuelId(), user3.getUserId())));
+        executor.execute(() -> {
+            try {
+                duelJoined1.set(duelService.joinDuel(duel.getDuelId(), user2.getUserId()));
+            } catch (UserNotExistException | DuelNotExistException | DuelAlreadyStartedException | UserAlreadyPartOfDuelException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                duelJoined2.set(duelService.joinDuel(duel.getDuelId(), user3.getUserId()));
+            } catch (UserNotExistException | DuelNotExistException | DuelAlreadyStartedException | UserAlreadyPartOfDuelException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.MINUTES);
@@ -122,7 +138,7 @@ public class DuelServiceImplIT {
     }
 
     @Test
-    public void testStartDuelOptimisticLockingHandling() throws InterruptedException {
+    public void testStartDuelOptimisticLockingHandling() throws InterruptedException, UserNotExistException, DuelNotExistException, UserAlreadyPartOfDuelException, DuelAlreadyStartedException, FlashcardListNotExistException {
         // given
         Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.getFlashcardListId());
         duelService.generateRounds(duel.getDuelId());
@@ -135,8 +151,22 @@ public class DuelServiceImplIT {
         final ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // then
-        executor.execute(() -> duel1.set(duelService.startDuelRest(duel.getDuelId(), user2.getUserId())));
-        executor.execute(() -> duel2.set(duelService.startDuelRest(duel.getDuelId(), user3.getUserId())));
+        executor.execute(() -> {
+            try {
+                duel1.set(duelService.startDuelRest(duel.getDuelId(), user2.getUserId()));
+            } catch (UserNotExistException | DuelNotExistException | DuelAlreadyStartedException |
+                     UserNotPartOfDuelException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                duel2.set(duelService.startDuelRest(duel.getDuelId(), user3.getUserId()));
+            } catch (UserNotExistException | DuelNotExistException | DuelAlreadyStartedException |
+                     UserNotPartOfDuelException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.MINUTES);
@@ -150,7 +180,7 @@ public class DuelServiceImplIT {
     }
 
     @Test
-    public void testPlayerAnswerProofNoOptimisticLocking() throws InterruptedException {
+    public void testPlayerAnswerProofNoOptimisticLocking() throws InterruptedException, UserNotExistException, DuelNotExistException, UserAlreadyPartOfDuelException, DuelAlreadyStartedException, UserNotPartOfDuelException, FlashcardListNotExistException {
         // given
         Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.getFlashcardListId());
         duelService.generateRounds(duel.getDuelId());
@@ -164,8 +194,20 @@ public class DuelServiceImplIT {
         final ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // then
-        executor.execute(() -> answerSaved1.set(duelService.saveSelectedAnswer(answer, duel.getDuelId(), user1.getUserId())));
-        executor.execute(() -> answerSaved2.set(duelService.saveSelectedAnswer(answer, duel.getDuelId(), user2.getUserId())));
+        executor.execute(() -> {
+            try {
+                answerSaved1.set(duelService.saveSelectedAnswer(answer, duel.getDuelId(), user1.getUserId()));
+            } catch (UserNotExistException | DuelNotExistException | UserAlreadyPlayedRoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                answerSaved2.set(duelService.saveSelectedAnswer(answer, duel.getDuelId(), user2.getUserId()));
+            } catch (UserNotExistException | DuelNotExistException | UserAlreadyPlayedRoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.MINUTES);

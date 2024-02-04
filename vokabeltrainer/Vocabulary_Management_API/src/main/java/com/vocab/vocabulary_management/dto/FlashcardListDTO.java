@@ -12,7 +12,6 @@ public class FlashcardListDTO {
     private Long flashcardListId;
     private String flashcardListName;
     private String content;
-    private String errorMessage;
 
     public static FlashcardListDTO fromEntity(FlashcardList flashcardList){
         FlashcardListDTO flashcardListDTO = new FlashcardListDTO();

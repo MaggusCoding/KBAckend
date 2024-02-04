@@ -2,6 +2,9 @@ package com.vocab.vocabulary_management_rest;
 
 import com.vocab.vocabulary_management.dto.FlashcardListDTO;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListStillInUseException;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import com.vocab.vocabulary_management_impl.services.ImportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,72 +25,33 @@ public class VocabularyManagementRestController {
     ImportService importService;
 
     @PostMapping("api/vocablist/createinitial")
-    public ResponseEntity<FlashcardListDTO> createInitialFlashcardlist(){
-        try{
-            importService.importInitialFiles();
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            FlashcardListDTO flashcardListDTO = new FlashcardListDTO();
-            flashcardListDTO.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(flashcardListDTO);
-        }
+    public ResponseEntity<FlashcardListDTO> createInitialFlashcardlist() throws IOException, ContentEmptyException {
+        importService.importInitialFiles();
+        return ResponseEntity.ok().build();
     }
+
     @GetMapping("/api/vocablist/byid")
-    public ResponseEntity<FlashcardListDTO> getById(@RequestParam Long flashcardListId){
-        try{
-            FlashcardList flashcardList = flashcardListService.getById(flashcardListId);
-            return ResponseEntity.ok(FlashcardListDTO.fromEntity(flashcardList));
-        } catch (Exception e){
-            FlashcardListDTO error = new FlashcardListDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<FlashcardListDTO> getById(@RequestParam Long flashcardListId) throws FlashcardListNotExistException {
+        FlashcardList flashcardList = flashcardListService.getById(flashcardListId);
+        return ResponseEntity.ok(FlashcardListDTO.fromEntity(flashcardList));
     }
 
     @GetMapping("/api/vocablist")
-    public ResponseEntity<List<FlashcardListDTO>> getAllFlashcardlists(){
-        try{
-            List<FlashcardList> flashcardLists = flashcardListService.getAll();
-            List<FlashcardListDTO> flashcardListDTOS = flashcardLists.stream().map(FlashcardListDTO::fromEntity).toList();
-          return ResponseEntity.ok(flashcardListDTOS);
-        } catch (Exception e){
-            FlashcardListDTO error = new FlashcardListDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(List.of(error));
-        }
+    public ResponseEntity<List<FlashcardListDTO>> getAllFlashcardlists() {
+        List<FlashcardList> flashcardLists = flashcardListService.getAll();
+        List<FlashcardListDTO> flashcardListDTOS = flashcardLists.stream().map(FlashcardListDTO::fromEntity).toList();
+        return ResponseEntity.ok(flashcardListDTOS);
     }
 
     @PostMapping("/api/vocablist")
-    public ResponseEntity<FlashcardListDTO> createFlashcardList(@RequestBody FlashcardListDTO request){
-        try{
-            if(flashcardListService.createFlashcardList(request.getContent())) {
-                return ResponseEntity.ok().build();
-            }else{
-                FlashcardListDTO error = new FlashcardListDTO();
-                error.setErrorMessage("Fehler beim Speichern der FlashcardList.");
-                return ResponseEntity.internalServerError().body(error);
-            }
-        } catch(Exception e){
-            FlashcardListDTO error = new FlashcardListDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<FlashcardListDTO> createFlashcardList(@RequestBody FlashcardListDTO request) throws ContentEmptyException {
+        flashcardListService.createFlashcardList(request.getContent());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/api/vocablist")
-    public ResponseEntity<FlashcardListDTO> deleteFlashcardList(@RequestParam Long flashcardListId){
-        try{
-            if(flashcardListService.deleteFlashcardList(flashcardListId)) {
-                return ResponseEntity.ok().build();
-            }else{
-                FlashcardListDTO error = new FlashcardListDTO();
-                error.setErrorMessage("FlashcardList mit id " + flashcardListId + " existiert nicht oder wird noch in einem Duel gespielt. Bitte das Duel vorher löschen.");
-                return ResponseEntity.internalServerError().body(error);
-            }
-        } catch(Exception e){
-            FlashcardListDTO error = new FlashcardListDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<FlashcardListDTO> deleteFlashcardList(@RequestParam Long flashcardListId) throws FlashcardListNotExistException, FlashcardListStillInUseException {
+        flashcardListService.deleteFlashcardList(flashcardListId);
+        return ResponseEntity.ok().build();
     }
 }

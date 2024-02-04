@@ -16,7 +16,6 @@ public class RoundDTO {
     private String wrongAnswer2;
     private String wrongAnswer3;
     private String correctAnswer;
-    private String errorMessage;
 
     public static RoundDTO fromList(List<String> list){
         RoundDTO roundDTO = new RoundDTO();

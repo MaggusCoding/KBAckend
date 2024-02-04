@@ -1,6 +1,9 @@
 package com.vocab.vocabulary_management_impl;
 
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListStillInUseException;
 import com.vocab.vocabulary_management.factories.FlashcardListFactory;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management.repos.FlashcardRepo;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -70,7 +74,7 @@ public class FlashcardListServiceImplTest {
     }
 
     @Test
-    void testDeleteFlashcardListExistsAndIsNotUsed() {
+    void testDeleteFlashcardListExistsAndIsNotUsed() throws FlashcardListNotExistException, FlashcardListStillInUseException {
         FlashcardList flashcardList = flashcardListFactory.buildFlashcardListDefault().flashcardListId(1L).build();
         when(flashcardListRepo.existsById(flashcardList.getFlashcardListId())).thenReturn(true);
         when(flashcardListRepo.countDuelByFlashcardList(flashcardList.getFlashcardListId())).thenReturn(0L);
@@ -85,9 +89,10 @@ public class FlashcardListServiceImplTest {
         when(flashcardListRepo.existsById(1L)).thenReturn(false);
         when(flashcardListRepo.countDuelByFlashcardList(1L)).thenReturn(0L);
 
-        assertThat(service.deleteFlashcardList(1L)).isFalse();
+        assertThrows(FlashcardListNotExistException.class, () -> service.deleteFlashcardList(1L));
         verify(flashcardListRepo).existsById(anyLong());
-        verify(flashcardListRepo, times(0)).countDuelByFlashcardList(anyLong());
+        verify(flashcardListRepo, never()).countDuelByFlashcardList(anyLong());
+        verify(flashcardListRepo, never()).deleteById(any());
     }
 
     @Test
@@ -96,13 +101,13 @@ public class FlashcardListServiceImplTest {
         when(flashcardListRepo.existsById(flashcardList.getFlashcardListId())).thenReturn(true);
         when(flashcardListRepo.countDuelByFlashcardList(flashcardList.getFlashcardListId())).thenReturn(1L);
 
-        assertThat(service.deleteFlashcardList(flashcardList.getFlashcardListId())).isFalse();
+        assertThrows(FlashcardListStillInUseException.class, () -> service.deleteFlashcardList(flashcardList.getFlashcardListId()));
         verify(flashcardListRepo).countDuelByFlashcardList(anyLong());
         verify(flashcardListRepo).existsById(anyLong());
     }
 
     @Test
-    void testCreateFlashcardListExpectOk() {
+    void testCreateFlashcardListExpectOk() throws ContentEmptyException {
         when(flashcardListRepo.findByCategory(any())).thenReturn(null);
         when(flashcardRepo.existsByOriginalText(any())).thenReturn(false);
 
@@ -118,7 +123,7 @@ public class FlashcardListServiceImplTest {
     }
 
     @Test
-    void testCreateFlashcardListAddingAdditionalVocabularyToExistingFlashcardList() {
+    void testCreateFlashcardListAddingAdditionalVocabularyToExistingFlashcardList() throws ContentEmptyException {
         FlashcardList initialFlashcardList = flashcardListFactory.buildFlashcardListDefault().build();
         when(flashcardListRepo.findByCategory(any())).thenReturn(initialFlashcardList);
         when(flashcardRepo.existsByOriginalText("originalText")).thenReturn(true);
@@ -135,6 +140,17 @@ public class FlashcardListServiceImplTest {
     }
 
     @Test
+    void testCreateFlashcardExpectContentEmptyException(){
+        // Arrange & Act & Assert
+        assertThrows(ContentEmptyException.class, () -> service.createFlashcardList(""));
+        verify(flashcardListRepo, never()).findByCategory(any());
+        verify(flashcardListRepo, never()).save(any());
+        verify(flashcardRepo, never()).existsByOriginalText(any());
+        verify(flashcardRepo, never()).save(any());
+        verify(translationRepo, never()).save(any());
+    }
+
+    @Test
     void testGetAllFlashcardListExpect2() {
         FlashcardList flashcardList1 = flashcardListFactory.buildFlashcardListDefault().build();
         FlashcardList flashcardList2 = flashcardListFactory.buildFlashcardListDefault().category("time").build();
@@ -148,7 +164,7 @@ public class FlashcardListServiceImplTest {
     }
 
     @Test
-    void testGetFlashcardByIdExpectOk() {
+    void testGetFlashcardByIdExpectOk() throws FlashcardListNotExistException {
         FlashcardList expectedFlashcardList = flashcardListFactory.buildFlashcardListDefault().build();
         when(flashcardListRepo.findById(expectedFlashcardList.getFlashcardListId())).thenReturn(Optional.of(expectedFlashcardList));
 
@@ -164,9 +180,7 @@ public class FlashcardListServiceImplTest {
         FlashcardList expectedFlashcardList = flashcardListFactory.buildFlashcardListDefault().build();
         when(flashcardListRepo.findById(expectedFlashcardList.getFlashcardListId())).thenReturn(Optional.empty());
 
-        FlashcardList flashcardList = service.getById(expectedFlashcardList.getFlashcardListId());
-
-        assertThat(flashcardList).isNull();
+        assertThrows(FlashcardListNotExistException.class, () -> service.getById(expectedFlashcardList.getFlashcardListId()));
         verify(flashcardListRepo).findById(expectedFlashcardList.getFlashcardListId());
     }
 

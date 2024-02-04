@@ -3,6 +3,9 @@ package com.vocab.vocabulary_management_impl.services;
 import com.vocab.vocabulary_management.entities.Flashcard;
 import com.vocab.vocabulary_management.entities.FlashcardList;
 import com.vocab.vocabulary_management.entities.Translation;
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListStillInUseException;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management.repos.FlashcardRepo;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
@@ -32,8 +35,11 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      */
     @Override
     @Transactional
-    public Boolean createFlashcardList(String content) {
+    public Boolean createFlashcardList(String content) throws ContentEmptyException {
         List<String> lines = List.of(content.split(System.lineSeparator()));
+        if(lines.isEmpty() || lines.get(0).trim().isEmpty()){
+            throw new ContentEmptyException("Der Inhalt der Vokabelliste darf nicht leer sein.");
+        }
         FlashcardList flashcardList = new FlashcardList();
         FlashcardList existingFlashcardlist = null;
         Pattern metadataPattern = Pattern.compile("\\{\\{\\{(.*?)\\}\\}\\}");
@@ -102,9 +108,9 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      */
     @Override
     @Transactional
-    public FlashcardList getById(Long id) {
-        return flashcardListRepo.findById(id)
-                .orElse(null);
+    public FlashcardList getById(Long flashcardListId) throws FlashcardListNotExistException {
+        return flashcardListRepo.findById(flashcardListId)
+                .orElseThrow(() -> new FlashcardListNotExistException("FlashcardList mit id " + flashcardListId + " existiert nicht."));
     }
 
     /**
@@ -121,11 +127,14 @@ public class FlashcardListServiceImpl implements FlashcardListService {
      */
     @Override
     @Transactional
-    public boolean deleteFlashcardList(Long id) {
-        if (!flashcardListRepo.existsById(id) || flashcardListRepo.countDuelByFlashcardList(id) > 0) {
-            return false;
+    public boolean deleteFlashcardList(Long flashcardListId) throws FlashcardListNotExistException, FlashcardListStillInUseException {
+        if (!flashcardListRepo.existsById(flashcardListId)){
+            throw new FlashcardListNotExistException("FlashcardList mit id " + flashcardListId + " existiert nicht.");
         }
-        flashcardListRepo.deleteById(id);
+        if(flashcardListRepo.countDuelByFlashcardList(flashcardListId) > 0) {
+            throw new FlashcardListStillInUseException("FlashcardList mit id " + flashcardListId + " wird noch in einem Duell verwendet. Bitte beenden Sie das Duell oder spielen sie es zu Ende.");
+        }
+        flashcardListRepo.deleteById(flashcardListId);
         return true;
     }
 

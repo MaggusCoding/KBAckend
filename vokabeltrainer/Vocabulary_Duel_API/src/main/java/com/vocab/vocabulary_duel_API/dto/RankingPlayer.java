@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class RankingPlayer {
-    private String player;
+    private Long playerId;
 
     private Long amountCorrectAnswer;
 
-    public RankingPlayer(String player, Long amountCorrectAnswer){
-        this.player = player;
+    public RankingPlayer(Long playerId, Long amountCorrectAnswer){
+        this.playerId = playerId;
         this.amountCorrectAnswer = amountCorrectAnswer;
     }
 

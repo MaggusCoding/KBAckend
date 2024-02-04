@@ -12,7 +12,6 @@ public class UserDTO {
 
     private Long userId;
     private String username;
-    private String errorMessage;
 
     public static UserDTO fromEntity(UserEntity user){
         UserDTO dto = new UserDTO();

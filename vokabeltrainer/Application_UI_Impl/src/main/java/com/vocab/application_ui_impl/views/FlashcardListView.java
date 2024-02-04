@@ -84,4 +84,8 @@ public class FlashcardListView {
     public void printDeletionFailedFlashcardNotExists(Long id) {
         System.out.println("FlashcardList with ID " + id + " couldn´t be deleted. It does not exist.");
     }
+
+    public void printError(String message) {
+        System.out.println(message);
+    }
 }

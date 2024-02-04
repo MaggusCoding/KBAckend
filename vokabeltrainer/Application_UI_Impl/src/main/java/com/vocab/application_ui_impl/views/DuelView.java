@@ -117,12 +117,24 @@ public class DuelView {
         System.out.println("Typed username does not exist. Choose other player!");
     }
 
+    public void printUserNotExist2(String message) {
+        System.out.println(message);
+    }
+
     public void printUserAlreadyPlayed() {
-        System.out.println("Typed username does not exist. Choose other player!");
+        System.out.println("User already played.");
+    }
+
+    public void printUserAlreadyPlayed2(String message) {
+        System.out.println(message);
     }
 
     public void printUserNotParticipating() {
         System.out.println("This user is not participating in the current duel! Choose other player!");
+    }
+
+    public void printUserNotParticipating2(String message) {
+        System.out.println(message);
     }
 
     public void printNextPlayer() {
@@ -131,5 +143,21 @@ public class DuelView {
 
     public void printAvailableNextPlayer(String users) {
         System.out.println(users);
+    }
+
+    public void printDuelNotExists(String message) {
+        System.out.println(message);
+    }
+
+    public void printDuelAlreadyStarted(String message) {
+        System.out.println(message);
+    }
+
+    public void printUserAlreadyPartOfDuel(String message) {
+        System.out.println(message);
+    }
+
+    public void printFlashcardListNotExists(String message) {
+        System.out.println(message);
     }
 }

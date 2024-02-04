@@ -1,5 +1,8 @@
 package com.vocab.vocabulary_management_impl;
 
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListStillInUseException;
 import com.vocab.vocabulary_management.repos.FlashcardListRepo;
 import com.vocab.vocabulary_management.repos.FlashcardRepo;
 import com.vocab.vocabulary_management.repos.TranslationRepo;
@@ -52,7 +55,7 @@ public class FlashcardListServiceImplIT {
     }
 
     @Test
-    public void testDeleteFlashcardListOptimisticLockingHandling() throws InterruptedException {
+    public void testDeleteFlashcardListOptimisticLockingHandling() throws InterruptedException, ContentEmptyException {
         // given
         flashcardListService.createFlashcardList(testContent);
         Long flashcardListId = flashcardListService.getAll().stream().filter(flashcardList -> flashcardList.getCategory().equals("holidays")).findFirst().get().getFlashcardListId();
@@ -63,8 +66,20 @@ public class FlashcardListServiceImplIT {
         final ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // then
-        executor.execute(() -> successDelete1.set(flashcardListService.deleteFlashcardList(flashcardListId)));
-        executor.execute(() -> successDelete2.set(flashcardListService.deleteFlashcardList(flashcardListId)));
+        executor.execute(() -> {
+            try {
+                successDelete1.set(flashcardListService.deleteFlashcardList(flashcardListId));
+            } catch (FlashcardListNotExistException | FlashcardListStillInUseException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                successDelete2.set(flashcardListService.deleteFlashcardList(flashcardListId));
+            } catch (FlashcardListNotExistException | FlashcardListStillInUseException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.MINUTES);

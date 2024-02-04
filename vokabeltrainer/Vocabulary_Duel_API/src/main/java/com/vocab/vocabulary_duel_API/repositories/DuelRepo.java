@@ -18,7 +18,7 @@ public interface DuelRepo extends JpaRepository<Duel, Long> {
     List<Duel> findDuelsByStartedIsFalseAndFinishedIsFalse();
 
     @Lock(LockModeType.OPTIMISTIC)
-    @Query("select new com.vocab.vocabulary_duel_API.dto.RankingPlayer(u.username, count(u.username)) from UserEntity u " +
+    @Query("select new com.vocab.vocabulary_duel_API.dto.RankingPlayer(u.userId, count(u.userId)) from UserEntity u " +
             "join Duel d on d.finished = true " +
             "join Round r on r.duel = d " +
             "join Answer a on a.round = r and a.player = u " +

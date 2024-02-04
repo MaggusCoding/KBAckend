@@ -11,5 +11,4 @@ public class AnswerDTO {
     private String answer;
     private Long roundId;
     private Long playerId;
-    private String errorMessage;
 }

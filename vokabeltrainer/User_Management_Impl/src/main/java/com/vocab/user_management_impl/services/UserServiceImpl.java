@@ -1,10 +1,11 @@
 package com.vocab.user_management_impl.services;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.UserNotExistException;
+import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
 import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private DuelRepo duelRepo;
 
-    public UserEntity findByUsername(String username) throws EntityNotFoundException{
-        return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User mit username " + username + " nicht gefunden."));
+    /**
+     * {@inheritDoc}
+     */
+    public UserEntity findByUsername(String username) throws UserNotExistException {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotExistException("User mit username " + username + " nicht gefunden."));
     }
 
     /**
@@ -33,50 +37,50 @@ public class UserServiceImpl implements UserService {
     public UserEntity createUser(String userName) {
         try {
             UserEntity existingUser = findByUsername(userName);
-            if (existingUser != null) {
-                return existingUser;
-            }
-        } catch (EntityNotFoundException enfe) {
+            return existingUser;
+        } catch (UserNotExistException e) {
             UserEntity newUser = new UserEntity();
             newUser.setUsername(userName);
             return userRepository.save(newUser);
         }
-        return null;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public UserEntity createUserRest(UserEntity user) {
         try {
             UserEntity existingUser = findByUsername(user.getUsername());
-
-            if (existingUser != null) {
-                return existingUser;
-            }
-        } catch (EntityNotFoundException enfe){
+            return existingUser;
+        } catch (UserNotExistException e){
             UserEntity newUser = new UserEntity();
             newUser.setUsername(user.getUsername());
             return userRepository.save(newUser);
         }
-        return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean deleteUser(Long userId) {
-        if (!userRepository.existsById(userId) || duelRepo.existsDuelByPlayersIsContaining(userRepository.findById(userId).get())) {
-            return false;
+    public boolean deleteUser(Long userId) throws UserStillPlaysException, UserNotExistException {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotExistException("User nicht gefunden mit id: " + userId);
+        }
+        if(duelRepo.existsDuelByPlayersIsContaining(userRepository.findById(userId).get())){
+            throw new UserStillPlaysException("User mit id: " + userId + " spielt noch in einem Duel. Bitte lösche die Duelle vorher.");
         }
         userRepository.deleteById(userId);
         return true;
     }
 
     /**
-     * /**
      * {@inheritDoc}
      */
     @Override
-    public UserEntity getById(Long id) {
+    public UserEntity getById(Long id) throws UserNotExistException {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User nicht gefunden mit id: " + id));
+                .orElseThrow(() -> new UserNotExistException("User nicht gefunden mit id: " + id));
     }
 
     /**

@@ -1,7 +1,8 @@
 package com.vocab.user_management.services;
 
 import com.vocab.user_management.entities.UserEntity;
-import jakarta.persistence.EntityNotFoundException;
+import com.vocab.user_management.exceptions.UserNotExistException;
+import com.vocab.user_management.exceptions.UserStillPlaysException;
 
 import java.util.List;
 
@@ -20,15 +21,18 @@ public interface UserService {
      *
      * @param id Id of the user in question
      * @return true if deletion succeeded; false if user participate in a duel
+     * @throws UserStillPlaysException when the user participates in a duel
+     * @throws UserNotExistException when the user does not exist
      */
-    boolean deleteUser(Long id) ;
+    boolean deleteUser(Long id) throws UserStillPlaysException, UserNotExistException;
 
     /**
      * Gets a user from the database by id
      * @param id Id of the user in question
      * @return The user retrieved by the database
+     * @throws UserNotExistException when the user does not exist
      */
-    UserEntity getById(Long id) throws EntityNotFoundException;
+    UserEntity getById(Long id) throws UserNotExistException;
 
     /**
      * All users which are present in the database
@@ -40,7 +44,8 @@ public interface UserService {
      * Finds a user by username
      * @param username String
      * @return user found user
+     * @throws UserNotExistException when the user does not exist
      */
-    UserEntity findByUsername(String username) throws EntityNotFoundException;
+    UserEntity findByUsername(String username) throws UserNotExistException;
 
 }

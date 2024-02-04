@@ -2,6 +2,8 @@ package com.vocab.application_ui_impl.controller;
 
 import com.vocab.application_ui_impl.views.UserView;
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.UserNotExistException;
+import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 
@@ -58,15 +60,13 @@ public class UserControllerImpl {
             }
         }
         if (userId > 0) {
-            if (userService.deleteUser(userId)) {
+            try{
+                userService.deleteUser(userId);
                 userView.printDeletionSuccess();
-            } else {
-                Long finalUserId1 = userId;
-                if(users.stream().anyMatch(user -> user.getUserId().equals(finalUserId1))){
-                    userView.printUserExistsInADuel();
-                } else {
-                    userView.printUserDoesNotExist();
-                }
+            } catch(UserNotExistException e){
+                userView.printUserDoesNotExist();
+            } catch(UserStillPlaysException ex){
+                userView.printUserExistsInADuel();
             }
         }
         // Weitere Methoden wie updateUser, getUserById, etc. können hier hinzugefügt werden

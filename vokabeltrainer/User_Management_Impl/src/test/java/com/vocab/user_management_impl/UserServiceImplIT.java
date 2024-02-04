@@ -1,6 +1,8 @@
 package com.vocab.user_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.UserNotExistException;
+import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
@@ -31,7 +33,7 @@ public class UserServiceImplIT {
     DuelRepo duelRepo;
 
     @Test
-    public void testDeleteUserOptimisticLockHandling() throws InterruptedException {
+    public void testDeleteUserOptimisticLockHandling() throws InterruptedException, UserNotExistException, UserStillPlaysException {
         // given
         UserEntity user1 = userService.createUser("user1");
         AtomicBoolean deleteSuccess1 = new AtomicBoolean(false);
@@ -41,8 +43,20 @@ public class UserServiceImplIT {
         final ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // then
-        executor.execute(() -> deleteSuccess1.set(userService.deleteUser(user1.getUserId())));
-        executor.execute(() -> deleteSuccess2.set(userService.deleteUser(user1.getUserId())));
+        executor.execute(() -> {
+            try {
+                deleteSuccess1.set(userService.deleteUser(user1.getUserId()));
+            } catch (UserStillPlaysException | UserNotExistException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                deleteSuccess2.set(userService.deleteUser(user1.getUserId()));
+            } catch (UserStillPlaysException | UserNotExistException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.MINUTES);

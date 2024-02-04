@@ -23,7 +23,6 @@ public class DuelDTO {
 //    private Long flashcardsForDuelId;
     private boolean started;
     private boolean finished;
-    private String errorMessage;
 
     public static DuelDTO fromEntity(Duel duel) {
         DuelDTO dto = new DuelDTO();

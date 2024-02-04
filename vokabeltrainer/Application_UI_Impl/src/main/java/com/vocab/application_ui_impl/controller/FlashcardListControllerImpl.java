@@ -3,6 +3,9 @@ package com.vocab.application_ui_impl.controller;
 import com.vocab.application_ui_impl.serviceImpl.ImportServiceImpl;
 import com.vocab.application_ui_impl.views.FlashcardListView;
 import com.vocab.vocabulary_management.entities.FlashcardList;
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
+import com.vocab.vocabulary_management.exceptions.FlashcardListStillInUseException;
 import com.vocab.vocabulary_management_impl.services.FlashcardListServiceImpl;
 import org.springframework.stereotype.Controller;
 
@@ -75,6 +78,8 @@ public class FlashcardListControllerImpl {
                     } else {
                         flashcardListView.printError();
                     }
+                } catch (ContentEmptyException ex){
+                    flashcardListView.printError(ex.getMessage());
                 }
                 break;
             case 3:
@@ -100,16 +105,13 @@ public class FlashcardListControllerImpl {
                     }
                 }
                 if (id > 0) {
-                    boolean successDelete = flashcardListService.deleteFlashcardList(id);
-                    if (successDelete) {
+                    try{
+                        flashcardListService.deleteFlashcardList(id);
                         flashcardListView.printDeleteFlashcardListSuccessful(id);
-                    } else {
-                        Long finalId = id;
-                        if (flashcardListLists.stream().anyMatch(flashcardList -> flashcardList.getFlashcardListId().equals(finalId))) {
-                            flashcardListView.printDeletionFailedFlashcardInUse(id);
-                        } else {
-                            flashcardListView.printDeletionFailedFlashcardNotExists(id);
-                        }
+                    } catch(FlashcardListNotExistException e) {
+                        flashcardListView.printDeletionFailedFlashcardNotExists(id);
+                    } catch(FlashcardListStillInUseException e) {
+                        flashcardListView.printDeletionFailedFlashcardInUse(id);
                     }
                 }
         }

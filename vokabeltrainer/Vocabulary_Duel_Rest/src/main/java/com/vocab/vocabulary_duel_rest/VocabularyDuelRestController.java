@@ -1,20 +1,21 @@
 package com.vocab.vocabulary_duel_rest;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.vocabulary_duel_API.dto.AnswerDTO;
 import com.vocab.vocabulary_duel_API.dto.DuelCreateRequest;
 import com.vocab.vocabulary_duel_API.dto.DuelDTO;
 import com.vocab.vocabulary_duel_API.dto.RoundDTO;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import com.vocab.vocabulary_duel_API.entities.Round;
+import com.vocab.vocabulary_duel_API.exceptions.*;
 import com.vocab.vocabulary_duel_API.services.DuelService;
+import com.vocab.vocabulary_management.exceptions.FlashcardListNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,187 +30,100 @@ public class VocabularyDuelRestController {
     DuelService duelService;
 
     @PostMapping("/api/duel")
-    public ResponseEntity<DuelDTO> createDuel(@RequestBody DuelCreateRequest request) {
-        try {
-            Duel duel = duelService.createDuel(request.getUserId(), request.getFlashcardListId());
-            duelService.generateRounds(duel.getDuelId());
-            Duel duelCreated = duelService.getById(duel.getDuelId()).get();
-            return ResponseEntity.status(HttpStatus.CREATED).body(DuelDTO.fromEntity(duelCreated));
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<DuelDTO> createDuel(@RequestBody DuelCreateRequest request) throws FlashcardListNotExistException, UserNotExistException, DuelNotExistException {
+        Duel duel = duelService.createDuel(request.getUserId(), request.getFlashcardListId());
+        duelService.generateRounds(duel.getDuelId());
+        Duel duelCreated = duelService.getById(duel.getDuelId()).get();
+        return ResponseEntity.status(HttpStatus.CREATED).body(DuelDTO.fromEntity(duelCreated));
     }
 
     @GetMapping("/api/duel")
     public ResponseEntity<List<DuelDTO>> getAllDuels() {
         List<Duel> duels = duelService.getAll();
         List<DuelDTO> duelDtoList = duels.stream().map(DuelDTO::fromEntity).toList();
-        if (duelDtoList.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(duelDtoList);
     }
 
     @GetMapping("/api/duel/winners")
-    public ResponseEntity<List<UserEntity>> getWinners(@RequestParam Long duelId) {
-        try {
-            List<UserEntity> userEntities = duelService.calculateWinner(duelId);
-            return ResponseEntity.ok(userEntities);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    public ResponseEntity<List<UserEntity>> getWinners(@RequestParam Long duelId) throws DuelNotExistException {
+        List<UserEntity> userEntities = duelService.calculateWinner(duelId);
+        return ResponseEntity.ok(userEntities);
     }
 
     @GetMapping("/api/duel/byid")
     public ResponseEntity<DuelDTO> getDuelById(@RequestParam Long duelId) {
-        try {
-            Duel duel = duelService.getById(duelId).get();
-            DuelDTO duelDTO = DuelDTO.fromEntity(duel);
-            return ResponseEntity.ok(duelDTO);
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+        Duel duel = duelService.getById(duelId).get();
+        DuelDTO duelDTO = DuelDTO.fromEntity(duel);
+        return ResponseEntity.ok(duelDTO);
     }
 
     @PutMapping("/api/duel/join")
-    public ResponseEntity<DuelDTO> joinDuel(@RequestParam Long duelId, @RequestParam Long userId) {
-        try {
-            if (!duelService.joinDuel(duelId, userId)) {
-                DuelDTO error = new DuelDTO();
-                error.setErrorMessage("Duel kann nicht gejoined werden, da entweder schon gejoined oder es bereits gestartet ist.");
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-            }
-            DuelDTO duelDTO = DuelDTO.fromEntity(duelService.getById(duelId).get());
-            return ResponseEntity.status(HttpStatus.OK).body(duelDTO);
-        } catch (ObjectOptimisticLockingFailureException oe) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Duel-Daten nicht aktuell. Bitte neu laden!");
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<DuelDTO> joinDuel(@RequestParam Long duelId, @RequestParam Long userId) throws UserAlreadyPartOfDuelException, DuelAlreadyStartedException, UserNotExistException, DuelNotExistException {
+        duelService.joinDuel(duelId, userId);
+        DuelDTO duelDTO = DuelDTO.fromEntity(duelService.getById(duelId).get());
+        return ResponseEntity.status(HttpStatus.OK).body(duelDTO);
     }
 
     @GetMapping("/api/duel/tojoin")
-    public ResponseEntity<List<DuelDTO>> getDuelsToJoin(@RequestParam Long userId) {
-        try {
-            List<Duel> duels = duelService.duelsToJoin(userId);
-            List<DuelDTO> duelDTOS = duels.stream()
-                    .map(DuelDTO::fromEntity)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(duelDTOS);
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(List.of(error));
-        }
+    public ResponseEntity<List<DuelDTO>> getDuelsToJoin(@RequestParam Long userId) throws UserNotExistException {
+        List<Duel> duels = duelService.duelsToJoin(userId);
+        List<DuelDTO> duelDTOS = duels.stream()
+                .map(DuelDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(duelDTOS);
     }
 
     @GetMapping("/api/duel/tostart")
-    public ResponseEntity<List<DuelDTO>> getDuelsToStart(@RequestParam Long userId) {
-        try {
-            List<Duel> duels = duelService.duelsToStart(userId);
-            List<DuelDTO> duelDTOS = duels.stream()
-                    .map(DuelDTO::fromEntity)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(duelDTOS);
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(List.of(error));
-        }
+    public ResponseEntity<List<DuelDTO>> getDuelsToStart(@RequestParam Long userId) throws UserNotExistException {
+        List<Duel> duels = duelService.duelsToStart(userId);
+        List<DuelDTO> duelDTOS = duels.stream()
+                .map(DuelDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(duelDTOS);
     }
 
     @GetMapping("/api/duel/toplay")
-    public ResponseEntity<List<DuelDTO>> getDuelToPlay(@RequestParam Long userId){
-        try{
-            List<Duel> duels = duelService.duelsToPlay(userId);
-            List<DuelDTO> duelDtos = duels.stream()
-                    .map(DuelDTO::fromEntity)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(duelDtos);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<DuelDTO>> getDuelToPlay(@RequestParam Long userId) throws UserNotExistException {
+        List<Duel> duels = duelService.duelsToPlay(userId);
+        List<DuelDTO> duelDtos = duels.stream()
+                .map(DuelDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(duelDtos);
     }
 
     @PutMapping("/api/duel/start")
-    public ResponseEntity<DuelDTO> startDuel(@RequestParam Long duelId, @RequestParam Long userId) {
-        try {
-            Duel duel = duelService.startDuelRest(duelId, userId);
-            DuelDTO duelDto = DuelDTO.fromEntity(duel);
-            return ResponseEntity.status(HttpStatus.OK).body(duelDto);
-        } catch (ObjectOptimisticLockingFailureException oe) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Duel-Daten nicht aktuell. Bitte neu laden!");
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<DuelDTO> startDuel(@RequestParam Long duelId, @RequestParam Long userId) throws UserNotPartOfDuelException, DuelAlreadyStartedException, UserNotExistException, DuelNotExistException {
+        Duel duel = duelService.startDuelRest(duelId, userId);
+        DuelDTO duelDto = DuelDTO.fromEntity(duel);
+        return ResponseEntity.status(HttpStatus.OK).body(duelDto);
     }
 
     @GetMapping("/api/duel/notPlayedRounds")
-    public ResponseEntity<List<RoundDTO>> notPlayedRounds(@RequestParam Long duelId, @RequestParam Long userId) {
-        try{
-            List<Round> notPlayedRounds = duelService.getNotPlayedRounds(duelId, userId);
-            List<RoundDTO> roundDtos = new ArrayList<>();
-            for(Round round : notPlayedRounds){
-                roundDtos.add(RoundDTO.fromList(duelService.playRoundRest(round.getRoundId())));
-            }
-            return ResponseEntity.ok(roundDtos);
-        } catch (RuntimeException e){
-            RoundDTO error = new RoundDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(List.of(error));
+    public ResponseEntity<List<RoundDTO>> notPlayedRounds(@RequestParam Long duelId, @RequestParam Long userId) throws RoundNotExistException, UserNotExistException, DuelNotExistException {
+        List<Round> notPlayedRounds = duelService.getNotPlayedRounds(duelId, userId);
+        List<RoundDTO> roundDtos = new ArrayList<>();
+        for (Round round : notPlayedRounds) {
+            roundDtos.add(RoundDTO.fromList(duelService.playRoundRest(round.getRoundId())));
         }
+        return ResponseEntity.ok(roundDtos);
     }
 
     @GetMapping("/api/duel/playround")
-    public ResponseEntity<RoundDTO> playRound(@RequestParam Long roundId) {
-        try {
-            List<String> list = duelService.playRoundRest(roundId);
-            RoundDTO roundDTO = RoundDTO.fromList(list);
-            return ResponseEntity.ok(roundDTO);
-        } catch (Exception e) {
-            RoundDTO error = new RoundDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<RoundDTO> playRound(@RequestParam Long roundId) throws RoundNotExistException {
+        List<String> list = duelService.playRoundRest(roundId);
+        RoundDTO roundDTO = RoundDTO.fromList(list);
+        return ResponseEntity.ok(roundDTO);
     }
 
     @PostMapping("/api/duel/answer")
-    public ResponseEntity<DuelDTO> playerAnswer(@RequestBody AnswerDTO request) {
-        try {
-            if (duelService.saveSelectedAnswerRest(request.getAnswer(), request.getRoundId(), request.getPlayerId())) {
-                return ResponseEntity.ok().build();
-            } else {
-                DuelDTO error = new DuelDTO();
-                error.setErrorMessage("Spieler mit id " + request.getPlayerId() + " hat bereits eine Antwort für Runde " + request.getRoundId() + "abgegeben.");
-                return ResponseEntity.internalServerError().body(error);
-            }
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<DuelDTO> playerAnswer(@RequestBody AnswerDTO request) throws UserAlreadyPlayedRoundException, UserNotExistException, RoundNotExistException {
+        duelService.saveSelectedAnswerRest(request.getAnswer(), request.getRoundId(), request.getPlayerId());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/api/duel")
-    public ResponseEntity<DuelDTO> playerAnswer(@RequestParam Long duelId) {
-        try {
-            if(duelService.deleteDuel(duelId)){
-                return ResponseEntity.ok().build();
-            }else{
-                DuelDTO error = new DuelDTO();
-                error.setErrorMessage("Duel mit id " + duelId + " existiert nicht.");
-                return ResponseEntity.internalServerError().body(error);
-            }
-        } catch (Exception e) {
-            DuelDTO error = new DuelDTO();
-            error.setErrorMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(error);
-        }
+    public ResponseEntity<DuelDTO> playerAnswer(@RequestParam Long duelId) throws DuelNotExistException {
+        duelService.deleteDuel(duelId);
+        return ResponseEntity.ok().build();
     }
 }

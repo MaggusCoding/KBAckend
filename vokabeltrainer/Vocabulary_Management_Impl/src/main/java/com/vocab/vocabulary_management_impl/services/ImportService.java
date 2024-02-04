@@ -1,5 +1,6 @@
 package com.vocab.vocabulary_management_impl.services;
 
+import com.vocab.vocabulary_management.exceptions.ContentEmptyException;
 import com.vocab.vocabulary_management.services.FlashcardListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,7 +29,7 @@ public class ImportService {
     /**
      * {@inheritDoc}
      */
-    public boolean importFile(String path) throws IOException {
+    public boolean importFile(String path) throws IOException, ContentEmptyException {
         String content = readFile(path);
         if (content.isEmpty() || content.trim().isBlank()) {
             return false;
@@ -40,7 +41,7 @@ public class ImportService {
     /**
      * {@inheritDoc}
      */
-    public boolean importInitialFiles() throws IOException {
+    public boolean importInitialFiles() throws IOException, ContentEmptyException {
         Set<String> files = retrieveFilenamesFromFolder();
 
         for (String filename : files) {

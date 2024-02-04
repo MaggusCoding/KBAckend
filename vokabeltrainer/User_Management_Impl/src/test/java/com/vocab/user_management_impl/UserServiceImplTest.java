@@ -1,6 +1,8 @@
 package com.vocab.user_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.UserNotExistException;
+import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel_API.repositories.DuelRepo;
@@ -73,7 +75,30 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindByUsername() {
+    public void testCreateUserRest(){
+        UserEntity user3 = new UserEntity();
+        user3.setUserId(3L);
+        user3.setUsername("testuser3");
+        when(userRepo.findByUsername("testuser1")).thenReturn(Optional.ofNullable(user1));
+        when(userRepo.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
+        when(userRepo.save(any(UserEntity.class))).thenReturn(user3);
+
+        // Erstelle einen neuen Benutzer
+        UserEntity existingUser = userService.createUserRest(user1);
+        UserEntity newUser = userService.createUserRest(user3);
+
+        assertNotNull(newUser);
+        assertEquals(existingUser.getUserId(), user1.getUserId() );
+        assertEquals(existingUser.getUsername(), user1.getUsername() );
+        assertEquals(user3.getUserId(), newUser.getUserId(), "neuer User wurde nicht angelegt");
+        assertEquals(user3.getUsername(), newUser.getUsername(), "Username stimmt nicht überein");
+        verify(userRepo, times(2)).findByUsername(anyString());
+        verify(userRepo, times(0)).save(user1);
+        verify(userRepo).save(any(UserEntity.class));
+    }
+
+    @Test
+    public void testFindByUsername() throws UserNotExistException {
         when(userRepo.findByUsername(user1.getUsername())).thenReturn(Optional.ofNullable(user1));
 
         // Versuche, den Benutzer über findByUsername zu finden
@@ -86,7 +111,16 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testDeleteUser() {
+    public void testFindByUsernameExpectUserNotExistException(){
+        when(userRepo.findByUsername(user1.getUsername())).thenReturn(Optional.empty());
+
+        // Versuche, den Benutzer über findByUsername zu finden und prüfe Exception
+        assertThrows(UserNotExistException.class, () -> userService.findByUsername(user1.getUsername()));
+
+    }
+
+    @Test
+    public void testDeleteUser() throws UserStillPlaysException, UserNotExistException {
         when(userRepo.existsById(user1.getUserId())).thenReturn(true);
         when(userRepo.findById(user1.getUserId())).thenReturn(Optional.of(user1));
         when(duelRepo.existsDuelByPlayersIsContaining(user1)).thenReturn(false);
@@ -101,28 +135,25 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testDeleteNotPersistedUser(){
+    public void testDeleteNotPersistedUserExpectUserNotExistException() {
         // Erstelle User-Objekt, aber es wird nicht persistiert
         UserEntity newUser = new UserEntity();
         newUser.setUserId(3L);
         newUser.setUsername("notPersistedUser");
         when(userRepo.existsById(newUser.getUserId())).thenReturn(false);
         when(userRepo.findById(newUser.getUserId())).thenReturn(Optional.of(newUser));
-        when(duelRepo.existsDuelByPlayersIsContaining(newUser)).thenReturn(false);
 
-        // Führe Löschung durch
-        boolean deleteSuccess = userService.deleteUser(newUser.getUserId());
-
-        // Prüfe, dass nichts gelöscht wurde
-        assertFalse(deleteSuccess, "Benutzer wurde gelöscht");
+        // Führe Löschung durch und prüfe Exception
+        assertThrows(UserNotExistException.class, () -> userService.deleteUser(newUser.getUserId()));
         verify(userRepo).existsById(newUser.getUserId());
+        verify(userRepo, times(1)).existsById(newUser.getUserId());
         verify(userRepo, times(0)).findById(newUser.getUserId());
         verify(duelRepo, times(0)).existsDuelByPlayersIsContaining(newUser);
         verify(userRepo, times(0)).deleteById(newUser.getUserId());
     }
 
     @Test
-    public void testDeleteUserWhoPlaysInDuel(){
+    public void testDeleteUserWhoPlaysInDuelExpectUserStillPlaysException(){
         // Erstelle User-Objekt, aber es wird nicht persistiert
         UserEntity newUser = new UserEntity();
         newUser.setUserId(3L);
@@ -131,18 +162,16 @@ public class UserServiceImplTest {
         when(userRepo.findById(newUser.getUserId())).thenReturn(Optional.of(newUser));
         when(duelRepo.existsDuelByPlayersIsContaining(newUser)).thenReturn(true);
 
-        // Führe Löschung durch
-        boolean deleteSuccess = userService.deleteUser(newUser.getUserId());
-
-        // Prüfe, dass nichts gelöscht wurde
-        assertFalse(deleteSuccess, "Benutzer wurde gelöscht");
-        verify(userRepo, times(0)).deleteById(newUser.getUserId());
-        verify(duelRepo, times(1)).existsDuelByPlayersIsContaining(newUser);
+        // Führe Löschung durch und prüfe Exception
+        assertThrows(UserStillPlaysException.class,() -> userService.deleteUser(newUser.getUserId()));
         verify(userRepo, times(1)).existsById(newUser.getUserId());
+        verify(userRepo, times(1)).findById(newUser.getUserId());
+        verify(duelRepo, times(1)).existsDuelByPlayersIsContaining(newUser);
+        verify(userRepo, times(0)).deleteById(newUser.getUserId());
     }
 
     @Test
-    public void testGetById() {
+    public void testGetById() throws UserNotExistException {
         when(userRepo.findById(user1.getUserId())).thenReturn(Optional.ofNullable(user1));
 
         UserEntity foundUser = userService.getById(user1.getUserId());
@@ -151,6 +180,13 @@ public class UserServiceImplTest {
         assertNotNull(foundUser, "Benutzer wurde nicht gefunden");
         assertEquals(user1.getUsername(), foundUser.getUsername(), "Benutzernamen stimmen nicht überein");
         verify(userRepo).findById(user1.getUserId());
+    }
+
+    @Test
+    public void testGetByIdExpectUserNotExistException(){
+        when(userRepo.findById(user1.getUserId())).thenReturn(Optional.empty());
+
+        assertThrows(UserNotExistException.class,() -> userService.getById(user1.getUserId()));
     }
 
     @Test
