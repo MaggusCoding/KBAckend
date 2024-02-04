@@ -10,19 +10,23 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoundDTO {
-    String question;
-    String wrongAnswer1;
-    String wrongAnswer2;
-    String wrongAnswer3;
-    String correctAnswer;
+    private Long roundId;
+    private String question;
+    private String wrongAnswer1;
+    private String wrongAnswer2;
+    private String wrongAnswer3;
+    private String correctAnswer;
+    private String errorMessage;
 
     public static RoundDTO fromList(List<String> list){
         RoundDTO roundDTO = new RoundDTO();
-        roundDTO.setQuestion(list.get(0));
-        roundDTO.setWrongAnswer1(list.get(1));
-        roundDTO.setWrongAnswer2(list.get(2));
-        roundDTO.setWrongAnswer3(list.get(3));
-        roundDTO.setCorrectAnswer(list.get(4));
+        roundDTO.setRoundId(Long.valueOf(list.get(0)));
+        roundDTO.setQuestion(list.get(1));
+        roundDTO.setWrongAnswer1(list.get(2));
+        roundDTO.setWrongAnswer2(list.get(3));
+        roundDTO.setWrongAnswer3(list.get(4));
+        roundDTO.setCorrectAnswer(list.get(5));
         return roundDTO;
     }
+
 }

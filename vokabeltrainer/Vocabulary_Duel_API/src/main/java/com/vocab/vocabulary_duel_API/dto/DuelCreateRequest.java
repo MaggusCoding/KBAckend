@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 public class DuelCreateRequest {
 
 
-    private Long userID;
-    private Long flashcardListID;
+    private Long userId;
+    private Long flashcardListId;
 
 
 }

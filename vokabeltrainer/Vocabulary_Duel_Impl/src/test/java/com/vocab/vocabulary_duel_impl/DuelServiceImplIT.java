@@ -20,11 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,7 +74,7 @@ public class DuelServiceImplIT {
     private UserEntity user1;
     private UserEntity user2;
     private UserEntity user3;
-    private Optional<FlashcardList> flashcardList;
+    private FlashcardList flashcardList;
 
     @BeforeEach
     public void setUp(){
@@ -83,7 +83,7 @@ public class DuelServiceImplIT {
         user3 = userService.createUser("testuser3");
 
         flashcardListService.createFlashcardList(testContent);
-        flashcardList = flashcardListService.getAll().stream().filter(flashcardListTemp -> flashcardListTemp.getCategory().equals("holidays")).findFirst();
+        flashcardList = flashcardListService.getAll().stream().filter(flashcardListTemp -> flashcardListTemp.getCategory().equals("holidays")).findFirst().get();
     }
 
     @AfterEach
@@ -96,7 +96,7 @@ public class DuelServiceImplIT {
     @Test
     public void testJoinDuelAlreadyStartedOptimisticLockingHandling() throws InterruptedException {
         // given
-        Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.get().getFlashcardListId());
+        Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.getFlashcardListId());
         duelService.generateRounds(duel.getDuelId());
         AtomicBoolean duelJoined1 = new AtomicBoolean(false);
         AtomicBoolean duelJoined2 = new AtomicBoolean(false);
@@ -124,25 +124,25 @@ public class DuelServiceImplIT {
     @Test
     public void testStartDuelOptimisticLockingHandling() throws InterruptedException {
         // given
-        Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.get().getFlashcardListId());
+        Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.getFlashcardListId());
         duelService.generateRounds(duel.getDuelId());
         duelService.joinDuel(duel.getDuelId(), user2.getUserId());
         duelService.joinDuel(duel.getDuelId(), user3.getUserId());
-        AtomicBoolean duelStarted1 = new AtomicBoolean(false);
-        AtomicBoolean duelStarted2 = new AtomicBoolean(false);
+        AtomicReference<Duel> duel1 = new AtomicReference<>();
+        AtomicReference<Duel> duel2 = new AtomicReference<>();
 
         // when
         final ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // then
-        executor.execute(() -> duelStarted1.set(duelService.startDuel(duel.getDuelId(), user2.getUserId())));
-        executor.execute(() -> duelStarted2.set(duelService.startDuel(duel.getDuelId(), user3.getUserId())));
+        executor.execute(() -> duel1.set(duelService.startDuelRest(duel.getDuelId(), user2.getUserId())));
+        executor.execute(() -> duel2.set(duelService.startDuelRest(duel.getDuelId(), user3.getUserId())));
 
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.MINUTES);
 
 //        System.out.println("duelStarted1=" + duelStarted1.get() + "; duelStarted2=" + duelStarted2.get());
-        assertNotEquals(duelStarted1.get(), duelStarted2.get());
+        assertNotEquals(duel1.get(), duel2.get());
         assertTrue(duelRepo.findById(duel.getDuelId()).get().isStarted());
         // 5 times because 1x createDuel + 2x joinDuel + 2x startDuel
         verify(duelRepo, times(5)).save(any(Duel.class));
@@ -152,7 +152,7 @@ public class DuelServiceImplIT {
     @Test
     public void testPlayerAnswerProofNoOptimisticLocking() throws InterruptedException {
         // given
-        Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.get().getFlashcardListId());
+        Duel duel = duelService.createDuel(user1.getUserId(), flashcardList.getFlashcardListId());
         duelService.generateRounds(duel.getDuelId());
         duelService.joinDuel(duel.getDuelId(), user2.getUserId());
         duelService.startDuel(duel.getDuelId(), user2.getUserId());

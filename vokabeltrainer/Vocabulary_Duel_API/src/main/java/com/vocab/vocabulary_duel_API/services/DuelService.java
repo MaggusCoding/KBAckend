@@ -2,6 +2,7 @@ package com.vocab.vocabulary_duel_API.services;
 
 import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel_API.entities.Duel;
+import com.vocab.vocabulary_duel_API.entities.Round;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,10 +48,18 @@ public interface DuelService {
     /**
      * Starts the duel so that nobody can join anymore and sets the first round to active
      * @param duelId Id of the duel to start
-     * @param userID Id of the User who wants to start the duel
+     * @param userId Id of the User who wants to start the duel
      * @return If starting the duel was successfull
      */
-    boolean startDuel(Long duelId, Long userID);
+    boolean startDuel(Long duelId, Long userId);
+
+    /**
+     * Starts the duel so that nobody can join anymore and sets the first round to active
+     * @param duelId Id of the duel to start
+     * @param userId Id of the User who wants to start the duel
+     * @return Duel that started
+     */
+    Duel startDuelRest(Long duelId, Long userId);
 
     /**
      * Saves the selected Answer and determines if it is correct.
@@ -59,6 +68,14 @@ public interface DuelService {
      * @param playerId current player
      */
     boolean saveSelectedAnswer(String selectedAnswer, Long duelId, Long playerId);
+
+    /**
+     * Saves the selected Answer and determines if it is correct.
+     * @param selectedAnswer selected Answer
+     * @param roundId current round
+     * @param playerId current player
+     */
+    boolean saveSelectedAnswerRest(String selectedAnswer, Long roundId, Long playerId);
 
     /**
      * deactivates current round and activates the next round. If all rounds were played the duel is updated to finished.
@@ -87,6 +104,13 @@ public interface DuelService {
     List<String> playRound(Long duelStart);
 
     /**
+     * Returns a list of Strings with the roundId, Question, Correct Answer and the wrong answers
+     * @param roundId Id of current round
+     * @return content of flashcard
+     */
+    List<String> playRoundRest(Long roundId);
+
+    /**
      * Generate 10 rounds of a newly created duel.
      * @param duelId Id of duel
      */
@@ -107,4 +131,19 @@ public interface DuelService {
      * @return 3 wrong answers
      */
     List<String> generateWrongAnswers(String correctAnswer, List<String> allTranslationStrings);
+
+    /**
+     * Get not played rounds of a user in a duel.
+     * @param duelId id of duel
+     * @param userId id of user
+     * @return List of not played rounds
+     */
+    List<Round> getNotPlayedRounds(Long duelId, Long userId);
+
+    /**
+     * Get started duels the user has joined.
+     * @param userId id of user
+     * @return List of playable duels
+     */
+    List<Duel> duelsToPlay(Long userId);
 }

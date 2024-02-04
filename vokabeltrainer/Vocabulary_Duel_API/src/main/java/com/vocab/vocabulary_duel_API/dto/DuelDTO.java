@@ -1,14 +1,13 @@
 package com.vocab.vocabulary_duel_API.dto;
 
+import com.vocab.user_management.entities.UserEntity;
 import com.vocab.vocabulary_duel_API.entities.Duel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import com.vocab.vocabulary_duel_API.entities.Round;
-import com.vocab.user_management.entities.UserEntity;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -20,10 +19,11 @@ public class DuelDTO {
     private List<String> winnerUsernames;
     private List<Long> playerIds;
     private List<String> playerUsernames;
-    private Long flashcardsForDuelId;
+    private String flashcardListName;
+//    private Long flashcardsForDuelId;
     private boolean started;
     private boolean finished;
-
+    private String errorMessage;
 
     public static DuelDTO fromEntity(Duel duel) {
         DuelDTO dto = new DuelDTO();
@@ -32,10 +32,12 @@ public class DuelDTO {
         dto.setWinnerUsernames(duel.getWinner().stream().map(UserEntity::getUsername).collect(Collectors.toList()));
         dto.setPlayerIds(duel.getPlayers().stream().map(UserEntity::getUserId).collect(Collectors.toList()));
         dto.setPlayerUsernames(duel.getPlayers().stream().map(UserEntity::getUsername).collect(Collectors.toList()));
-        dto.setFlashcardsForDuelId(duel.getFlashcardsForDuel().getFlashcardListId());
+//        dto.setFlashcardsForDuelId(duel.getFlashcardsForDuel().getFlashcardListId());
+        dto.setFlashcardListName(duel.getFlashcardsForDuel().getCategory());
         dto.setStarted(duel.isStarted());
         dto.setFinished(duel.isFinished());
 
         return dto;
     }
+
 }

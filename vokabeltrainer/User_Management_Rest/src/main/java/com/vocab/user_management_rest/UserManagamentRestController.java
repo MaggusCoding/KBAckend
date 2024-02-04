@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,35 +24,50 @@ public class UserManagamentRestController {
         try {
             return ResponseEntity.ok(userService.getAll());
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Allgemeiner technischer Fehler.");
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/api/user/byid")
     public ResponseEntity<UserEntity> getUserById(@RequestParam Long userid) {
-        UserEntity user = userService.getById(userid);
-        return ResponseEntity.ok(user);
+        try {
+            UserEntity user = userService.getById(userid);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/api/user/byusername")
     public ResponseEntity<UserEntity> getUserByUsername(@RequestParam String username) {
-        UserEntity user = userService.findByUsername(username);
-        return ResponseEntity.ok(user);
+        try {
+            UserEntity user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/api/user")
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) {
-        UserEntity user = userService.createUserRest(request);
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Allgemeiner technischer Fehler.");
+        try {
+            UserEntity user = userService.createUserRest(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @DeleteMapping("/api/user")
     public ResponseEntity<Void> deleteUser(@RequestParam Long userid) {
-        if (userService.deleteUser(userid)) {
-            return ResponseEntity.ok().build();
-        } else return ResponseEntity.notFound().build();
+        try {
+            if (userService.deleteUser(userid)) {
+                return ResponseEntity.ok().build();
+            } else return ResponseEntity.notFound().build();
+        } catch (ObjectOptimisticLockingFailureException oe) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User-Daten nicht aktuell. Bitte neu laden!");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

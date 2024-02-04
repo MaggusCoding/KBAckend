@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnswerDTO {
-    String answer;
-    Long duelID;
-    Long playerID;
+    private String answer;
+    private Long roundId;
+    private Long playerId;
+    private String errorMessage;
 }
