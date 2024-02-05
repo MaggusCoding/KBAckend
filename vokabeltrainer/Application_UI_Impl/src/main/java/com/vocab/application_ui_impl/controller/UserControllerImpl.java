@@ -2,6 +2,7 @@ package com.vocab.application_ui_impl.controller;
 
 import com.vocab.application_ui_impl.views.UserView;
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management_impl.services.UserServiceImpl;
@@ -23,16 +24,28 @@ public class UserControllerImpl {
 
     public void initializeDefaultUser() {
         String defaultUsername = "god";
-        // Überprüfe, ob der Benutzer bereits existiert
-        userService.createUser(defaultUsername);
+        try {
+            // Überprüfe, ob der Benutzer bereits existiert
+            userService.createUser(defaultUsername);
+        }catch(InvalidUsernameException e){
+            userView.printUsernameInvalid(e.getMessage());
+        }
     }
 
     public Long createUser() {
-        userView.printCreateInstruction();
-        String username = userView.readString();
-        UserEntity user = userService.createUser(username);
-        userView.printLoginMessage(user.getUserId());
-        return user.getUserId();
+        boolean userCreated = false;
+        while(!userCreated) {
+            userView.printCreateInstruction();
+            String username = userView.readString();
+            try {
+                UserEntity user = userService.createUser(username);
+                userView.printLoginMessage(user.getUserId());
+                return user.getUserId();
+            } catch(InvalidUsernameException e){
+                userView.printUsernameInvalid(e.getMessage());
+            }
+        }
+        return null;
     }
 
     public void deleteUser(Long loggedInUser) {

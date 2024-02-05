@@ -2,6 +2,7 @@ package com.vocab.application_ui_impl.controller;
 
 import com.vocab.application_ui_impl.views.DuelView;
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.services.UserService;
 import com.vocab.user_management_impl.services.UserServiceImpl;
@@ -314,7 +315,7 @@ public class DuelControllerImpl {
                     return -5L;
                 }
                 return user.getUserId();
-            } catch (UserNotExistException e) {
+            } catch (UserNotExistException | InvalidUsernameException e) {
                 return -3L;
             }
         }

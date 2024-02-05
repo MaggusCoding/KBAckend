@@ -1,5 +1,6 @@
 package com.vocab.user_management_rest;
 
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +19,12 @@ public class UserRestResponseEntityExceptionHandler extends ResponseEntityExcept
 
     public UserRestResponseEntityExceptionHandler(){
         super();
+    }
+
+    // 400
+    @ExceptionHandler(value = {InvalidUsernameException.class})
+    protected ResponseEntity<Object> handleBadRequestFachlich(InvalidUsernameException ex, WebRequest request){
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     // 404

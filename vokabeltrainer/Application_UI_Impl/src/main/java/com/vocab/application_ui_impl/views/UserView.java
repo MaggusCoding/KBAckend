@@ -33,6 +33,10 @@ public class UserView {
         System.out.println("User deletion was unsuccessful. The user does not exist.");
     }
 
+    public void printUsernameInvalid(String message){
+        System.out.println(message);
+    }
+
     public void printAvailableUsers(String user) {
         System.out.println(user);
     }

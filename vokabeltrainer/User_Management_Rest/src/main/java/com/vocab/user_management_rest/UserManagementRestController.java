@@ -1,6 +1,7 @@
 package com.vocab.user_management_rest;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.services.UserService;
@@ -31,13 +32,13 @@ public class UserManagementRestController {
     }
 
     @GetMapping("/api/user/byusername")
-    public ResponseEntity<UserEntity> getUserByUsername(@RequestParam String username) throws UserNotExistException {
+    public ResponseEntity<UserEntity> getUserByUsername(@RequestParam String username) throws UserNotExistException, InvalidUsernameException {
         UserEntity user = userService.findByUsername(username);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/api/user")
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) {
+    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity request) throws InvalidUsernameException {
         UserEntity user = userService.createUserRest(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }

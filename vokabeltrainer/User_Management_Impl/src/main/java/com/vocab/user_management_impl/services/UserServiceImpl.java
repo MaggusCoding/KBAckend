@@ -1,6 +1,7 @@
 package com.vocab.user_management_impl.services;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.repos.UserRepo;
@@ -26,7 +27,10 @@ public class UserServiceImpl implements UserService {
     /**
      * {@inheritDoc}
      */
-    public UserEntity findByUsername(String username) throws UserNotExistException {
+    public UserEntity findByUsername(String username) throws UserNotExistException, InvalidUsernameException {
+        if(username.trim().isBlank()){
+            throw new InvalidUsernameException("Der Name darf nicht leer sein!");
+        }
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotExistException("User mit username " + username + " nicht gefunden."));
     }
 
@@ -34,7 +38,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public UserEntity createUser(String userName) {
+    public UserEntity createUser(String userName) throws InvalidUsernameException {
         try {
             UserEntity existingUser = findByUsername(userName);
             return existingUser;
@@ -42,13 +46,15 @@ public class UserServiceImpl implements UserService {
             UserEntity newUser = new UserEntity();
             newUser.setUsername(userName);
             return userRepository.save(newUser);
+        } catch (InvalidUsernameException e) {
+            throw e;
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public UserEntity createUserRest(UserEntity user) {
+    public UserEntity createUserRest(UserEntity user) throws InvalidUsernameException {
         try {
             UserEntity existingUser = findByUsername(user.getUsername());
             return existingUser;
@@ -56,6 +62,8 @@ public class UserServiceImpl implements UserService {
             UserEntity newUser = new UserEntity();
             newUser.setUsername(user.getUsername());
             return userRepository.save(newUser);
+        } catch (InvalidUsernameException e) {
+            throw e;
         }
     }
 

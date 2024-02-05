@@ -1,6 +1,7 @@
 package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management_impl.services.UserServiceImpl;
 import com.vocab.vocabulary_duel_API.dto.RankingPlayer;
@@ -656,7 +657,7 @@ public class DuelServiceImplTest {
     }
 
     @Test
-    public void testCalculateWinnerNobodyWins() throws DuelNotExistException, UserNotExistException {
+    public void testCalculateWinnerNobodyWins() throws DuelNotExistException, UserNotExistException, InvalidUsernameException {
         // Arrange
         long duelId = 1L;
         Duel mockDuel = new Duel();

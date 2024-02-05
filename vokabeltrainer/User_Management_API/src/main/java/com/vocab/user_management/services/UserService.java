@@ -1,6 +1,7 @@
 package com.vocab.user_management.services;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 
@@ -10,12 +11,20 @@ public interface UserService {
     /**
      * Creates a User for playing the vocab game and saves it in the database
      * @param userName The User which is to be created
-     * @return The created user or null
+     * @return The created user
+     * @throws InvalidUsernameException when the username is empty or contains only whitespaces
      */
 
-    UserEntity createUser(String userName);
+    UserEntity createUser(String userName) throws InvalidUsernameException;
 
-    UserEntity createUserRest(UserEntity user);
+    /**
+     * Creates a User for playing the vocab game and saves it in the database
+     * @param user the user which is to be created
+     * @return the created user
+     * @throws InvalidUsernameException when the username is empty or contains only whitespaces
+     */
+    UserEntity createUserRest(UserEntity user) throws InvalidUsernameException;
+
     /**
      * Deletes a user from the database if the user is not involved in a duel.
      *
@@ -45,7 +54,8 @@ public interface UserService {
      * @param username String
      * @return user found user
      * @throws UserNotExistException when the user does not exist
+     * @throws InvalidUsernameException when the username is empty or contains only whitespaces
      */
-    UserEntity findByUsername(String username) throws UserNotExistException;
+    UserEntity findByUsername(String username) throws UserNotExistException, InvalidUsernameException;
 
 }

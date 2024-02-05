@@ -1,6 +1,7 @@
 package com.vocab.user_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.repos.UserRepo;
@@ -52,7 +53,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testCreateUser() {
+    public void testCreateUser() throws InvalidUsernameException {
         UserEntity user3 = new UserEntity();
         user3.setUserId(3L);
         user3.setUsername("testuser3");
@@ -75,7 +76,15 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testCreateUserRest(){
+    public void testCreateUserExpectInvalidUsernameException() {
+        // Erstelle einen neuen Benutzer mit leerem Namen
+        assertThrows(InvalidUsernameException.class,() -> userService.createUser(" "));
+        verify(userRepo, times(0)).findByUsername(anyString());
+        verify(userRepo, times(0)).save(any());
+    }
+
+    @Test
+    public void testCreateUserRest() throws InvalidUsernameException {
         UserEntity user3 = new UserEntity();
         user3.setUserId(3L);
         user3.setUsername("testuser3");
@@ -98,7 +107,19 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindByUsername() throws UserNotExistException {
+    public void testCreateUserRestExpectInvalidUsernameException() {
+        UserEntity user3 = new UserEntity();
+        user3.setUserId(3L);
+        user3.setUsername(" ");
+
+        // Erstelle einen neuen Benutzer mit leerem Namen
+        assertThrows(InvalidUsernameException.class, () -> userService.createUserRest(user3));
+        verify(userRepo, never()).findByUsername(anyString());
+        verify(userRepo, never()).save(any());
+    }
+
+    @Test
+    public void testFindByUsername() throws UserNotExistException, InvalidUsernameException {
         when(userRepo.findByUsername(user1.getUsername())).thenReturn(Optional.ofNullable(user1));
 
         // Versuche, den Benutzer über findByUsername zu finden
@@ -116,6 +137,14 @@ public class UserServiceImplTest {
 
         // Versuche, den Benutzer über findByUsername zu finden und prüfe Exception
         assertThrows(UserNotExistException.class, () -> userService.findByUsername(user1.getUsername()));
+
+    }
+
+    @Test
+    public void testFindByUsernameExpectInvalidUsernameException(){
+
+        // Versuche, den Benutzer über findByUsername zu finden und prüfe Exception
+        assertThrows(InvalidUsernameException.class, () -> userService.findByUsername(" "));
 
     }
 

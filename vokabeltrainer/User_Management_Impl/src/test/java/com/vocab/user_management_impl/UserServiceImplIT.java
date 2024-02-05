@@ -1,6 +1,7 @@
 package com.vocab.user_management_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.exceptions.UserStillPlaysException;
 import com.vocab.user_management.repos.UserRepo;
@@ -33,7 +34,7 @@ public class UserServiceImplIT {
     DuelRepo duelRepo;
 
     @Test
-    public void testDeleteUserOptimisticLockHandling() throws InterruptedException, UserNotExistException, UserStillPlaysException {
+    public void testDeleteUserOptimisticLockHandling() throws InterruptedException, UserNotExistException, UserStillPlaysException, InvalidUsernameException {
         // given
         UserEntity user1 = userService.createUser("user1");
         AtomicBoolean deleteSuccess1 = new AtomicBoolean(false);
