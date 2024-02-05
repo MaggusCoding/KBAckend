@@ -122,7 +122,7 @@ public class VocabularyDuelRestController {
     }
 
     @DeleteMapping("/api/duel")
-    public ResponseEntity<DuelDTO> playerAnswer(@RequestParam Long duelId) throws DuelNotExistException {
+    public ResponseEntity<DuelDTO> deleteDuel(@RequestParam Long duelId) throws DuelNotExistException {
         duelService.deleteDuel(duelId);
         return ResponseEntity.ok().build();
     }
