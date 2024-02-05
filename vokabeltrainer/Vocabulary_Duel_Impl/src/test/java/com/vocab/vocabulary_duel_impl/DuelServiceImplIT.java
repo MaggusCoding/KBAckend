@@ -1,6 +1,7 @@
 package com.vocab.vocabulary_duel_impl;
 
 import com.vocab.user_management.entities.UserEntity;
+import com.vocab.user_management.exceptions.InvalidUsernameException;
 import com.vocab.user_management.exceptions.UserNotExistException;
 import com.vocab.user_management.repos.UserRepo;
 import com.vocab.user_management.services.UserService;
@@ -81,7 +82,7 @@ public class DuelServiceImplIT {
     private FlashcardList flashcardList;
 
     @BeforeEach
-    public void setUp() throws ContentEmptyException {
+    public void setUp() throws ContentEmptyException, InvalidUsernameException {
         user1 = userService.createUser("testuser1");
         user2 = userService.createUser("testuser2");
         user3 = userService.createUser("testuser3");
