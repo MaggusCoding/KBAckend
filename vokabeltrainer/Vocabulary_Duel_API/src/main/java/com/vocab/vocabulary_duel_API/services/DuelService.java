@@ -69,7 +69,7 @@ public interface DuelService {
     boolean startDuel(Long duelId, Long userId) throws DuelNotExistException, UserNotExistException, UserNotPartOfDuelException, DuelAlreadyStartedException;
 
     /**
-     * Starts the duel so that nobody can join anymore and sets the first round to active
+     * Starts the duel so that nobody can join anymore
      * @param duelId Id of the duel to start
      * @param userId Id of the User who wants to start the duel
      * @return Duel that started
@@ -113,26 +113,27 @@ public interface DuelService {
 
     /**
      * returns not played and not finished duels which the user not joined yet.
-     * @return duels
+     * @return duels which the user can join
+     * @param userId user who wants to join a duel
      * @throws UserNotExistException if user not exists
      */
-    List<Duel> duelsToJoin(Long loggedInUser) throws UserNotExistException;
+    List<Duel> duelsToJoin(Long userId) throws UserNotExistException;
 
     /**
      * returns duels that are not started and not finished and the user has joined.
      * @param userId user who wants to start a duel
-     * @return duels
+     * @return duels which the user can start
      * @throws UserNotExistException if user not exists
      */
     List<Duel> duelsToStart(Long userId) throws UserNotExistException;
 
     /**
      * Returns a list of Strings with the Question, Correct Answer and the wrong answers
-     * @param duelStart Id of duel
+     * @param duelId Id of duel
      * @return content of flashcard
      * @throws DuelNotExistException if duel not exists
      */
-    List<String> playRound(Long duelStart) throws DuelNotExistException;
+    List<String> playRound(Long duelId) throws DuelNotExistException;
 
     /**
      * Returns a list of Strings with the roundId, Question, Correct Answer and the wrong answers
